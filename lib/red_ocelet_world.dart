@@ -6,10 +6,10 @@ class RedOceletWorld extends World with HasGameReference<RedOceletGame> {
   RedOceletWorld() : super();
   final paint = Paint()..color = Colors.deepPurple;
 
-  @override
-  void onGameResize(Vector2 size) {
-    super.onGameResize(size);
-  }
+  // @override
+  // void onGameResize(Vector2 size) {
+  //   super.onGameResize(size);
+  // }
 
   @override
   void render(Canvas canvas) {

@@ -1,6 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/red_ocelet_game.dart';
+import 'package:red_ocelot/ui/menu.dart';
 import 'package:red_ocelot/ui/pallette.dart';
 
 void main() {
@@ -37,7 +38,41 @@ class _GameContainerState extends State<GameContainer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: null,
-      body: Center(child: GameWidget(game: RedOceletGame())),
+      body: Center(
+        child: GameWidget.controlled(
+          gameFactory: RedOceletGame.new,
+          overlayBuilderMap: {
+            'MainMenu': (_, RedOceletGame game) {
+              return Menu(
+                game: game,
+                title: 'Red Ocelot',
+                items: [
+                  MenuItem(
+                    title: 'Start Game',
+                    onTap: () {
+                      game.overlays.remove('MainMenu');
+                      // Start the game
+                    },
+                  ),
+                  MenuItem(
+                    title: 'Settings',
+                    onTap: () {
+                      // Handle settings tap
+                    },
+                  ),
+                  MenuItem(
+                    title: 'Exit',
+                    onTap: () {
+                      // Handle exit tap
+                    },
+                  ),
+                ],
+              );
+            },
+          },
+          initialActiveOverlays: const ['MainMenu'],
+        ),
+      ),
     );
   }
 }
