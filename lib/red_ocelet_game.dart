@@ -15,12 +15,7 @@ class RedOceletGame extends FlameGame {
     world = redOceletWorld;
 
     camera =
-        CameraComponent.withFixedResolution(
-            width: 1000,
-            height: 600,
-            world: world,
-            viewfinder: Viewfinder(),
-          )
+        CameraComponent(world: world, viewfinder: Viewfinder())
           ..moveTo(Vector2(500, 300))
           ..viewfinder.zoom = 1.0;
 

@@ -49,20 +49,20 @@ class _GameContainerState extends State<GameContainer> {
                 items: [
                   MenuItem(
                     title: 'Start Game',
-                    onTap: () {
+                    onPressed: () {
                       game.overlays.remove('MainMenu');
                       // Start the game
                     },
                   ),
                   MenuItem(
                     title: 'Settings',
-                    onTap: () {
+                    onPressed: () {
                       // Handle settings tap
                     },
                   ),
                   MenuItem(
                     title: 'Exit',
-                    onTap: () {
+                    onPressed: () {
                       // Handle exit tap
                     },
                   ),

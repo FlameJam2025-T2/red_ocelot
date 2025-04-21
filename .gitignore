@@ -121,3 +121,5 @@ app.*.symbols
 # ide files
 .idea/
 .vscode/
+
+devtools_options.yaml

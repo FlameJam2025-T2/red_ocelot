@@ -2,8 +2,19 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/ui/pallette.dart';
+import 'package:flutter/services.dart';
 
-class Menu extends StatelessWidget {
+class MenuItem {
+  final String title;
+  final VoidCallback onPressed;
+
+  final Widget child;
+
+  MenuItem({required this.title, required this.onPressed, Widget? child})
+    : child = child ?? Text(title);
+}
+
+class Menu extends StatefulWidget {
   /// The title of the menu.
   final String title;
 
@@ -24,30 +35,76 @@ class Menu extends StatelessWidget {
   });
 
   @override
+  State<Menu> createState() => _MenuState();
+}
+
+class _MenuState extends State<Menu> {
+  static const ButtonStyle style = ButtonStyle(
+    fixedSize: WidgetStatePropertyAll<Size?>(Size(200, 50)),
+    shape: WidgetStateProperty<OutlinedBorder?>.fromMap(
+      <WidgetStatesConstraint, OutlinedBorder?>{
+        WidgetState.selected: RoundedRectangleBorder(),
+        WidgetState.any: RoundedRectangleBorder(),
+      },
+    ),
+    side: WidgetStateProperty<BorderSide?>.fromMap(
+      <WidgetStatesConstraint, BorderSide?>{
+        WidgetState.selected: BorderSide(color: textColorHighlight, width: 2),
+        WidgetState.any: BorderSide(color: textColor, width: 2),
+      },
+    ),
+    foregroundColor: WidgetStateProperty<Color?>.fromMap(
+      <WidgetStatesConstraint, Color?>{
+        WidgetState.selected: textColorHighlight,
+        WidgetState.any: textColor,
+      },
+    ),
+    textStyle: WidgetStateProperty<TextStyle?>.fromMap(<
+      WidgetStatesConstraint,
+      TextStyle?
+    >{
+      WidgetState.selected: TextStyle(color: textColorHighlight, fontSize: 20),
+
+      WidgetState.any: TextStyle(color: textColor, fontSize: 20),
+    }),
+  );
+
+  @override
   Widget build(BuildContext buildContext) {
     return Container(
       color: backgroundColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(title, style: TextStyle(fontSize: 24, color: textColor)),
+          Text(
+            widget.title,
+            style: TextStyle(
+              fontSize: 32,
+              color: textColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [SizedBox(height: 20), Divider(color: textColor)],
+            children: [
+              SizedBox(height: 20),
+              Divider(color: textColor, thickness: 2),
+            ],
           ),
-          ...items.map((item) {
-            return GestureDetector(
-              onTap: item.onTap,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                child: Text(
-                  item.title,
-                  style: TextStyle(
-                    fontSize: item.textSize ?? 18,
-                    color: item.color ?? textColor,
-                  ),
+          const SizedBox(height: 20),
+
+          ...widget.items.map((item) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _MenuItem(
+                  selected: false,
+                  onPressed: item.onPressed,
+                  style: style,
+                  child: item.child,
                 ),
-              ),
+                const SizedBox(height: 10),
+              ],
             );
           }),
         ],
@@ -56,33 +113,58 @@ class Menu extends StatelessWidget {
   }
 }
 
-class MenuItem extends TextButton {
-  /// The title of the menu item.
-  final String title;
+class _MenuItem extends StatefulWidget {
+  final bool selected;
 
-  /// The action to be performed when the menu item is tapped.
-  final VoidCallback onTap;
+  /// The callback function when the menu item is pressed.
+  final VoidCallback onPressed;
 
-  /// The color of the menu item.
-  final Color? color;
+  final ButtonStyle? style;
 
-  /// The font size of the menu item.
-  final double? textSize;
+  final Widget child;
 
-  MenuItem({
-    super.key,
-    required this.title,
-    required this.onTap,
-    this.color,
-    this.textSize,
-  }) : super(
-         onPressed: onTap,
-         child: Text(
-           title,
-           style: TextStyle(
-             fontSize: textSize ?? 18,
-             color: color ?? textColor,
-           ),
-         ),
-       );
+  const _MenuItem({
+    required this.selected,
+    this.style,
+    required this.onPressed,
+    required this.child,
+  });
+
+  @override
+  State<_MenuItem> createState() => _MenuItemState();
+}
+
+class _MenuItemState extends State<_MenuItem> {
+  late final WidgetStatesController statesController;
+
+  @override
+  void initState() {
+    super.initState();
+    statesController = WidgetStatesController(<WidgetState>{
+      if (widget.selected) WidgetState.selected,
+    });
+  }
+
+  @override
+  void didUpdateWidget(_MenuItem oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selected != widget.selected) {
+      statesController.update(WidgetState.selected, widget.selected);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: widget.onPressed,
+      statesController: statesController,
+      onHover: (bool isHovered) {
+        setState(() {
+          statesController.update(WidgetState.selected, isHovered);
+        });
+      },
+      style: widget.style,
+      child: widget.child,
+    );
+  }
 }

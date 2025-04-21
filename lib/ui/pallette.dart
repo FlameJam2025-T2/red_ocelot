@@ -11,8 +11,8 @@ const Color secondaryColor = Color.fromARGB(255, 0, 182, 203);
 const Color tertiaryColor = Color.fromARGB(255, 182, 203, 0);
 
 /// Text color for the game.
-const Color textColor = Color.fromARGB(255, 0, 170, 0);
-const Color textColorHighlight = Color.fromARGB(255, 239, 36, 185);
+const Color textColor = Color.fromARGB(255, 239, 36, 185);
+const Color textColorHighlight = Color.fromARGB(255, 0, 170, 0);
 
 /// Background colors for the game.
 const Color backgroundColor = Color.fromARGB(255, 44, 44, 44);
