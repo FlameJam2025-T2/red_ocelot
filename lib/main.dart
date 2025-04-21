@@ -1,5 +1,6 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:red_ocelot/config/keys.dart';
 import 'package:red_ocelot/red_ocelet_game.dart';
 import 'package:red_ocelot/ui/menu.dart';
 import 'package:red_ocelot/ui/pallette.dart';
@@ -42,7 +43,7 @@ class _GameContainerState extends State<GameContainer> {
         child: GameWidget.controlled(
           gameFactory: RedOceletGame.new,
           overlayBuilderMap: {
-            'MainMenu': (_, RedOceletGame game) {
+            mainMenuKey: (_, RedOceletGame game) {
               return Menu(
                 game: game,
                 title: 'Red Ocelot',
@@ -50,7 +51,7 @@ class _GameContainerState extends State<GameContainer> {
                   MenuItem(
                     title: 'Start Game',
                     onPressed: () {
-                      game.overlays.remove('MainMenu');
+                      game.overlays.remove(mainMenuKey);
                       // Start the game
                     },
                   ),
@@ -58,6 +59,7 @@ class _GameContainerState extends State<GameContainer> {
                     title: 'Settings',
                     onPressed: () {
                       // Handle settings tap
+                      game.overlays.add('Settings');
                     },
                   ),
                   MenuItem(
@@ -69,8 +71,30 @@ class _GameContainerState extends State<GameContainer> {
                 ],
               );
             },
+            settingsMenuKey: (_, RedOceletGame game) {
+              return Menu(
+                game: game,
+                backButton: true,
+                overlayName: settingsMenuKey,
+                title: 'Settings',
+                items: [
+                  MenuItem(
+                    title: 'Audio',
+                    onPressed: () {
+                      // Handle audio settings tap
+                    },
+                  ),
+                  MenuItem(
+                    title: 'Controls',
+                    onPressed: () {
+                      // Handle controls settings tap
+                    },
+                  ),
+                ],
+              );
+            },
           },
-          initialActiveOverlays: const ['MainMenu'],
+          initialActiveOverlays: const [mainMenuKey],
         ),
       ),
     );
