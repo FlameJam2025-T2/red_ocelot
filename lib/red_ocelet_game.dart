@@ -1,33 +1,45 @@
 import 'dart:async';
-import 'dart:ui';
 
-import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
+import 'package:flame/input.dart';
+import 'package:flame/extensions.dart';
+
 import 'package:flame/game.dart';
+import 'package:red_ocelot/components/player/sundiver.dart';
 import 'package:red_ocelot/red_ocelet_world.dart';
 
-class RedOceletGame extends FlameGame {
+class RedOceletGame extends FlameGame
+    with HasCollisionDetection, HasKeyboardHandlerComponents {
   late final RouterComponent router;
+  late SunDiver sundiver;
+  final Vector2 viewportResolution;
+
+  RedOceletGame({required this.viewportResolution})
+    : super(
+        camera: CameraComponent.withFixedResolution(
+          width: viewportResolution.x,
+          height: viewportResolution.y,
+        ),
+      );
+
+  // factory method for gamefactory, without requiring this.viewportResolution
+  static RedOceletGame Function() newGameWithViewport(
+    Vector2 viewportResolution,
+  ) {
+    return () => RedOceletGame(viewportResolution: viewportResolution);
+  }
+
   @override
   Future<void> onLoad() async {
-    super.onLoad();
     RedOceletWorld redOceletWorld = RedOceletWorld();
     world = redOceletWorld;
+    world.add(RedOcelotMap());
 
-    camera =
-        CameraComponent(world: world, viewfinder: Viewfinder())
-          ..moveTo(Vector2(500, 300))
-          ..viewfinder.zoom = 1.0;
-
-    router = RouterComponent(
-      routes: {'red-ocelet-game': WorldRoute(() => redOceletWorld)},
-      initialRoute: 'red-ocelet-game',
-    );
-
-    add(router);
+    world.add(sundiver = PlayerSunDiver());
+    camera.setBounds(RedOcelotMap.bounds);
+    camera.follow(sundiver);
 
     world.add(FpsTextComponent());
-    camera.viewfinder.zoom = 1.0;
   }
 
   @override

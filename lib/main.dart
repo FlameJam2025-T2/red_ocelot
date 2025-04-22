@@ -41,7 +41,12 @@ class _GameContainerState extends State<GameContainer> {
       appBar: null,
       body: Center(
         child: GameWidget.controlled(
-          gameFactory: RedOceletGame.new,
+          gameFactory: RedOceletGame.newGameWithViewport(
+            Vector2(
+              MediaQuery.of(context).size.width,
+              MediaQuery.of(context).size.height,
+            ),
+          ),
           overlayBuilderMap: {
             mainMenuKey: (_, RedOceletGame game) {
               return Menu(

@@ -122,4 +122,6 @@ app.*.symbols
 .idea/
 .vscode/
 
+.DS_Store
+
 devtools_options.yaml
