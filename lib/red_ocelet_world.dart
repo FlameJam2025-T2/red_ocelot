@@ -15,22 +15,6 @@ import 'package:red_ocelot/red_ocelet_game.dart';
 class RedOceletWorld extends Forge2DWorld with HasGameReference<RedOceletGame> {
   RedOceletWorld() : super(gravity: Vector2.zero());
   final paint = Paint()..color = Colors.deepPurple;
-  late Cluster cluster;
-
-  @override
-  FutureOr<void> onLoad() {
-    final viewSize = game.camera.viewport;
-    print("View size: $viewSize");
-    cluster = Cluster(count: 20, radius: 250)..position = Vector2(500, 300);
-    add(cluster);
-
-    return super.onLoad();
-  }
-
-  @override
-  void onGameResize(Vector2 size) {
-    super.onGameResize(size);
-  }
 
   @override
   void render(Canvas canvas) {
@@ -54,6 +38,7 @@ class RedOcelotMap extends Component {
   final int? seed;
   late final List<Paint> _paintPool;
   late final List<Rect> _rectPool;
+  late Cluster cluster;
 
   RedOcelotMap({this.seed}) : super(priority: 0) {
     _rng = seed != null ? Random(seed) : Random();
@@ -70,6 +55,13 @@ class RedOcelotMap extends Component {
       (i) => Rect.fromCircle(center: Offset.zero, radius: size - i * 50),
       growable: false,
     );
+  }
+
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+    cluster = Cluster(count: 20, radius: 250)..position = Vector2(500, 300);
+    add(cluster);
   }
 
   @override
