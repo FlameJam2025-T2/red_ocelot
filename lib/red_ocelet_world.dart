@@ -1,26 +1,23 @@
 import 'dart:async';
 
 import 'package:flame/components.dart';
+import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
-import 'package:red_ocelot/components/lander.dart';
-import 'package:red_ocelot/components/landing_platform.dart';
+import 'package:red_ocelot/components/cluster.dart';
 import 'package:red_ocelot/red_ocelet_game.dart';
 
-class RedOceletWorld extends World with HasGameReference<RedOceletGame> {
-  RedOceletWorld() : super();
+class RedOceletWorld extends Forge2DWorld with HasGameReference<RedOceletGame> {
+  RedOceletWorld() : super(gravity: Vector2.zero());
   final paint = Paint()..color = Colors.deepPurple;
-  late Lander lander;
-  late LandingPlatform platform;
+  late Cluster cluster;
 
   @override
   FutureOr<void> onLoad() {
     final viewSize = game.camera.viewport;
     print("View size: $viewSize");
-    lander = Lander()..position = Vector2(500, 100);
-    add(lander);
+    cluster = Cluster(count: 20, radius: 250)..position = Vector2(500, 300);
+    add(cluster);
 
-    platform = LandingPlatform(game.size);
-    add(platform);
     return super.onLoad();
   }
 

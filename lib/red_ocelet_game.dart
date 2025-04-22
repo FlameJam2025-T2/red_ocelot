@@ -3,11 +3,12 @@ import 'dart:ui';
 
 import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
-import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:flame_forge2d/forge2d_game.dart';
 import 'package:red_ocelot/red_ocelet_world.dart';
 
-class RedOceletGame extends FlameGame with HasKeyboardHandlerComponents {
+class RedOceletGame extends Forge2DGame {
+  RedOceletGame() : super();
   late final RouterComponent router;
   @override
   Future<void> onLoad() async {
