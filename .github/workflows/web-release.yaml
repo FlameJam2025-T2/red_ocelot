@@ -32,7 +32,7 @@ jobs:
         run: flutter pub get
 
       - name: Start Web Release Build
-        run: flutter build web --release --wasm
+        run: flutter build web --release --wasm --base-href /red_ocelot/
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4

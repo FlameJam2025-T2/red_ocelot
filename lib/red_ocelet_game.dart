@@ -43,6 +43,8 @@ class RedOceletGame extends Forge2DGame
     world.add(RedOcelotMap());
 
     world.add(sundiver = SunDiver());
+    camera.viewfinder.position = size / 2;
+    camera.viewfinder.zoom = 1.0;
     camera.setBounds(RedOcelotMap.bounds);
     camera.follow(sundiver);
 
