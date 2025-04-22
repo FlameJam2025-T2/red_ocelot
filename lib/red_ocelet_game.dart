@@ -43,7 +43,7 @@ class RedOceletGame extends Forge2DGame
   /// and that all devices show a similar view of the game world.
   Future<void> _setZoom({
     required Vector2 size,
-    double shipSizeMultiplier = 15,
+    double shipSizeMultiplier = 20,
   }) async {
     final minSide = size.x < size.y ? size.x : size.y;
     final zoom = minSide / (shipSizeMultiplier * shipSize);

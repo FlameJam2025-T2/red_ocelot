@@ -4,7 +4,6 @@ import 'dart:async';
 
 import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
-import 'package:flame/extensions.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 
@@ -14,12 +13,7 @@ import 'package:red_ocelot/red_ocelet_game.dart';
 
 class RedOceletWorld extends Forge2DWorld with HasGameReference<RedOceletGame> {
   RedOceletWorld() : super(gravity: Vector2.zero());
-  final paint = Paint()..color = Colors.deepPurple;
-
-  @override
-  void render(Canvas canvas) {
-    canvas.drawRect(Rect.fromLTWH(0, 0, game.size.x, game.size.y), paint);
-  }
+  final paint = Paint()..color = Colors.black;
 
   @override
   Future<void> onLoad() async {
@@ -29,37 +23,15 @@ class RedOceletWorld extends Forge2DWorld with HasGameReference<RedOceletGame> {
 
 class RedOcelotMap extends Component {
   static const double size = mapSize;
-  static const Rect _bounds = Rect.fromLTRB(-size, -size, size, size);
   static final Rectangle bounds = Rectangle.fromLTRB(-size, -size, size, size);
+  // ignore: unused_field
+  static Random _rng = Random();
 
-  static final Paint _paintBorder =
-      Paint()
-        ..color = Colors.white12
-        ..strokeWidth = 10
-        ..style = PaintingStyle.stroke;
-  static final Paint _paintBg = Paint()..color = const Color(0xFF333333);
-
-  late final Random _rng;
   final int? seed;
-  late final List<Paint> _paintPool;
-  late final List<Rect> _rectPool;
   late Cluster cluster;
 
   RedOcelotMap({this.seed}) : super(priority: 0) {
     _rng = seed != null ? Random(seed) : Random();
-    _paintPool = List<Paint>.generate(
-      (size / 50).ceil(),
-      (_) =>
-          PaintExtension.random(rng: _rng)
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 2,
-      growable: false,
-    );
-    _rectPool = List<Rect>.generate(
-      (size / 50).ceil(),
-      (i) => Rect.fromCircle(center: Offset.zero, radius: size - i * 50),
-      growable: false,
-    );
   }
 
   @override
@@ -67,16 +39,6 @@ class RedOcelotMap extends Component {
     await super.onLoad();
     cluster = Cluster(count: 20, radius: 250)..position = Vector2(500, 300);
     add(cluster);
-  }
-
-  @override
-  void render(Canvas canvas) {
-    canvas.drawRect(_bounds, _paintBg);
-    canvas.drawRect(_bounds, _paintBorder);
-    for (var i = 0; i < (size / 50).ceil(); i++) {
-      canvas.drawCircle(Offset.zero, size - i * 50, _paintPool[i]);
-      canvas.drawRect(_rectPool[i], _paintBorder);
-    }
   }
 
   static Vector2 generateCoordinates() {

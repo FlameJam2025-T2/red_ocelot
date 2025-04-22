@@ -5,7 +5,7 @@ const double shipSize = 10.0;
 const double shipMaxVelocity = 0.05;
 
 const double shipAcceleration = 10.0;
-const double shipDeceleration = 0.5;
+const double shipDeceleration = 8.0;
 
 // rotation speed (angular impulse)
 const double shipRotationSpeed = 500.0;

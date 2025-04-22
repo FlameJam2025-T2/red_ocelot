@@ -59,6 +59,7 @@ class SunDiver extends BodyComponent<RedOceletGame>
     // create a triangle (for now) shape for the ship
     final fixtureDef = FixtureDef(
       PolygonShape()..set(vertices),
+      userData: this,
       restitution: 0.2,
       density: shipDensity,
       friction: 0.0,
