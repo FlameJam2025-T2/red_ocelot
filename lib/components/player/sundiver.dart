@@ -76,7 +76,8 @@ class SunDiver<T extends FlameGame> extends SpriteComponent
     final deltaPosition = velocity;
     position.add(deltaPosition);
     position.clamp(minPosition, maxPosition);
-    positionText.text = '(${x.toInt()}, ${y.toInt()}, $angle, $speed)';
+    positionText.text =
+        '(x: ${x.toInt()}, y: ${y.toInt()}, 𝜃: ${angle.toStringAsPrecision(2)}, s: ${speed.toStringAsPrecision(2)}, vx: ${velocity.x.toStringAsPrecision(2)}, vy: ${velocity.y.toStringAsPrecision(2)})';
   }
 
   @override

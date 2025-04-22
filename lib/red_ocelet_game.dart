@@ -6,6 +6,8 @@ import 'package:flame/input.dart';
 import 'package:flame/extensions.dart';
 
 import 'package:flame/game.dart';
+import 'package:flame/parallax.dart';
+import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
 import 'package:red_ocelot/red_ocelet_world.dart';
 
@@ -14,6 +16,7 @@ class RedOceletGame extends FlameGame
   late final RouterComponent router;
   late SunDiver sundiver;
   final Vector2 viewportResolution;
+  late final ParallaxComponent starfield;
 
   RedOceletGame({required this.viewportResolution})
     : super(
@@ -43,6 +46,21 @@ class RedOceletGame extends FlameGame
     camera.follow(sundiver);
 
     camera.viewport.add(FpsTextComponent());
+
+    final parallax = await loadParallaxComponent(
+      [
+        ParallaxImageData('temp_stars_0.png'),
+        ParallaxImageData('temp_stars_1.png'),
+        ParallaxImageData('temp_stars_2.png'),
+      ],
+      baseVelocity: Vector2.zero(),
+      alignment: Alignment.center,
+      repeat: ImageRepeat.repeat,
+
+      velocityMultiplierDelta: Vector2(5, 5),
+    );
+
+    camera.viewport.add(starfield = parallax);
   }
 
   @override
@@ -62,5 +80,11 @@ class RedOceletGame extends FlameGame
   void update(double dt) {
     // Update your game logic here
     super.update(dt);
+    // update parallax based on the sundiver's velocity
+    final velocity = sundiver.velocity;
+    starfield.parallax?.baseVelocity = Vector2(
+      velocity.x / 10,
+      velocity.y / 10,
+    );
   }
 }
