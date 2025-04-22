@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'dart:math';
 
 import 'package:flame/collisions.dart';
@@ -6,9 +5,7 @@ import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:meta/meta.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
-import 'package:red_ocelot/red_ocelet_game.dart';
 import 'package:red_ocelot/red_ocelet_world.dart';
 
 class SunDiver<T extends FlameGame> extends SpriteComponent

@@ -36,6 +36,20 @@ class RedOceletGame extends Forge2DGame
     return () => RedOceletGame(viewportResolution: viewportResolution);
   }
 
+  /// Sets the zoom level so that the the smallest side of the screen is
+  /// at least shipSizeMultiplier times the size of the ship.
+  /// This is useful for ensuring that the ship is always visible on the screen
+  /// and that all devices show a similar view of the game world.
+  Future<void> _setZoom({
+    required Vector2 size,
+    double shipSizeMultiplier = 15,
+  }) async {
+    final minSide = size.x < size.y ? size.x : size.y;
+    await sundiver.loaded;
+    final zoom = minSide / (shipSizeMultiplier * sundiver.size.x);
+    camera.viewfinder.zoom = zoom;
+  }
+
   @override
   Future<void> onLoad() async {
     RedOceletWorld redOceletWorld = RedOceletWorld();
@@ -44,7 +58,7 @@ class RedOceletGame extends Forge2DGame
 
     world.add(sundiver = SunDiver());
     camera.viewfinder.position = size / 2;
-    camera.viewfinder.zoom = 1.0;
+    _setZoom(size: viewportResolution);
     camera.setBounds(RedOcelotMap.bounds);
     camera.follow(sundiver);
 
@@ -70,6 +84,8 @@ class RedOceletGame extends Forge2DGame
   void onGameResize(Vector2 size) {
     // Update the camera's viewport size
     camera.viewport.size = size;
+    // Update the zoom level based on the new size
+    _setZoom(size: size);
     super.onGameResize(size);
   }
 
