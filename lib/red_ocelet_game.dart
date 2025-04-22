@@ -9,9 +9,10 @@ import 'package:flame/game.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
+import 'package:flame_forge2d/forge2d_game.dart';
 import 'package:red_ocelot/red_ocelet_world.dart';
 
-class RedOceletGame extends FlameGame
+class RedOceletGame extends Forge2DGame
     with HasCollisionDetection, HasKeyboardHandlerComponents {
   late final RouterComponent router;
   late SunDiver sundiver;
