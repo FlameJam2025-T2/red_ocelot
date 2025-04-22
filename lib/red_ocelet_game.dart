@@ -38,11 +38,11 @@ class RedOceletGame extends FlameGame
     world = redOceletWorld;
     world.add(RedOcelotMap());
 
-    world.add(sundiver = PlayerSunDiver());
+    world.add(sundiver = SunDiver());
     camera.setBounds(RedOcelotMap.bounds);
     camera.follow(sundiver);
 
-    world.add(FpsTextComponent());
+    camera.viewport.add(FpsTextComponent());
   }
 
   @override

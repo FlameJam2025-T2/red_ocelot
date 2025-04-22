@@ -12,8 +12,8 @@ import 'package:red_ocelot/red_ocelet_game.dart';
 import 'package:red_ocelot/red_ocelet_world.dart';
 
 class SunDiver<T extends FlameGame> extends SpriteComponent
-    with HasGameReference<T> {
-  SunDiver({super.position, Vector2? size, super.priority, super.key})
+    with HasGameReference<T>, CollisionCallbacks, KeyboardHandler {
+  SunDiver({super.position, Vector2? size, super.priority = 2, super.key})
     : super(
         size: size ?? Vector2.all(50),
         anchor: Anchor.center,
@@ -21,15 +21,6 @@ class SunDiver<T extends FlameGame> extends SpriteComponent
         nativeAngle: 0,
       );
 
-  @mustCallSuper
-  @override
-  Future<void> onLoad() async {
-    sprite = await game.loadSprite('sundiver.png');
-  }
-}
-
-class PlayerSunDiver extends SunDiver<RedOceletGame>
-    with CollisionCallbacks, KeyboardHandler {
   static final TextPaint textRenderer = TextPaint(
     style: const TextStyle(color: Colors.white70, fontSize: 12),
   );
@@ -48,10 +39,9 @@ class PlayerSunDiver extends SunDiver<RedOceletGame>
   bool _accelerating = false;
   bool _decelerating = false;
 
-  PlayerSunDiver() : super(priority: 2);
-
   @override
   Future<void> onLoad() async {
+    sprite = await game.loadSprite('sundiver.png');
     await super.onLoad();
     positionText = TextComponent(
       textRenderer: textRenderer,
@@ -83,24 +73,12 @@ class PlayerSunDiver extends SunDiver<RedOceletGame>
     if (_decelerating) {
       _decelerate(dt);
     }
-    final deltaPosition = velocity * dt;
+    final deltaPosition = velocity;
     position.add(deltaPosition);
     position.clamp(minPosition, maxPosition);
-    positionText.text = '(${x.toInt()}, ${y.toInt()}, $angle)';
+    positionText.text = '(${x.toInt()}, ${y.toInt()}, $angle, $speed)';
   }
 
-  // @override
-  // void onCollisionStart(
-  //   Set<Vector2> intersectionPoints,
-  //   PositionComponent other,
-  // ) {
-  //   super.onCollisionStart(intersectionPoints, other);
-  // }
-
-  // this logic should be moved out of the onKeyEvent, and instead put int he
-  // update method, otherwise movement / acceleration will be very jerky.
-  // once we do this we don't need to use KeyRepeatEvent, but just handle the
-  // start/end of the key event
   @override
   bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     final isKeyDown = event is KeyDownEvent || event is KeyRepeatEvent;
@@ -148,22 +126,28 @@ class PlayerSunDiver extends SunDiver<RedOceletGame>
   }
 
   void _accelerate(double dt) {
-    if (speed < maxSpeed) {
-      speed += (shipAcceleration * shipMaxVelocity) * dt;
-    }
+    final delta = (shipAcceleration * maxSpeed) * dt;
     velocity.add(
-      Vector2(cos(angle - pi / 2) * speed, sin(angle - pi / 2) * speed),
+      Vector2(cos(angle - pi / 2) * delta, sin(angle - pi / 2) * delta),
     );
+
+    speed = velocity.length;
+    if (speed > maxSpeed) {
+      speed = maxSpeed;
+      velocity.scaleTo(maxSpeed);
+    }
   }
 
   void _decelerate(double dt) {
-    if (speed > 0) {
-      speed -= (shipDeceleration * shipMaxVelocity) * dt;
-      velocity.multiply(Vector2(speed, speed));
-    }
-    if (speed < 0) {
-      speed = 0;
-      velocity.setZero();
+    final delta = (shipDeceleration * maxSpeed) * dt;
+    velocity.add(
+      Vector2(cos(angle - pi / 2) * -delta, sin(angle - pi / 2) * -delta),
+    );
+
+    speed = velocity.length;
+    if (speed > maxSpeed) {
+      speed = maxSpeed;
+      velocity.scaleTo(maxSpeed);
     }
   }
 }
