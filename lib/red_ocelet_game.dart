@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
 import 'package:flame/extensions.dart';
@@ -16,9 +17,11 @@ class RedOceletGame extends FlameGame
 
   RedOceletGame({required this.viewportResolution})
     : super(
-        camera: CameraComponent.withFixedResolution(
-          width: viewportResolution.x,
-          height: viewportResolution.y,
+        camera: CameraComponent(
+          viewport: FixedSizeViewport(
+            viewportResolution.x,
+            viewportResolution.y,
+          ),
         ),
       );
 
@@ -40,6 +43,13 @@ class RedOceletGame extends FlameGame
     camera.follow(sundiver);
 
     world.add(FpsTextComponent());
+  }
+
+  @override
+  void onGameResize(Vector2 size) {
+    // Update the camera's viewport size
+    camera.viewport.size = size;
+    super.onGameResize(size);
   }
 
   @override
