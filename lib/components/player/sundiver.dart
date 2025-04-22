@@ -1,27 +1,32 @@
 import 'dart:math';
 
-import 'package:flame/collisions.dart';
+import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flame/components.dart';
-import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
+import 'package:red_ocelot/red_ocelet_game.dart';
 import 'package:red_ocelot/red_ocelet_world.dart';
 
-class SunDiver<T extends FlameGame> extends SpriteComponent
-    with HasGameReference<T>, CollisionCallbacks, KeyboardHandler {
-  SunDiver({super.position, Vector2? size, super.priority = 2, super.key})
-    : super(
-        size: size ?? Vector2.all(50),
-        anchor: Anchor.center,
-        angle: 0,
-        nativeAngle: 0,
-      );
+class SunDiver extends BodyComponent<RedOceletGame>
+    with ContactCallbacks, KeyboardHandler {
+  SunDiver({
+    Vector2? startPos,
+    Vector2? shipSize,
+    super.priority = 2,
+    super.key,
+  }) : super() {
+    // set the size of the ship
+    size = shipSize ?? Vector2.all(5);
+    // set the position of the ship
+    this.startPos = startPos ?? Vector2.all(RedOcelotMap.size / 2);
+  }
 
   static final TextPaint textRenderer = TextPaint(
     style: const TextStyle(color: Colors.white70, fontSize: 12),
   );
-
+  late final Vector2 startPos;
+  late final Vector2 size;
   static const double maxSpeed = RedOcelotMap.size * shipMaxVelocity;
   static double speed = 0;
   static const double _shipRotationSpeed = shipRotationSpeed;
@@ -37,22 +42,48 @@ class SunDiver<T extends FlameGame> extends SpriteComponent
   bool _decelerating = false;
 
   @override
-  Future<void> onLoad() async {
-    sprite = await game.loadSprite('sundiver.png');
-    await super.onLoad();
-    positionText = TextComponent(
-      textRenderer: textRenderer,
-      position: (size / 2)..y = size.y / 2 + 30,
-      anchor: Anchor.center,
+  Body createBody() {
+    final bodyDef = BodyDef(
+      userData: this,
+      type: BodyType.dynamic,
+      position: startPos,
+      linearDamping: 0.0,
+      angularDamping: shipAngularDamping,
     );
-    add(positionText);
-    // define the hitbox as the shape of the sprite (a triangle)
+
     final vertices = [
       Vector2(0, -size.y / 2),
       Vector2(-size.x / 2, size.y / 2),
       Vector2(size.x / 2, size.y / 2),
     ];
-    add(PolygonHitbox(vertices));
+    // create a triangle (for now) shape for the ship
+    final fixtureDef = FixtureDef(
+      PolygonShape()..set(vertices),
+      restitution: 0.2,
+      density: shipDensity,
+      friction: 0.0,
+    );
+
+    final sprite = Sprite(game.images.fromCache('sundiver.png'));
+
+    final ship = SpriteComponent(
+      sprite: sprite,
+      size: size,
+      anchor: Anchor.center,
+      angle: 0,
+      nativeAngle: 0,
+    );
+    add(ship);
+
+    positionText = TextComponent(
+      textRenderer: textRenderer,
+      scale: Vector2.all(0.25),
+      position: (size / 2)..y = size.y / 2 + (size.y / 3),
+      anchor: Anchor.center,
+    );
+    add(positionText);
+
+    return world.createBody(bodyDef)..createFixture(fixtureDef);
   }
 
   @override
@@ -70,11 +101,11 @@ class SunDiver<T extends FlameGame> extends SpriteComponent
     if (_decelerating) {
       _decelerate(dt);
     }
-    final deltaPosition = velocity;
-    position.add(deltaPosition);
+    //final deltaPosition = velocity;
+    //position.add(deltaPosition);
     position.clamp(minPosition, maxPosition);
     positionText.text =
-        '(x: ${x.toInt()}, y: ${y.toInt()}, 𝜃: ${angle.toStringAsPrecision(2)}, s: ${speed.toStringAsPrecision(2)}, vx: ${velocity.x.toStringAsPrecision(2)}, vy: ${velocity.y.toStringAsPrecision(2)})';
+        '(x: ${position.x.toInt()}, y: ${position.y.toInt()}, 𝜃: ${angle.toStringAsPrecision(2)}, s: ${speed.toStringAsPrecision(2)}, vx: ${velocity.x.toStringAsPrecision(2)}, vy: ${velocity.y.toStringAsPrecision(2)})';
   }
 
   @override
@@ -114,38 +145,45 @@ class SunDiver<T extends FlameGame> extends SpriteComponent
   }
 
   void _rotateLeft(double dt) {
-    angle -= _shipRotationSpeed * dt;
-    angle = angle % (2 * pi);
+    // angle -= _shipRotationSpeed * dt;
+    // angle = angle % (2 * pi);
+
+    body.applyAngularImpulse(-_shipRotationSpeed * dt);
   }
 
   void _rotateRight(double dt) {
-    angle += _shipRotationSpeed * dt;
-    angle = angle % (2 * pi);
+    // angle += _shipRotationSpeed * dt;
+    // angle = angle % (2 * pi);
+
+    body.applyAngularImpulse(_shipRotationSpeed * dt);
   }
 
   void _accelerate(double dt) {
+    speed = body.linearVelocity.length;
+    if (speed > maxSpeed) {
+      // this shouldn't be modified directly ....so be it?
+      body.linearVelocity.scaleTo(maxSpeed);
+      return;
+    }
+
     final delta = (shipAcceleration * maxSpeed) * dt;
-    velocity.add(
+    body.applyLinearImpulse(
       Vector2(cos(angle - pi / 2) * delta, sin(angle - pi / 2) * delta),
     );
-
-    speed = velocity.length;
-    if (speed > maxSpeed) {
-      speed = maxSpeed;
-      velocity.scaleTo(maxSpeed);
-    }
   }
 
   void _decelerate(double dt) {
+    speed = body.linearVelocity.length;
+
+    if (speed > maxSpeed) {
+      // this shouldn't be modified directly ....so be it?
+      body.linearVelocity.scaleTo(maxSpeed);
+      return;
+    }
+
     final delta = (shipDeceleration * maxSpeed) * dt;
-    velocity.add(
+    body.applyLinearImpulse(
       Vector2(cos(angle - pi / 2) * -delta, sin(angle - pi / 2) * -delta),
     );
-
-    speed = velocity.length;
-    if (speed > maxSpeed) {
-      speed = maxSpeed;
-      velocity.scaleTo(maxSpeed);
-    }
   }
 }

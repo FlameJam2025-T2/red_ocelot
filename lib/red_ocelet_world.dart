@@ -20,6 +20,11 @@ class RedOceletWorld extends Forge2DWorld with HasGameReference<RedOceletGame> {
   void render(Canvas canvas) {
     canvas.drawRect(Rect.fromLTWH(0, 0, game.size.x, game.size.y), paint);
   }
+
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+  }
 }
 
 class RedOcelotMap extends Component {

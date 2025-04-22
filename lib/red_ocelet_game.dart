@@ -7,13 +7,14 @@ import 'package:flame/extensions.dart';
 
 import 'package:flame/game.dart';
 import 'package:flame/parallax.dart';
+import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
-import 'package:flame_forge2d/forge2d_game.dart';
+import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelet_world.dart';
 
 class RedOceletGame extends Forge2DGame
-    with HasCollisionDetection, HasKeyboardHandlerComponents {
+    with SingleGameInstance, HasKeyboardHandlerComponents {
   late final RouterComponent router;
   late SunDiver sundiver;
   final Vector2 viewportResolution;
@@ -45,20 +46,28 @@ class RedOceletGame extends Forge2DGame
     double shipSizeMultiplier = 15,
   }) async {
     final minSide = size.x < size.y ? size.x : size.y;
-    await sundiver.loaded;
-    final zoom = minSide / (shipSizeMultiplier * sundiver.size.x);
+    final zoom = minSide / (shipSizeMultiplier * shipSize);
     camera.viewfinder.zoom = zoom;
   }
 
   @override
   Future<void> onLoad() async {
+    await super.onLoad();
+    await loadSprite('sundiver.png');
     RedOceletWorld redOceletWorld = RedOceletWorld();
     world = redOceletWorld;
     world.add(RedOcelotMap());
+    await _setZoom(size: viewportResolution);
 
-    world.add(sundiver = SunDiver());
+    world.add(
+      sundiver = SunDiver(
+        shipSize: Vector2(shipSize, shipSize),
+        // startPos: Vector2(RedOcelotMap.size / 2, RedOcelotMap.size / 2),
+        startPos: Vector2(550, 330),
+      ),
+    );
     camera.viewfinder.position = size / 2;
-    _setZoom(size: viewportResolution);
+
     camera.setBounds(RedOcelotMap.bounds);
     camera.follow(sundiver);
 
@@ -74,7 +83,7 @@ class RedOceletGame extends Forge2DGame
       alignment: Alignment.center,
       repeat: ImageRepeat.repeat,
 
-      velocityMultiplierDelta: Vector2(5, 5),
+      velocityMultiplierDelta: Vector2(1.1, 1.1),
     );
 
     camera.viewport.add(starfield = parallax);
@@ -100,7 +109,7 @@ class RedOceletGame extends Forge2DGame
     // Update your game logic here
     super.update(dt);
     // update parallax based on the sundiver's velocity
-    final velocity = sundiver.velocity;
+    final velocity = sundiver.body.linearVelocity;
     starfield.parallax?.baseVelocity = Vector2(
       velocity.x / 10,
       velocity.y / 10,
