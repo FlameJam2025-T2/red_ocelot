@@ -204,6 +204,40 @@ class SunDiver extends BodyComponent<RedOceletGame>
     }
   }
 
+  void startShooting() {
+    _shooting = true;
+    _shotSpawner.start();
+  }
+
+  void stopShooting() {
+    _shooting = false;
+    _shotSpawner.stop();
+  }
+
+  void handlJoystickInput(Vector2 input) {
+    if (input.x < -0.4) {
+      _rotatingLeft = true;
+      _rotatingRight = false;
+    } else if (input.x > 0.4) {
+      _rotatingLeft = false;
+      _rotatingRight = true;
+    } else {
+      _rotatingLeft = false;
+      _rotatingRight = false;
+    }
+
+    if (input.y < -0.3) {
+      _accelerating = true;
+      _decelerating = false;
+    } else if (input.y > 0.3) {
+      _accelerating = false;
+      _decelerating = true;
+    } else {
+      _accelerating = false;
+      _decelerating = false;
+    }
+  }
+
   void _rotateLeft(double dt) {
     // angle -= _shipRotationSpeed * dt;
     // angle = angle % (2 * pi);

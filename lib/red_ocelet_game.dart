@@ -48,7 +48,6 @@ class RedOceletGame extends Forge2DGame
     final minSide = size.x < size.y ? size.x : size.y;
     final zoom = minSide / (shipSizeMultiplier * shipSize);
     camera.viewfinder.zoom = zoom;
-    print('zoom: $zoom (ignoring)');
   }
 
   @override
@@ -88,6 +87,18 @@ class RedOceletGame extends Forge2DGame
     );
 
     await add(starfield = parallax);
+  }
+
+  void joystickInput(Vector2 input) {
+    sundiver.handlJoystickInput(input);
+  }
+
+  void buttonInput(bool pressed) {
+    if (pressed) {
+      sundiver.startShooting();
+    } else {
+      sundiver.stopShooting();
+    }
   }
 
   @override

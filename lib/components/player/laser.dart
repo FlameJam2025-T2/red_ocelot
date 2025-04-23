@@ -17,7 +17,7 @@ class Laser extends BodyComponent<RedOceletGame> with ContactCallbacks {
     super.key,
   }) : super() {
     // set the size of the laser
-    this.size = size ?? Vector2.all(1 * gameUnit);
+    this.size = size ?? Vector2.all(2 * gameUnit);
     this.direction = Vector2(cos(direction), sin(direction));
   }
   static const double cooldown = 0.1;

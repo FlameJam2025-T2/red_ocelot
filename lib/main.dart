@@ -1,9 +1,13 @@
+import 'dart:math';
+
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/config/keys.dart';
 import 'package:red_ocelot/red_ocelet_game.dart';
 import 'package:red_ocelot/ui/menu.dart';
 import 'package:red_ocelot/ui/pallette.dart';
+import 'package:red_ocelot/ui/gamepad.dart';
+import 'package:red_ocelot/util/ltrb.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +41,13 @@ class _GameContainerState extends State<GameContainer> {
 
   @override
   Widget build(BuildContext context) {
+    final double tenpct = max(
+      min(
+        MediaQuery.of(context).size.width / 10,
+        MediaQuery.of(context).size.height / 10,
+      ),
+      50.0,
+    );
     return Scaffold(
       appBar: null,
       body: Center(
@@ -57,6 +68,7 @@ class _GameContainerState extends State<GameContainer> {
                     title: 'Start Game',
                     onPressed: () {
                       game.overlays.remove(mainMenuKey);
+                      game.overlays.add(gamepadToggleKey);
                       // Start the game
                     },
                   ),
@@ -98,7 +110,38 @@ class _GameContainerState extends State<GameContainer> {
                 ],
               );
             },
+            gamepadKey: (_, RedOceletGame game) {
+              return Gamepad(
+                onButtonPress: () {
+                  game.buttonInput(true);
+                },
+                onButtonRelease: () {
+                  game.buttonInput(false);
+                },
+                onMove: (Vector2 direction) {
+                  game.joystickInput(direction);
+                },
+                joystickPosition: LTRB(bottom: tenpct * 1.5, left: tenpct),
+                buttonPosition: LTRB(bottom: tenpct * 1.5, right: tenpct),
+                joystickSize: tenpct,
+                buttonSize: tenpct,
+              );
+            },
+            gamepadToggleKey: (_, RedOceletGame game) {
+              return GamepadToggle(
+                position: LTRB(bottom: tenpct / 2, right: tenpct / 2),
+                size: tenpct,
+                onPressed:
+                    () => {
+                      if (game.overlays.isActive(gamepadKey))
+                        {game.overlays.remove(gamepadKey)}
+                      else
+                        {game.overlays.add(gamepadKey)},
+                    },
+              );
+            },
           },
+
           initialActiveOverlays: const [mainMenuKey],
         ),
       ),
