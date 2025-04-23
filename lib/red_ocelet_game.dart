@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
-import 'package:flame/input.dart';
 import 'package:flame/extensions.dart';
-
 import 'package:flame/game.dart';
+import 'package:flame/input.dart';
 import 'package:flame/parallax.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
+import 'package:red_ocelot/components/minimap.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelet_world.dart';
@@ -47,16 +47,18 @@ class RedOceletGame extends Forge2DGame
   }) async {
     final minSide = size.x < size.y ? size.x : size.y;
     final zoom = minSide / (shipSizeMultiplier * shipSize);
-    camera.viewfinder.zoom = zoom;
+    camera.viewfinder.zoom = zoom * 0.7;
   }
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+
     await loadSprite('sundiver.png');
     RedOceletWorld redOceletWorld = RedOceletWorld();
     world = redOceletWorld;
     world.add(RedOcelotMap());
+
     await _setZoom(size: viewportResolution);
 
     await world.add(
@@ -69,6 +71,7 @@ class RedOceletGame extends Forge2DGame
     camera.viewfinder.position = size / 2;
 
     camera.setBounds(RedOcelotMap.bounds);
+
     camera.follow(sundiver);
 
     camera.viewport.add(FpsTextComponent());
@@ -99,6 +102,22 @@ class RedOceletGame extends Forge2DGame
     } else {
       sundiver.stopShooting();
     }
+
+    final minimapCamera =
+        CameraComponent(world: world)
+          ..viewfinder.zoom = 0.1
+          ..viewfinder.position = Vector2(
+            500,
+            300,
+          ); // Center of map or wherever
+
+    camera.viewport.add(
+      MinimapComponent(
+        minimapCamera: minimapCamera,
+        size: Vector2(150, 150),
+        position: Vector2(0, 0),
+      ),
+    );
   }
 
   @override

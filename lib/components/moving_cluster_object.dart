@@ -5,6 +5,7 @@ import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/circular_boundary.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
+import 'package:red_ocelot/utils/sprite_utils.dart';
 
 class MovingClusterObject extends BodyComponent with ContactCallbacks {
   final Vector2 startPos;
@@ -32,6 +33,12 @@ class MovingClusterObject extends BodyComponent with ContactCallbacks {
       ),
       textDirection: TextDirection.ltr,
     )..layout();
+
+    AnimatedSprite anim =
+        AnimatedSprite(spriteName: SpriteName.monsterA)
+          ..size = Vector2(radius * 1.5, radius * 1.5)
+          ..position = Vector2(-radius * .75, -radius * .75);
+    add(anim);
     return super.onLoad();
   }
 
