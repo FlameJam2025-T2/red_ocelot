@@ -125,3 +125,5 @@ app.*.symbols
 .DS_Store
 
 devtools_options.yaml
+
+*.wav
