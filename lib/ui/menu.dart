@@ -148,13 +148,13 @@ class _MenuItem extends StatefulWidget {
 
   final Widget child;
 
-  final bool toggleable;
-  final bool toggleState;
+  // final bool toggleable;
+  // final bool toggleState;
 
   const _MenuItem({
     required this.selected,
-    this.toggleable = false,
-    this.toggleState = false,
+    // this.toggleable = false,
+    // this.toggleState = false,
     this.style,
     required this.onPressed,
     required this.child,

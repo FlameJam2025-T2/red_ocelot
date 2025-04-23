@@ -134,13 +134,10 @@ class SunDiver extends BodyComponent<RedOceletGame>
         100 *
         gameUnit; // how close to the edge before the force is gradually applied
     const double decay = 0.2; // how much the force decays per unit distance
-    final currentVelocity = body.linearVelocity;
     final currentPosition = body.position;
 
     final x = currentPosition.x;
     final y = currentPosition.y;
-    final vx = currentVelocity.x;
-    final vy = currentVelocity.y;
     final dx = (x > maxPosition.x - radius) ? maxPosition.x - x : 0;
     final dy = (y > maxPosition.y - radius) ? maxPosition.y - y : 0;
     final ax = (x < minPosition.x + radius) ? minPosition.x - x : 0;
@@ -148,7 +145,9 @@ class SunDiver extends BodyComponent<RedOceletGame>
     final forceX = (dx + ax) * 1 / radius / decay;
     final forceY = (dy + ay) * 1 / radius / decay;
     final force = Vector2(forceX, forceY);
-    body.applyForce(force);
+    if (force.length > 0) {
+      body.applyForce(force);
+    }
   }
 
   @override
