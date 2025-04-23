@@ -121,9 +121,34 @@ class SunDiver extends BodyComponent<RedOceletGame>
     }
     //final deltaPosition = velocity;
     //position.add(deltaPosition);
+    _repulse();
     position.clamp(minPosition, maxPosition);
     positionText.text =
         '(x: ${position.x.toInt()}, y: ${position.y.toInt()}, 𝜃: ${angle.toStringAsPrecision(2)}, s: ${speed.toStringAsPrecision(2)}, vx: ${velocity.x.toStringAsPrecision(2)}, vy: ${velocity.y.toStringAsPrecision(2)})';
+  }
+
+  /// add repulsion to world boundaries so as the ship approaches the boundaries
+  /// it will experience a force pushing it back to the center of the screen
+  void _repulse() {
+    const double radius =
+        100 *
+        gameUnit; // how close to the edge before the force is gradually applied
+    const double decay = 0.2; // how much the force decays per unit distance
+    final currentVelocity = body.linearVelocity;
+    final currentPosition = body.position;
+
+    final x = currentPosition.x;
+    final y = currentPosition.y;
+    final vx = currentVelocity.x;
+    final vy = currentVelocity.y;
+    final dx = (x > maxPosition.x - radius) ? maxPosition.x - x : 0;
+    final dy = (y > maxPosition.y - radius) ? maxPosition.y - y : 0;
+    final ax = (x < minPosition.x + radius) ? minPosition.x - x : 0;
+    final ay = (y < minPosition.y + radius) ? minPosition.y - y : 0;
+    final forceX = (dx + ax) * 1 / radius / decay;
+    final forceY = (dy + ay) * 1 / radius / decay;
+    final force = Vector2(forceX, forceY);
+    body.applyForce(force);
   }
 
   @override
@@ -194,20 +219,11 @@ class SunDiver extends BodyComponent<RedOceletGame>
   }
 
   void _accelerate(double dt) {
-    speed = body.linearVelocity.length;
-    if (speed > maxSpeed) {
-      // this shouldn't be modified directly ....so be it?
-      body.linearVelocity.scaleTo(maxSpeed);
-      return;
-    }
-
     final delta = (shipAcceleration * maxSpeed) * dt;
     body.applyLinearImpulse(
       Vector2(cos(angle - pi / 2) * delta, sin(angle - pi / 2) * delta),
     );
-  }
 
-  void _decelerate(double dt) {
     speed = body.linearVelocity.length;
 
     if (speed > maxSpeed) {
@@ -215,10 +231,20 @@ class SunDiver extends BodyComponent<RedOceletGame>
       body.linearVelocity.scaleTo(maxSpeed);
       return;
     }
+  }
 
+  void _decelerate(double dt) {
     final delta = (shipDeceleration * maxSpeed) * dt;
     body.applyLinearImpulse(
       Vector2(cos(angle - pi / 2) * -delta, sin(angle - pi / 2) * -delta),
     );
+
+    speed = body.linearVelocity.length;
+
+    if (speed > maxSpeed) {
+      // this shouldn't be modified directly ....so be it?
+      body.linearVelocity.scaleTo(maxSpeed);
+      return;
+    }
   }
 }

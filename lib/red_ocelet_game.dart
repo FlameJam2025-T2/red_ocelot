@@ -87,7 +87,7 @@ class RedOceletGame extends Forge2DGame
       velocityMultiplierDelta: Vector2(1.1, 1.1),
     );
 
-    await camera.viewport.add(starfield = parallax);
+    await add(starfield = parallax);
   }
 
   @override
