@@ -112,8 +112,8 @@ class RedOceletGame extends Forge2DGame
     // update parallax based on the sundiver's velocity
     final velocity = sundiver.body.linearVelocity;
     starfield.parallax?.baseVelocity = Vector2(
-      velocity.x / 10,
-      velocity.y / 10,
+      velocity.x / gameUnit / 2,
+      velocity.y / gameUnit / 2,
     );
   }
 }
