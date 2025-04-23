@@ -11,20 +11,16 @@ import 'package:red_ocelot/components/player/laser.dart';
 
 class SunDiver extends BodyComponent<RedOceletGame>
     with ContactCallbacks, KeyboardHandler {
-  SunDiver({
-    Vector2? startPos,
-    Vector2? shipSize,
-    super.priority = 2,
-    super.key,
-  }) : super() {
+  SunDiver({Vector2? startPos, Vector2? size, super.priority = 2, super.key})
+    : super() {
     // set the size of the ship
-    size = shipSize ?? Vector2.all(5);
+    this.size = size ?? Vector2.all(shipSize);
     // set the position of the ship
     this.startPos = startPos ?? Vector2.all(RedOcelotMap.size / 2);
   }
 
   static final TextPaint textRenderer = TextPaint(
-    style: const TextStyle(color: Colors.white70, fontSize: 12),
+    style: const TextStyle(color: Colors.white70, fontSize: 8 * gameUnit),
   );
   late final Vector2 startPos;
   late final Vector2 size;
@@ -94,7 +90,6 @@ class SunDiver extends BodyComponent<RedOceletGame>
 
     positionText = TextComponent(
       textRenderer: textRenderer,
-      scale: Vector2.all(0.25),
       position: (size / 2)..y = size.y / 2 + (size.y / 3),
       anchor: Anchor.center,
     );

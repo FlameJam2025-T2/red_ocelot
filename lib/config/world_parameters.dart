@@ -1,14 +1,17 @@
+// how many "pixels" the ship is
+const double gameUnit = 0.1;
+
 // in percentages of the screen
-const double shipSize = 10.0;
+const double shipSize = 10.0 * gameUnit;
 
 // max velocity in percentages of the world size
-const double shipMaxVelocity = 0.05;
+const double shipMaxVelocity = 1.0 * gameUnit;
 
-const double shipAcceleration = 10.0;
-const double shipDeceleration = 8.0;
+const double shipAcceleration = 1.0 * gameUnit;
+const double shipDeceleration = 1.0 * gameUnit;
 
 // rotation speed (angular impulse)
-const double shipRotationSpeed = 500.0;
-const double shipDensity = 0.5;
-const double shipAngularDamping = 2.0;
-const double mapSize = 5000;
+const double shipRotationSpeed = 1 * gameUnit;
+const double shipDensity = 3 * gameUnit;
+const double shipAngularDamping = 10.0 * gameUnit;
+const double mapSize = 5000 * gameUnit;

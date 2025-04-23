@@ -6,6 +6,7 @@ import 'package:red_ocelot/components/circular_boundary.dart';
 import 'package:red_ocelot/components/monster1.dart';
 import 'package:red_ocelot/components/monster2.dart';
 import 'package:red_ocelot/components/ufo.dart';
+import 'package:red_ocelot/config/world_parameters.dart';
 
 double gaussianRandom({double mean = 0, double stdDev = 1}) {
   final rand = math.Random();
@@ -17,7 +18,7 @@ double gaussianRandom({double mean = 0, double stdDev = 1}) {
 
 class Cluster extends PositionComponent with HasGameReference<Forge2DGame> {
   final int count;
-  double standardDeviation = 4;
+  double standardDeviation = 4 * gameUnit;
   final double radius;
   final double percentageUFO = 0.2;
   final double percentageMonster1 = 0.5;

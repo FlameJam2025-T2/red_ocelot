@@ -37,7 +37,8 @@ class RedOcelotMap extends Component {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    cluster = Cluster(count: 20, radius: 250)..position = Vector2(500, 300);
+    cluster = Cluster(count: 20, radius: 250 * gameUnit)
+      ..position = Vector2(500 * gameUnit, 300 * gameUnit);
     add(cluster);
   }
 

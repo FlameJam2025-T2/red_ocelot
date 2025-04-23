@@ -4,12 +4,13 @@ import 'package:flame/components.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/circular_boundary.dart';
+import 'package:red_ocelot/config/world_parameters.dart';
 
 class MovingClusterObject extends BodyComponent with ContactCallbacks {
   final Vector2 startPos;
   final Color color;
-  double radius = 10;
-  double initialVelocity = 10;
+  double radius = 10 * gameUnit;
+  double initialVelocity = 10 * gameUnit;
   String? letter;
   double changeDirectionTimer = 0;
   double changeInterval = 2.0; // seconds
@@ -43,7 +44,6 @@ class MovingClusterObject extends BodyComponent with ContactCallbacks {
           ..density = 1.0
           ..friction = 0.0
           ..userData = this;
-    ;
 
     final bodyDef =
         BodyDef()

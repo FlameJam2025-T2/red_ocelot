@@ -4,6 +4,7 @@ import 'package:flame/components.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 
 import 'package:red_ocelot/red_ocelet_game.dart';
+import 'package:red_ocelot/config/world_parameters.dart';
 
 class Laser extends BodyComponent<RedOceletGame> with ContactCallbacks {
   Laser({
@@ -16,7 +17,7 @@ class Laser extends BodyComponent<RedOceletGame> with ContactCallbacks {
     super.key,
   }) : super() {
     // set the size of the laser
-    this.size = size ?? Vector2.all(1);
+    this.size = size ?? Vector2.all(1 * gameUnit);
     this.direction = Vector2(cos(direction), sin(direction));
   }
   static const double cooldown = 0.1;
@@ -54,7 +55,7 @@ class Laser extends BodyComponent<RedOceletGame> with ContactCallbacks {
     final body =
         world.createBody(bodyDef)
           ..createFixture(fixtureDef)
-          ..linearVelocity = direction * 5000;
+          ..linearVelocity = direction * 100;
     _destroyTimer = Timer(
       lifetime,
       onTick: () {

@@ -48,6 +48,7 @@ class RedOceletGame extends Forge2DGame
     final minSide = size.x < size.y ? size.x : size.y;
     final zoom = minSide / (shipSizeMultiplier * shipSize);
     camera.viewfinder.zoom = zoom;
+    print('zoom: $zoom (ignoring)');
   }
 
   @override
@@ -59,11 +60,11 @@ class RedOceletGame extends Forge2DGame
     world.add(RedOcelotMap());
     await _setZoom(size: viewportResolution);
 
-    world.add(
+    await world.add(
       sundiver = SunDiver(
-        shipSize: Vector2(shipSize, shipSize),
+        size: Vector2(shipSize, shipSize),
         // startPos: Vector2(RedOcelotMap.size / 2, RedOcelotMap.size / 2),
-        startPos: Vector2(550, 330),
+        startPos: Vector2(550 * gameUnit, 330 * gameUnit),
       ),
     );
     camera.viewfinder.position = size / 2;
@@ -86,7 +87,7 @@ class RedOceletGame extends Forge2DGame
       velocityMultiplierDelta: Vector2(1.1, 1.1),
     );
 
-    camera.viewport.add(starfield = parallax);
+    await camera.viewport.add(starfield = parallax);
   }
 
   @override
