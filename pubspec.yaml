@@ -40,6 +40,7 @@ dependencies:
   flame_console: ^0.1.2
   auto_size_text: ^3.0.0
   shared_preferences: ^2.5.3
+  flame_audio: ^2.11.5
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +66,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/audio/
   shaders:
     - shaders/heat_shader.frag
 
