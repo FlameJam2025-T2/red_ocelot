@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelet_world.dart';
-import 'package:flame_audio/flame_audio.dart';
 
 class RedOceletGame extends Forge2DGame
     with SingleGameInstance, HasKeyboardHandlerComponents {
@@ -55,8 +54,7 @@ class RedOceletGame extends Forge2DGame
   Future<void> onLoad() async {
     await super.onLoad();
     await loadSprite('sundiver.png');
-    FlameAudio.bgm.initialize();
-    FlameAudio.bgm.play('spaceW0rp.mp3', volume: 0.05);
+
     RedOceletWorld redOceletWorld = RedOceletWorld();
     world = redOceletWorld;
     world.add(RedOcelotMap());
@@ -129,18 +127,5 @@ class RedOceletGame extends Forge2DGame
       velocity.x / gameUnit / 2,
       velocity.y / gameUnit / 2,
     );
-  }
-
-  @override
-  void onDetach() {
-    super.onDetach();
-    FlameAudio.bgm.stop();
-  }
-
-  @override
-  void onRemove() {
-    super.onRemove();
-    FlameAudio.bgm.stop();
-    FlameAudio.bgm.dispose();
   }
 }
