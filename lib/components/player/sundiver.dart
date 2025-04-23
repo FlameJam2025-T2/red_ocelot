@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelet_game.dart';
 import 'package:red_ocelot/red_ocelet_world.dart';
+import 'package:red_ocelot/components/player/laser.dart';
 
 class SunDiver extends BodyComponent<RedOceletGame>
     with ContactCallbacks, KeyboardHandler {
@@ -40,9 +41,24 @@ class SunDiver extends BodyComponent<RedOceletGame>
   bool _rotatingRight = false;
   bool _accelerating = false;
   bool _decelerating = false;
+  bool _shooting = false;
+
+  late final Timer _shotSpawner;
+
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+    _shotSpawner = Timer(
+      Laser.cooldown,
+      onTick: _shoot,
+      repeat: true,
+      autoStart: false,
+    );
+  }
 
   @override
   Body createBody() {
+    renderBody = false;
     final bodyDef = BodyDef(
       userData: this,
       type: BodyType.dynamic,
@@ -87,9 +103,15 @@ class SunDiver extends BodyComponent<RedOceletGame>
     return world.createBody(bodyDef)..createFixture(fixtureDef);
   }
 
+  void _shoot() {
+    final laser = Laser(startPos: position, direction: body.angle - pi / 2);
+    world.add(laser);
+  }
+
   @override
   void update(double dt) {
     super.update(dt);
+    _shotSpawner.update(dt);
     if (_rotatingLeft) {
       _rotateLeft(dt);
     }
@@ -118,21 +140,38 @@ class SunDiver extends BodyComponent<RedOceletGame>
     // left / right key rotate the ship
     // up accellerates the ship, and down decellerates it (no reverse)
     if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-      _rotatingLeft = isKeyDown;
+      if (_rotatingLeft != isKeyDown) {
+        _rotatingLeft = isKeyDown;
+      }
       handled = true;
     } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-      _rotatingRight = isKeyDown;
+      if (_rotatingRight != isKeyDown) {
+        _rotatingRight = isKeyDown;
+      }
       handled = true;
     } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
       // accelerate the ship
-      _accelerating = isKeyDown;
+      if (_accelerating != isKeyDown) {
+        _accelerating = isKeyDown;
+      }
       handled = true;
     } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
       // decelerate the ship
-      _decelerating = isKeyDown;
+      if (_decelerating != isKeyDown) {
+        _decelerating = isKeyDown;
+      }
       handled = true;
     } else if (event.logicalKey == LogicalKeyboardKey.space) {
       // shoot a bullet
+
+      if (_shooting != isKeyDown) {
+        _shooting = isKeyDown;
+        if (_shooting) {
+          _shotSpawner.start();
+        } else {
+          _shotSpawner.stop();
+        }
+      }
       handled = true;
     } else {
       handled = false;
