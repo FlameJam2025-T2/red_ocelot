@@ -5,7 +5,7 @@ import 'package:flame/game.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/config/keys.dart';
-import 'package:red_ocelot/red_ocelet_game.dart';
+import 'package:red_ocelot/red_ocelot_game.dart';
 import 'package:red_ocelot/ui/menu.dart';
 import 'package:red_ocelot/ui/pallette.dart';
 import 'package:red_ocelot/ui/gamepad.dart';
@@ -39,7 +39,7 @@ class GameContainer extends StatefulWidget {
 }
 
 class _GameContainerState extends State<GameContainer> {
-  late RedOceletGame game;
+  late RedocelotGame game;
 
   @override
   Widget build(BuildContext context) {
@@ -55,14 +55,14 @@ class _GameContainerState extends State<GameContainer> {
       appBar: null,
       body: Center(
         child: GameWidget.controlled(
-          gameFactory: RedOceletGame.newGameWithViewport(
+          gameFactory: RedocelotGame.newGameWithViewport(
             Vector2(
               MediaQuery.of(context).size.width,
               MediaQuery.of(context).size.height,
             ),
           ),
           overlayBuilderMap: {
-            mainMenuKey: (_, RedOceletGame game) {
+            mainMenuKey: (_, RedocelotGame game) {
               return Menu(
                 game: game,
                 title: 'Red Ocelot',
@@ -96,7 +96,7 @@ class _GameContainerState extends State<GameContainer> {
                 ],
               );
             },
-            settingsMenuKey: (_, RedOceletGame game) {
+            settingsMenuKey: (_, RedocelotGame game) {
               return Menu(
                 game: game,
                 backButton: true,
@@ -121,7 +121,7 @@ class _GameContainerState extends State<GameContainer> {
                 ],
               );
             },
-            gamepadKey: (_, RedOceletGame game) {
+            gamepadKey: (_, RedocelotGame game) {
               return Gamepad(
                 onButtonPress: () {
                   game.buttonInput(true);
@@ -138,7 +138,7 @@ class _GameContainerState extends State<GameContainer> {
                 buttonSize: tenpct,
               );
             },
-            gamepadToggleKey: (_, RedOceletGame game) {
+            gamepadToggleKey: (_, RedocelotGame game) {
               return GamepadToggle(
                 position: LTRB(bottom: tenpct / 2, right: tenpct / 2),
                 size: tenpct,

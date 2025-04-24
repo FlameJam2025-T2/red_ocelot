@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
@@ -6,20 +7,25 @@ import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flame/parallax.dart';
+
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
-import 'package:red_ocelot/red_ocelet_world.dart';
+import 'package:red_ocelot/red_ocelot_world.dart';
+import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
 
-class RedOceletGame extends Forge2DGame
+class RedocelotGame extends Forge2DGame
     with SingleGameInstance, HasKeyboardHandlerComponents {
   late final RouterComponent router;
   late SunDiver sundiver;
   final Vector2 viewportResolution;
-  late final ParallaxComponent starfield;
+  // late final ParallaxComponent starfield;
+  final Future<FragmentProgram> _starfieldShader = FragmentProgram.fromAsset(
+    'shaders/starfield.frag',
+  );
 
-  RedOceletGame({required this.viewportResolution})
+  RedocelotGame({required this.viewportResolution})
     : super(
         camera: CameraComponent(
           viewport: FixedSizeViewport(
@@ -30,10 +36,10 @@ class RedOceletGame extends Forge2DGame
       );
 
   // factory method for gamefactory, without requiring this.viewportResolution
-  static RedOceletGame Function() newGameWithViewport(
+  static RedocelotGame Function() newGameWithViewport(
     Vector2 viewportResolution,
   ) {
-    return () => RedOceletGame(viewportResolution: viewportResolution);
+    return () => RedocelotGame(viewportResolution: viewportResolution);
   }
 
   /// Sets the zoom level so that the the smallest side of the screen is
@@ -49,14 +55,20 @@ class RedOceletGame extends Forge2DGame
     camera.viewfinder.zoom = zoom;
   }
 
+  void updateStarfield(Canvas canvas, Rect rect, FragmentProgram program) {
+    var shader = program.fragmentShader();
+    shader.setFloat(0, 42.0);
+    canvas.drawRect(rect, Paint()..shader = shader);
+  }
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
 
     await loadSprite('sundiver.png');
 
-    RedOceletWorld redOceletWorld = RedOceletWorld();
-    world = redOceletWorld;
+    RedocelotWorld redocelotWorld = RedocelotWorld();
+    world = redocelotWorld;
     world.add(RedOcelotMap());
 
     await _setZoom(size: viewportResolution);
@@ -76,20 +88,30 @@ class RedOceletGame extends Forge2DGame
 
     camera.viewport.add(FpsTextComponent());
 
-    final parallax = await loadParallaxComponent(
-      [
-        ParallaxImageData('temp_stars_0.png'),
-        ParallaxImageData('temp_stars_1.png'),
-        ParallaxImageData('temp_stars_2.png'),
-      ],
-      baseVelocity: Vector2.zero(),
-      alignment: Alignment.center,
-      repeat: ImageRepeat.repeat,
+    // final parallax = await loadParallaxComponent(
+    //   [
+    //     ParallaxImageData('temp_stars_0.png'),
+    //     ParallaxImageData('temp_stars_1.png'),
+    //     ParallaxImageData('temp_stars_2.png'),
+    //   ],
+    //   baseVelocity: Vector2.zero(),
+    //   alignment: Alignment.center,
+    //   repeat: ImageRepeat.repeat,
 
-      velocityMultiplierDelta: Vector2(1.1, 1.1),
-    );
+    //   velocityMultiplierDelta: Vector2(1.1, 1.1),
+    // );
 
-    await add(starfield = parallax);
+    // await add(starfield = parallax);
+    // use shader instead of parallax
+    // final shader = await _starfieldShader;
+    // final starfield = RectangleComponent(
+    //   size: Vector2(50, 50),
+    //   anchor: Anchor.center,
+    //   paint: Paint()..shader = shader.fragmentShader(),
+    //   position: Vector2(50, 50),
+    // );
+
+    // final starfieldCamera = SamplerCamera()
 
     //could not get this to work
     // final minimapCamera =
@@ -140,9 +162,9 @@ class RedOceletGame extends Forge2DGame
     super.update(dt);
     // update parallax based on the sundiver's velocity
     final velocity = sundiver.body.linearVelocity;
-    starfield.parallax?.baseVelocity = Vector2(
-      velocity.x / gameUnit / 2,
-      velocity.y / gameUnit / 2,
-    );
+    // starfield.parallax?.baseVelocity = Vector2(
+    //   velocity.x / gameUnit / 2,
+    //   velocity.y / gameUnit / 2,
+    // );
   }
 }

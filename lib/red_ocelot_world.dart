@@ -7,10 +7,10 @@ import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/cluster.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
-import 'package:red_ocelot/red_ocelet_game.dart';
+import 'package:red_ocelot/red_ocelot_game.dart';
 
-class RedOceletWorld extends Forge2DWorld with HasGameReference<RedOceletGame> {
-  RedOceletWorld() : super(gravity: Vector2.zero());
+class RedocelotWorld extends Forge2DWorld with HasGameReference<RedocelotGame> {
+  RedocelotWorld() : super(gravity: Vector2.zero());
   final paint = Paint()..color = Colors.black;
 
   @override

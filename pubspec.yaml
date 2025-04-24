@@ -71,6 +71,7 @@ flutter:
     - assets/images/UFO/
   shaders:
     - shaders/heat_shader.frag
+    - shaders/starfield.frag
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

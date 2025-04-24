@@ -5,11 +5,11 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
-import 'package:red_ocelot/red_ocelet_game.dart';
-import 'package:red_ocelot/red_ocelet_world.dart';
+import 'package:red_ocelot/red_ocelot_game.dart';
+import 'package:red_ocelot/red_ocelot_world.dart';
 import 'package:red_ocelot/components/player/laser.dart';
 
-class SunDiver extends BodyComponent<RedOceletGame>
+class SunDiver extends BodyComponent<RedocelotGame>
     with ContactCallbacks, KeyboardHandler {
   SunDiver({Vector2? startPos, Vector2? size, super.priority = 2, super.key})
     : super() {
