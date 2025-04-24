@@ -11,6 +11,7 @@ import 'package:flame/parallax.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
+import 'package:red_ocelot/components/samplers/starfield.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_world.dart';
 import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
@@ -20,20 +21,13 @@ class RedocelotGame extends Forge2DGame
   late final RouterComponent router;
   late SunDiver sundiver;
   final Vector2 viewportResolution;
+  late final SamplerCamera starfieldCamera;
   // late final ParallaxComponent starfield;
   final Future<FragmentProgram> _starfieldShader = FragmentProgram.fromAsset(
     'shaders/starfield.frag',
   );
 
-  RedocelotGame({required this.viewportResolution})
-    : super(
-        camera: CameraComponent(
-          viewport: FixedSizeViewport(
-            viewportResolution.x,
-            viewportResolution.y,
-          ),
-        ),
-      );
+  RedocelotGame({required this.viewportResolution}) : super();
 
   // factory method for gamefactory, without requiring this.viewportResolution
   static RedocelotGame Function() newGameWithViewport(
@@ -66,6 +60,20 @@ class RedocelotGame extends Forge2DGame
     await super.onLoad();
 
     await loadSprite('sundiver.png');
+
+    camera = CameraComponent(
+      viewport: FixedSizeViewport(viewportResolution.x, viewportResolution.y),
+    );
+
+    final shader = await _starfieldShader;
+    starfieldCamera = SamplerCamera.withFixedResolution(
+      samplerOwner: StarfieldSamplerOwner(shader.fragmentShader(), this),
+      width: viewportResolution.x,
+      height: viewportResolution.y,
+      world: camera.world,
+      pixelRatio: 1.0,
+    );
+    add(starfieldCamera);
 
     RedocelotWorld redocelotWorld = RedocelotWorld();
     world = redocelotWorld;
@@ -161,7 +169,7 @@ class RedocelotGame extends Forge2DGame
     // Update your game logic here
     super.update(dt);
     // update parallax based on the sundiver's velocity
-    final velocity = sundiver.body.linearVelocity;
+    starfieldCamera.update(dt);
     // starfield.parallax?.baseVelocity = Vector2(
     //   velocity.x / gameUnit / 2,
     //   velocity.y / gameUnit / 2,

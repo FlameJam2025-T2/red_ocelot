@@ -124,7 +124,7 @@ class SunDiver extends BodyComponent<RedocelotGame>
     _repulse();
     position.clamp(minPosition, maxPosition);
     positionText.text =
-        '(x: ${position.x.toInt()}, y: ${position.y.toInt()}, 𝜃: ${angle.toStringAsPrecision(2)}, s: ${speed.toStringAsPrecision(2)}, vx: ${velocity.x.toStringAsPrecision(2)}, vy: ${velocity.y.toStringAsPrecision(2)})';
+        '(x: ${position.x.toInt()}, y: ${position.y.toInt()}, 𝜃: ${angle.toStringAsPrecision(2)}, s: ${speed.toStringAsPrecision(2)}, vx: ${body.linearVelocity.x.toStringAsPrecision(2)}, vy: ${body.linearVelocity.y.toStringAsPrecision(2)})';
   }
 
   /// add repulsion to world boundaries so as the ship approaches the boundaries
