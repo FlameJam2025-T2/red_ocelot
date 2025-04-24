@@ -8,6 +8,8 @@ import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 
 import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:flutter/material.dart';
+import 'package:red_ocelot/components/hud.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
 import 'package:red_ocelot/components/samplers/starfield.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
@@ -20,10 +22,12 @@ class RedocelotGame extends Forge2DGame
   late SunDiver sundiver;
   final Vector2 viewportResolution;
   late final SamplerCamera starfieldCamera;
-  // late final ParallaxComponent starfield;
   final Future<FragmentProgram> _starfieldShader = FragmentProgram.fromAsset(
     'shaders/starfield.frag',
   );
+
+  int totalScore = 0;
+  int totalEnemiesKilled = 0;
 
   RedocelotGame({required this.viewportResolution}) : super();
 
@@ -32,6 +36,11 @@ class RedocelotGame extends Forge2DGame
     Vector2 viewportResolution,
   ) {
     return () => RedocelotGame(viewportResolution: viewportResolution);
+  }
+
+  void incrementScore({required int points}) {
+    totalScore += points;
+    print("Score: $totalScore");
   }
 
   /// Sets the zoom level so that the the smallest side of the screen is
@@ -87,6 +96,7 @@ class RedocelotGame extends Forge2DGame
     camera.follow(sundiver);
 
     camera.viewport.add(FpsTextComponent());
+    camera.viewport.add(HUDComponent()..position = Vector2(size.x - 200, 50));
   }
 
   void joystickInput(Vector2 input) {

@@ -1,13 +1,13 @@
 import 'dart:math';
 
-import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flame/components.dart';
+import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:red_ocelot/components/player/laser.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 import 'package:red_ocelot/red_ocelot_world.dart';
-import 'package:red_ocelot/components/player/laser.dart';
 
 class SunDiver extends BodyComponent<RedocelotGame>
     with ContactCallbacks, KeyboardHandler {
@@ -69,13 +69,18 @@ class SunDiver extends BodyComponent<RedocelotGame>
       Vector2(size.x / 2, size.y / 2),
     ];
     // create a triangle (for now) shape for the ship
-    final fixtureDef = FixtureDef(
-      PolygonShape()..set(vertices),
-      userData: this,
-      restitution: 0.2,
-      density: shipDensity,
-      friction: 0.0,
-    );
+    final fixtureDef =
+        FixtureDef(
+            PolygonShape()..set(vertices),
+            isSensor: false,
+            userData: this,
+            restitution: 0.2,
+            density: shipDensity,
+            friction: 0.0,
+          )
+          ..filter.categoryBits = CollisionType.sundiver
+          ..filter.maskBits = CollisionType.monster | CollisionType.laser;
+    ;
 
     final sprite = Sprite(game.images.fromCache('sundiver.png'));
 

@@ -5,9 +5,12 @@ import 'package:red_ocelot/utils/sprite_utils.dart';
 
 class MonsterB extends MovingClusterObject {
   MonsterB(super.startPos)
-    : super(spriteName: SpriteName.monsterB, color: Colors.green) {
+    : super(
+        spriteName: SpriteName.monsterB,
+        hitPoints: 4,
+        color: Colors.green,
+      ) {
     radius = 15 * gameUnit;
     initialVelocity = 20 * gameUnit;
-    letter = 'M2';
   }
 }

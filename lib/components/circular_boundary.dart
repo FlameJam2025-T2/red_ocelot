@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:red_ocelot/config/world_parameters.dart';
 
 class CircularBoundary extends BodyComponent with ContactCallbacks {
   @override
@@ -24,8 +25,11 @@ class CircularBoundary extends BodyComponent with ContactCallbacks {
 
       final shape = EdgeShape()..set(v1, v2);
 
-      final fixtureDef = FixtureDef(shape)
-        ..userData = this; // 👈 this links the fixture to the component
+      final fixtureDef =
+          FixtureDef(shape)
+            ..userData = this
+            ..filter.categoryBits = CollisionType.boundary;
+      ; // 👈 this links the fixture to the component
 
       body.createFixture(fixtureDef);
     }

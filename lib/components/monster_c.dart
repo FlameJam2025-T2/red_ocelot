@@ -7,10 +7,10 @@ class MonsterC extends MovingClusterObject {
   MonsterC(super.startPos)
     : super(
         spriteName: SpriteName.monsterC,
+        hitPoints: 6,
         color: const Color.fromARGB(255, 162, 175, 76),
       ) {
     radius = 12 * gameUnit;
     initialVelocity = 20 * gameUnit;
-    letter = 'M2';
   }
 }

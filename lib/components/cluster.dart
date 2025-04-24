@@ -30,9 +30,10 @@ class Cluster extends PositionComponent with HasGameReference<Forge2DGame> {
 
   @override
   Future<void> onLoad() async {
-    final center = size / 2;
+    final center = position + size / 2; // world space center
 
-    add(CircularBoundary(center, radius));
+    game.world.add(CircularBoundary(center, radius));
+
     final actualCount = math.max(
       1,
       gaussianRandom(mean: count.toDouble(), stdDev: standardDeviation).round(),
@@ -40,16 +41,16 @@ class Cluster extends PositionComponent with HasGameReference<Forge2DGame> {
 
     for (int i = 0; i < actualCount; i++) {
       final angle = i * 2 * math.pi / actualCount;
-      final pos =
-          center +
+      final offset =
           Vector2(math.cos(angle), math.sin(angle)) *
-              radius *
-              0.9 *
-              math.Random().nextDouble();
+          radius *
+          0.9 *
+          math.Random().nextDouble();
+
+      final pos = center + offset; // world-space spawn pos
 
       final enemies = [
         {'builder': () => Ufo(pos), 'weight': 0.3},
-
         {'builder': () => MonsterA(pos), 'weight': 0.15},
         {'builder': () => MonsterB(pos), 'weight': 0.15},
         {'builder': () => MonsterC(pos), 'weight': 0.1},
@@ -63,7 +64,7 @@ class Cluster extends PositionComponent with HasGameReference<Forge2DGame> {
       for (final e in enemies) {
         cumulative += e['weight'] as double;
         if (rand < cumulative) {
-          add(((e['builder'])! as Function)() as BodyComponent);
+          game.world.add(((e['builder'])! as Function)() as BodyComponent);
           break;
         }
       }
