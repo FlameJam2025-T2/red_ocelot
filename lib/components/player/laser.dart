@@ -2,11 +2,12 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:red_ocelot/components/weapon.dart';
 
 import 'package:red_ocelot/red_ocelet_game.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 
-class Laser extends BodyComponent<RedOceletGame> with ContactCallbacks {
+class Laser extends BodyComponent<RedOceletGame> with Weapon, ContactCallbacks {
   Laser({
     required this.startPos,
     required double direction,
