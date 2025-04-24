@@ -2,14 +2,10 @@
 #include <flutter/runtime_effect.glsl>
 
 uniform vec2 uSize;
-uniform float time;
-uniform float velX;
-uniform float velY;
-uniform float speed;
+uniform float cumulativeX; // Renamed from velX
+uniform float cumulativeY; // Renamed from velY
 
 out vec4 f;
-
-const float scale = 3e4;
 
 #define F for(float i = .1; i <.9; i+=.04)
 void main()
@@ -19,19 +15,19 @@ void main()
     F 
     {
         // vec2 on the next line defines direction and speed of the animation
-        vec3 p = vec3(u +(time/i - i)/vec2(scale-(20+(-(scale-20)*(velX+0.001))), scale-(20+(-(scale-20)*(velY+0.001)))),i);
+        vec3 p = vec3(u + vec2(cumulativeX, cumulativeY)/i, i);
         p = abs(1.-mod(p, 2.));
         float a = length(p),
               b,
               c = 0.;
         F
-          p = abs(p)/a/a - .57,   // <- Kali magic constant (between .5 .. .6 gives good results)
+          p = abs(p)/a/a - .7,   // <- Kali magic constant (between .5 .. .6 gives good results)
           b = length(p),
           c += abs(a-b),
           a = b;        
         
         c*=c;
                 
-        f += c*vec4(i, 1, 2, 0) / scale ; // <- overall scaling constant, play here if you're "blind"
+        f += c*vec4(i, 1, 2, 0) / 3e4 ; // <- overall scaling constant, play here if you're "blind"
     }	
 }

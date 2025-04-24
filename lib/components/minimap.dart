@@ -4,7 +4,7 @@ import 'package:flame/components.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 
 class MinimapComponent extends PositionComponent
-    with HasGameRef<RedocelotGame> {
+    with HasGameReference<RedocelotGame> {
   final CameraComponent minimapCamera;
 
   MinimapComponent({

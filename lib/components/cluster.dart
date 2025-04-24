@@ -3,11 +3,11 @@ import 'dart:math' as math;
 import 'package:flame/components.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:red_ocelot/components/circular_boundary.dart';
-import 'package:red_ocelot/components/monsterA.dart';
-import 'package:red_ocelot/components/monsterB.dart';
-import 'package:red_ocelot/components/monsterC.dart';
-import 'package:red_ocelot/components/monsterD.dart';
-import 'package:red_ocelot/components/monsterE.dart';
+import 'package:red_ocelot/components/monster_a.dart';
+import 'package:red_ocelot/components/monster_b.dart';
+import 'package:red_ocelot/components/monster_c.dart';
+import 'package:red_ocelot/components/monster_d.dart';
+import 'package:red_ocelot/components/monster_e.dart';
 import 'package:red_ocelot/components/ufo.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 

@@ -6,10 +6,8 @@ import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
-import 'package:flame/parallax.dart';
 
 import 'package:flame_forge2d/flame_forge2d.dart';
-import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
 import 'package:red_ocelot/components/samplers/starfield.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
@@ -61,10 +59,7 @@ class RedocelotGame extends Forge2DGame
 
     await loadSprite('sundiver.png');
 
-    camera = CameraComponent(
-      viewport: FixedSizeViewport(viewportResolution.x, viewportResolution.y),
-    );
-
+    // Load the shader program
     final shader = await _starfieldShader;
     starfieldCamera = SamplerCamera.withFixedResolution(
       samplerOwner: StarfieldSamplerOwner(shader.fragmentShader(), this),
@@ -75,6 +70,10 @@ class RedocelotGame extends Forge2DGame
     );
     add(starfieldCamera);
 
+    camera = CameraComponent(
+      viewport: FixedSizeViewport(viewportResolution.x, viewportResolution.y),
+    );
+
     RedocelotWorld redocelotWorld = RedocelotWorld();
     world = redocelotWorld;
     world.add(RedOcelotMap());
@@ -84,7 +83,6 @@ class RedocelotGame extends Forge2DGame
     await world.add(
       sundiver = SunDiver(
         size: Vector2(shipSize, shipSize),
-        // startPos: Vector2(RedOcelotMap.size / 2, RedOcelotMap.size / 2),
         startPos: Vector2(550 * gameUnit, 330 * gameUnit),
       ),
     );
@@ -95,46 +93,6 @@ class RedocelotGame extends Forge2DGame
     camera.follow(sundiver);
 
     camera.viewport.add(FpsTextComponent());
-
-    // final parallax = await loadParallaxComponent(
-    //   [
-    //     ParallaxImageData('temp_stars_0.png'),
-    //     ParallaxImageData('temp_stars_1.png'),
-    //     ParallaxImageData('temp_stars_2.png'),
-    //   ],
-    //   baseVelocity: Vector2.zero(),
-    //   alignment: Alignment.center,
-    //   repeat: ImageRepeat.repeat,
-
-    //   velocityMultiplierDelta: Vector2(1.1, 1.1),
-    // );
-
-    // await add(starfield = parallax);
-    // use shader instead of parallax
-    // final shader = await _starfieldShader;
-    // final starfield = RectangleComponent(
-    //   size: Vector2(50, 50),
-    //   anchor: Anchor.center,
-    //   paint: Paint()..shader = shader.fragmentShader(),
-    //   position: Vector2(50, 50),
-    // );
-
-    // final starfieldCamera = SamplerCamera()
-
-    //could not get this to work
-    // final minimapCamera =
-    //     CameraComponent(world: world)
-    //       ..viewfinder.zoom =
-    //           0.1 // zoomed out a lot to fit world
-    //       ..viewfinder.position = Vector2(0, 0); // center on your ship maybe
-
-    // camera.viewport.add(
-    //   MinimapComponent(
-    //     minimapCamera: minimapCamera,
-    //     size: Vector2(250, 250),
-    //     position: Vector2(0, 0), // top-right corner
-    //   ),
-    // );
   }
 
   void joystickInput(Vector2 input) {
