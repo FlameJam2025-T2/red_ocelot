@@ -109,11 +109,11 @@ class RedocelotGame extends Forge2DGame
 
   @override
   void onGameResize(Vector2 size) {
+    super.onGameResize(size);
     // Update the camera's viewport size
     camera.viewport.size = size;
     // Update the zoom level based on the new size
     _setZoom(size: size);
-    super.onGameResize(size);
   }
 
   @override

@@ -5,15 +5,11 @@ import 'package:red_ocelot/red_ocelot_game.dart';
 import 'package:flame/extensions.dart';
 
 class StarfieldSamplerOwner extends SamplerOwner {
-  StarfieldSamplerOwner(super.shader, this.game) {
-    // Set the shader uniforms
-    viewportResolution = game.viewportResolution;
-  }
+  StarfieldSamplerOwner(super.shader, this.game) : super();
 
   final RedocelotGame game;
   Vector2 cumulativeOffset = Vector2.zero();
   Vector2 position = Vector2.zero();
-  late Vector2 viewportResolution;
 
   @override
   int get passes => 0;
@@ -21,10 +17,9 @@ class StarfieldSamplerOwner extends SamplerOwner {
   @override
   void sampler(List<Image> images, Size size, Canvas canvas) {
     // final origin = cameraComponent!.visibleWorldRect.topLeft.toVector2();
-
     shader.setFloatUniforms((value) {
       value
-        ..setVector(game.viewportResolution)
+        ..setVector(size.toVector2())
         ..setFloat(cumulativeOffset.x)
         ..setFloat(cumulativeOffset.y);
     });
