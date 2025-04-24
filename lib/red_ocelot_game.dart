@@ -47,12 +47,6 @@ class RedocelotGame extends Forge2DGame
     camera.viewfinder.zoom = zoom;
   }
 
-  void updateStarfield(Canvas canvas, Rect rect, FragmentProgram program) {
-    var shader = program.fragmentShader();
-    shader.setFloat(0, 42.0);
-    canvas.drawRect(rect, Paint()..shader = shader);
-  }
-
   @override
   Future<void> onLoad() async {
     await super.onLoad();
