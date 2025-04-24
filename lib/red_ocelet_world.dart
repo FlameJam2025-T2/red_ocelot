@@ -19,7 +19,7 @@ class RedOceletWorld extends Forge2DWorld with HasGameReference<RedOceletGame> {
   }
 }
 
-class RedOcelotMap extends Component {
+class RedOcelotMap extends Component with HasGameRef<RedOceletGame> {
   static const double size = mapSize;
   static final Rectangle bounds = Rectangle.fromLTRB(-size, -size, size, size);
   // ignore: unused_field
@@ -37,7 +37,7 @@ class RedOcelotMap extends Component {
     await super.onLoad();
     cluster = Cluster(count: 40, radius: 250 * gameUnit)
       ..position = Vector2(500 * gameUnit, 300 * gameUnit);
-    add(cluster);
+    await add(cluster);
   }
 
   static Vector2 generateCoordinates() {

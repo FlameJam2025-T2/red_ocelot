@@ -15,3 +15,10 @@ const double shipRotationSpeed = 1 * gameUnit;
 const double shipDensity = 3 * gameUnit;
 const double shipAngularDamping = 10.0 * gameUnit;
 const double mapSize = 5000 * gameUnit;
+
+class CollisionType {
+  static const int sundiver = 0x0001;
+  static const int monster = 0x0002;
+  static const int boundary = 0x0004;
+  static const int laser = 0x0008;
+}

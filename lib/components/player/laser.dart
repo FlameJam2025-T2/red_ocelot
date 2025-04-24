@@ -2,9 +2,9 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
-
-import 'package:red_ocelot/red_ocelet_game.dart';
+import 'package:red_ocelot/components/moving_cluster_object.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
+import 'package:red_ocelot/red_ocelet_game.dart';
 
 class Laser extends BodyComponent<RedOceletGame> with ContactCallbacks {
   Laser({
@@ -51,6 +51,7 @@ class Laser extends BodyComponent<RedOceletGame> with ContactCallbacks {
       restitution: 0,
       density: 0,
       isSensor: true,
+      userData: this,
     );
     final body =
         world.createBody(bodyDef)
@@ -63,6 +64,14 @@ class Laser extends BodyComponent<RedOceletGame> with ContactCallbacks {
       },
     );
     return body;
+  }
+
+  @override
+  void beginContact(Object other, Contact contact) {
+    print('Laser contacted: $other');
+    if (other is MovingClusterObject) {
+      removeFromParent();
+    }
   }
 
   @override

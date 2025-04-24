@@ -4,10 +4,13 @@ import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/circular_boundary.dart';
 import 'package:red_ocelot/components/health_bar.dart';
+import 'package:red_ocelot/components/player/laser.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
+import 'package:red_ocelot/red_ocelet_game.dart';
 import 'package:red_ocelot/utils/sprite_utils.dart';
 
-class MovingClusterObject extends BodyComponent with ContactCallbacks {
+class MovingClusterObject extends BodyComponent<RedOceletGame>
+    with ContactCallbacks {
   final Vector2 startPos;
   final Color color;
   double radius = 10 * gameUnit;
@@ -42,7 +45,7 @@ class MovingClusterObject extends BodyComponent with ContactCallbacks {
   Body createBody() {
     final shape = CircleShape()..radius = radius.toDouble();
     final fixtureDef =
-        FixtureDef(shape)
+        FixtureDef(shape, isSensor: false)
           ..restitution = 1.0
           ..density = 1.0
           ..friction = 0.0
@@ -79,6 +82,14 @@ class MovingClusterObject extends BodyComponent with ContactCallbacks {
   void beginContact(Object other, Contact contact) {
     if (other is CircularBoundary) {
       print("Collision with CircularBoundary");
+    }
+    if (other is Laser) {
+      print("Collision with Laser");
+      lifePoints -= 2;
+      if (lifePoints <= 0) {
+        game.incrementScore(points: hitPoints);
+        removeFromParent();
+      }
     }
   }
 
