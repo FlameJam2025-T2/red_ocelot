@@ -1,10 +1,13 @@
 import 'dart:math' as math;
 
 import 'package:flame/components.dart';
-import 'package:flame_forge2d/forge2d_game.dart';
+import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:red_ocelot/components/circular_boundary.dart';
-import 'package:red_ocelot/components/monster1.dart';
-import 'package:red_ocelot/components/monster2.dart';
+import 'package:red_ocelot/components/monsterA.dart';
+import 'package:red_ocelot/components/monsterB.dart';
+import 'package:red_ocelot/components/monsterC.dart';
+import 'package:red_ocelot/components/monsterD.dart';
+import 'package:red_ocelot/components/monsterE.dart';
 import 'package:red_ocelot/components/ufo.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 
@@ -43,13 +46,26 @@ class Cluster extends PositionComponent with HasGameReference<Forge2DGame> {
               radius *
               0.9 *
               math.Random().nextDouble();
-      final randomValue = math.Random().nextDouble();
-      if (randomValue < percentageUFO) {
-        add(Ufo(pos));
-      } else if (randomValue < percentageUFO + percentageMonster1) {
-        add(Monster1(pos));
-      } else {
-        add(Monster2(pos));
+
+      final enemies = [
+        {'builder': () => Ufo(pos), 'weight': 0.3},
+
+        {'builder': () => MonsterA(pos), 'weight': 0.15},
+        {'builder': () => MonsterB(pos), 'weight': 0.15},
+        {'builder': () => MonsterC(pos), 'weight': 0.1},
+        {'builder': () => MonsterD(pos), 'weight': 0.15},
+        {'builder': () => MonsterE(pos), 'weight': 0.15},
+      ];
+
+      final double rand = math.Random().nextDouble();
+      double cumulative = 0;
+
+      for (final e in enemies) {
+        cumulative += e['weight'] as double;
+        if (rand < cumulative) {
+          add(((e['builder'])! as Function)() as BodyComponent);
+          break;
+        }
       }
     }
   }

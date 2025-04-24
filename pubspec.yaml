@@ -67,6 +67,8 @@ flutter:
   assets:
     - assets/images/
     - assets/audio/
+    - assets/images/SpaceMonsters/
+    - assets/images/UFO/
   shaders:
     - shaders/heat_shader.frag
 

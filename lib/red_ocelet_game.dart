@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
-import 'package:flame/input.dart';
 import 'package:flame/extensions.dart';
-
 import 'package:flame/game.dart';
+import 'package:flame/input.dart';
 import 'package:flame/parallax.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
@@ -53,11 +52,13 @@ class RedOceletGame extends Forge2DGame
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+
     await loadSprite('sundiver.png');
 
     RedOceletWorld redOceletWorld = RedOceletWorld();
     world = redOceletWorld;
     world.add(RedOcelotMap());
+
     await _setZoom(size: viewportResolution);
 
     await world.add(
@@ -70,6 +71,7 @@ class RedOceletGame extends Forge2DGame
     camera.viewfinder.position = size / 2;
 
     camera.setBounds(RedOcelotMap.bounds);
+
     camera.follow(sundiver);
 
     camera.viewport.add(FpsTextComponent());
@@ -88,6 +90,21 @@ class RedOceletGame extends Forge2DGame
     );
 
     await add(starfield = parallax);
+
+    //could not get this to work
+    // final minimapCamera =
+    //     CameraComponent(world: world)
+    //       ..viewfinder.zoom =
+    //           0.1 // zoomed out a lot to fit world
+    //       ..viewfinder.position = Vector2(0, 0); // center on your ship maybe
+
+    // camera.viewport.add(
+    //   MinimapComponent(
+    //     minimapCamera: minimapCamera,
+    //     size: Vector2(250, 250),
+    //     position: Vector2(0, 0), // top-right corner
+    //   ),
+    // );
   }
 
   void joystickInput(Vector2 input) {
