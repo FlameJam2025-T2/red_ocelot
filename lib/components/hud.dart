@@ -1,9 +1,9 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
-import 'package:red_ocelot/red_ocelet_game.dart';
+import 'package:red_ocelot/red_ocelot_game.dart';
 
 class HUDComponent extends PositionComponent
-    with HasGameReference<RedOceletGame> {
+    with HasGameReference<RedOcelotGame> {
   int score;
   final TextPaint textPaint;
   final double boxWidth;

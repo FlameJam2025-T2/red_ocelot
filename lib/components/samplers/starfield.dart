@@ -7,7 +7,7 @@ import 'package:flame/extensions.dart';
 class StarfieldSamplerOwner extends SamplerOwner {
   StarfieldSamplerOwner(super.shader, this.game) : super();
 
-  final RedocelotGame game;
+  final RedOcelotGame game;
   Vector2 cumulativeOffset = Vector2.zero();
   Vector2 position = Vector2.zero();
 

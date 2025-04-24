@@ -38,7 +38,7 @@ class GameContainer extends StatefulWidget {
 }
 
 class _GameContainerState extends State<GameContainer> {
-  late RedocelotGame game;
+  late RedOcelotGame game;
 
   @override
   Widget build(BuildContext context) {
@@ -54,14 +54,14 @@ class _GameContainerState extends State<GameContainer> {
       appBar: null,
       body: Center(
         child: GameWidget.controlled(
-          gameFactory: RedocelotGame.newGameWithViewport(
+          gameFactory: RedOcelotGame.newGameWithViewport(
             Vector2(
               MediaQuery.of(context).size.width,
               MediaQuery.of(context).size.height,
             ),
           ),
           overlayBuilderMap: {
-            mainMenuKey: (_, RedocelotGame game) {
+            mainMenuKey: (_, RedOcelotGame game) {
               return Menu(
                 game: game,
                 title: 'Red Ocelot',
@@ -95,7 +95,7 @@ class _GameContainerState extends State<GameContainer> {
                 ],
               );
             },
-            settingsMenuKey: (_, RedocelotGame game) {
+            settingsMenuKey: (_, RedOcelotGame game) {
               return Menu(
                 game: game,
                 backButton: true,
@@ -120,7 +120,7 @@ class _GameContainerState extends State<GameContainer> {
                 ],
               );
             },
-            gamepadKey: (_, RedocelotGame game) {
+            gamepadKey: (_, RedOcelotGame game) {
               return Gamepad(
                 onButtonPress: () {
                   game.buttonInput(true);
@@ -137,7 +137,7 @@ class _GameContainerState extends State<GameContainer> {
                 buttonSize: tenpct,
               );
             },
-            gamepadToggleKey: (_, RedocelotGame game) {
+            gamepadToggleKey: (_, RedOcelotGame game) {
               return GamepadToggle(
                 position: LTRB(bottom: tenpct / 2, right: tenpct / 2),
                 size: tenpct,

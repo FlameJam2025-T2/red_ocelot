@@ -8,7 +8,6 @@ import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 
 import 'package:flame_forge2d/flame_forge2d.dart';
-import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/hud.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
 import 'package:red_ocelot/components/samplers/starfield.dart';
@@ -16,7 +15,7 @@ import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_world.dart';
 import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
 
-class RedocelotGame extends Forge2DGame
+class RedOcelotGame extends Forge2DGame
     with SingleGameInstance, HasKeyboardHandlerComponents {
   late final RouterComponent router;
   late SunDiver sundiver;
@@ -29,13 +28,13 @@ class RedocelotGame extends Forge2DGame
   int totalScore = 0;
   int totalEnemiesKilled = 0;
 
-  RedocelotGame({required this.viewportResolution}) : super();
+  RedOcelotGame({required this.viewportResolution}) : super();
 
   // factory method for gamefactory, without requiring this.viewportResolution
-  static RedocelotGame Function() newGameWithViewport(
+  static RedOcelotGame Function() newGameWithViewport(
     Vector2 viewportResolution,
   ) {
-    return () => RedocelotGame(viewportResolution: viewportResolution);
+    return () => RedOcelotGame(viewportResolution: viewportResolution);
   }
 
   void incrementScore({required int points}) {

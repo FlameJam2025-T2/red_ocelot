@@ -6,10 +6,10 @@ import 'package:red_ocelot/components/circular_boundary.dart';
 import 'package:red_ocelot/components/health_bar.dart';
 import 'package:red_ocelot/components/player/laser.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
-import 'package:red_ocelot/red_ocelet_game.dart';
+import 'package:red_ocelot/red_ocelot_game.dart';
 import 'package:red_ocelot/utils/sprite_utils.dart';
 
-class MovingClusterObject extends BodyComponent<RedOceletGame>
+class MovingClusterObject extends BodyComponent<RedOcelotGame>
     with ContactCallbacks {
   final Vector2 startPos;
   final Color color;

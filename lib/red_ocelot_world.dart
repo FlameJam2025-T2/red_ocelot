@@ -9,7 +9,7 @@ import 'package:red_ocelot/components/cluster.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 
-class RedocelotWorld extends Forge2DWorld with HasGameReference<RedocelotGame> {
+class RedocelotWorld extends Forge2DWorld with HasGameReference<RedOcelotGame> {
   RedocelotWorld() : super(gravity: Vector2.zero());
   final paint = Paint()..color = Colors.black;
 
@@ -19,7 +19,7 @@ class RedocelotWorld extends Forge2DWorld with HasGameReference<RedocelotGame> {
   }
 }
 
-class RedOcelotMap extends Component with HasGameRef<RedOceletGame> {
+class RedOcelotMap extends Component with HasGameReference<RedOcelotGame> {
   static const double size = mapSize;
   static final Rectangle bounds = Rectangle.fromLTRB(-size, -size, size, size);
   // ignore: unused_field

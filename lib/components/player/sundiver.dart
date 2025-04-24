@@ -9,7 +9,7 @@ import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 import 'package:red_ocelot/red_ocelot_world.dart';
 
-class SunDiver extends BodyComponent<RedocelotGame>
+class SunDiver extends BodyComponent<RedOcelotGame>
     with ContactCallbacks, KeyboardHandler {
   SunDiver({Vector2? startPos, Vector2? size, super.priority = 2, super.key})
     : super() {
