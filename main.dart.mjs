@@ -4871,7 +4871,6 @@ class CompiledApp {
 "TOIOutputState.",
 "EPAxisType.",
 "C",
-"starfieldCamera",
 "layer",
 "Cannot query unregistered query ",
 "Length ",
