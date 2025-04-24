@@ -63126,7 +63126,7 @@ $0(){var s=this.a
 s.gie().B(0,"MainMenu")
 s.gie().t(0,"GamepadToggle")
 s=$.M8()
-if(!s.c)s.ij("spaceW0rp.mp3",0.05)},
+if(!s.c)s.ij("spaceW0rp.mp3",0.25)},
 $S:0}
 A.a4u.prototype={
 $0(){this.a.gie().t(0,"Settings")},
