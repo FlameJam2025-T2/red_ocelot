@@ -74,7 +74,7 @@ class _GameContainerState extends State<GameContainer> {
                       game.overlays.add(gamepadToggleKey);
                       // Start the game
                       if (!FlameAudio.bgm.isPlaying) {
-                        FlameAudio.bgm.play('spaceW0rp.mp3', volume: 0.05);
+                        FlameAudio.bgm.play('spaceW0rp.mp3', volume: 0.25);
                       }
                     },
                   ),
