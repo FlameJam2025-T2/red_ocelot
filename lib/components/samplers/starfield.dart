@@ -35,6 +35,12 @@ class StarfieldSamplerOwner extends SamplerOwner {
   }
 
   @override
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    cameraComponent?.viewport.size = size;
+  }
+
+  @override
   void update(double dt) {
     super.update(dt);
 

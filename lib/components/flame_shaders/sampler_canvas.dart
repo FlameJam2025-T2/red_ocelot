@@ -19,6 +19,8 @@ abstract class SamplerOwner {
 
   void update(double dt) {}
 
+  void onGameResize(Vector2 size) {}
+
   void sampler(List<Image> images, Size size, Canvas canvas);
 }
 

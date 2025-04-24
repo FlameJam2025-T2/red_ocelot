@@ -20,7 +20,7 @@ class RedOcelotGame extends Forge2DGame
   late final RouterComponent router;
   late SunDiver sundiver;
   final Vector2 viewportResolution;
-  late final SamplerCamera starfieldCamera;
+  SamplerCamera? starfieldCamera;
   final Future<FragmentProgram> _starfieldShader = FragmentProgram.fromAsset(
     'shaders/starfield.frag',
   );
@@ -63,14 +63,13 @@ class RedOcelotGame extends Forge2DGame
 
     // Load the shader program
     final shader = await _starfieldShader;
-    starfieldCamera = SamplerCamera.withFixedResolution(
+    starfieldCamera = SamplerCamera(
       samplerOwner: StarfieldSamplerOwner(shader.fragmentShader(), this),
-      width: viewportResolution.x,
-      height: viewportResolution.y,
-      world: camera.world,
+      viewport: FixedSizeViewport(viewportResolution.x, viewportResolution.y),
+      world: world,
       pixelRatio: 1.0,
     );
-    add(starfieldCamera);
+    add(starfieldCamera!);
 
     camera = CameraComponent(
       viewport: FixedSizeViewport(viewportResolution.x, viewportResolution.y),
@@ -113,6 +112,7 @@ class RedOcelotGame extends Forge2DGame
   @override
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
+    starfieldCamera?.viewport.size = size;
     // Update the camera's viewport size
     camera.viewport.size = size;
     // Update the zoom level based on the new size
@@ -130,7 +130,7 @@ class RedOcelotGame extends Forge2DGame
     // Update your game logic here
     super.update(dt);
     // update parallax based on the sundiver's velocity
-    starfieldCamera.update(dt);
+    starfieldCamera!.update(dt);
     // starfield.parallax?.baseVelocity = Vector2(
     //   velocity.x / gameUnit / 2,
     //   velocity.y / gameUnit / 2,
