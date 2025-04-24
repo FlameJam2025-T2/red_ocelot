@@ -10,6 +10,7 @@ class StarfieldSamplerOwner extends SamplerOwner {
   final RedOcelotGame game;
   Vector2 cumulativeOffset = Vector2.zero();
   Vector2 position = Vector2.zero();
+  double time = 0.0;
 
   @override
   int get passes => 0;
@@ -21,7 +22,8 @@ class StarfieldSamplerOwner extends SamplerOwner {
       value
         ..setVector(size.toVector2())
         ..setFloat(cumulativeOffset.x)
-        ..setFloat(cumulativeOffset.y);
+        ..setFloat(cumulativeOffset.y)
+        ..setFloat(time);
     });
 
     canvas
@@ -43,6 +45,7 @@ class StarfieldSamplerOwner extends SamplerOwner {
   @override
   void update(double dt) {
     super.update(dt);
+    time += dt;
 
     // Calculate how much the position changed this frame
     Vector2 velocityThisFrame = game.sundiver.body.linearVelocity.scaled(dt);

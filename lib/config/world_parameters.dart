@@ -7,8 +7,8 @@ const double shipSize = 10.0 * gameUnit;
 // max velocity in percentages of the world size
 const double shipMaxVelocity = 1.0 * gameUnit;
 
-const double shipAcceleration = 1.0 * gameUnit;
-const double shipDeceleration = 1.0 * gameUnit;
+const double shipAcceleration = 0.2 * gameUnit;
+const double shipDeceleration = 0.1 * gameUnit;
 
 // rotation speed (angular impulse)
 const double shipRotationSpeed = 1 * gameUnit;

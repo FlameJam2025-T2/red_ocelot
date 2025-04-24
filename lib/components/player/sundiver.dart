@@ -93,12 +93,12 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     );
     add(ship);
 
-    positionText = TextComponent(
-      textRenderer: textRenderer,
-      position: (size / 2)..y = size.y / 2 + (size.y / 3),
-      anchor: Anchor.center,
-    );
-    add(positionText);
+    // positionText = TextComponent(
+    //   textRenderer: textRenderer,
+    //   position: (size / 2)..y = size.y / 2 + (size.y / 3),
+    //   anchor: Anchor.center,
+    // );
+    // add(positionText);
 
     return world.createBody(bodyDef)..createFixture(fixtureDef);
   }
@@ -128,8 +128,8 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     //position.add(deltaPosition);
     _repulse();
     position.clamp(minPosition, maxPosition);
-    positionText.text =
-        '(x: ${position.x.toInt()}, y: ${position.y.toInt()}, 𝜃: ${angle.toStringAsPrecision(2)}, s: ${speed.toStringAsPrecision(2)}, vx: ${body.linearVelocity.x.toStringAsPrecision(2)}, vy: ${body.linearVelocity.y.toStringAsPrecision(2)})';
+    // positionText.text =
+    //     '(x: ${position.x.toInt()}, y: ${position.y.toInt()}, 𝜃: ${angle.toStringAsPrecision(2)}, s: ${speed.toStringAsPrecision(2)}, vx: ${body.linearVelocity.x.toStringAsPrecision(2)}, vy: ${body.linearVelocity.y.toStringAsPrecision(2)})';
   }
 
   /// add repulsion to world boundaries so as the ship approaches the boundaries

@@ -1,4 +1,4 @@
-import 'dart:math' as math;
+import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
@@ -10,23 +10,25 @@ import 'package:red_ocelot/components/monster_d.dart';
 import 'package:red_ocelot/components/monster_e.dart';
 import 'package:red_ocelot/components/ufo.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
+import 'package:red_ocelot/red_ocelot_game.dart';
 
-double gaussianRandom({double mean = 0, double stdDev = 1}) {
-  final rand = math.Random();
-  final u1 = rand.nextDouble();
-  final u2 = rand.nextDouble();
-  final z0 = math.sqrt(-2.0 * math.log(u1)) * math.cos(2.0 * math.pi * u2);
-  return z0 * stdDev + mean;
-}
-
-class Cluster extends PositionComponent with HasGameReference<Forge2DGame> {
+class Cluster extends PositionComponent with HasGameReference<RedOcelotGame> {
   final int count;
   double standardDeviation = 4 * gameUnit;
   final double radius;
   final double percentageUFO = 0.2;
   final double percentageMonster1 = 0.5;
+  final Random _rng;
 
-  Cluster({required this.count, required this.radius});
+  Cluster({required this.count, required this.radius, Random? rng})
+    : _rng = rng ?? Random();
+
+  double gaussianRandom({double mean = 0, double stdDev = 1}) {
+    final u1 = _rng.nextDouble();
+    final u2 = _rng.nextDouble();
+    final z0 = sqrt(-2.0 * log(u1)) * cos(2.0 * pi * u2);
+    return z0 * stdDev + mean;
+  }
 
   @override
   Future<void> onLoad() async {
@@ -34,18 +36,15 @@ class Cluster extends PositionComponent with HasGameReference<Forge2DGame> {
 
     game.world.add(CircularBoundary(center, radius));
 
-    final actualCount = math.max(
+    final actualCount = max(
       1,
       gaussianRandom(mean: count.toDouble(), stdDev: standardDeviation).round(),
     );
 
     for (int i = 0; i < actualCount; i++) {
-      final angle = i * 2 * math.pi / actualCount;
+      final angle = i * 2 * pi / actualCount;
       final offset =
-          Vector2(math.cos(angle), math.sin(angle)) *
-          radius *
-          0.9 *
-          math.Random().nextDouble();
+          Vector2(cos(angle), sin(angle)) * radius * 0.9 * _rng.nextDouble();
 
       final pos = center + offset; // world-space spawn pos
 
@@ -58,7 +57,7 @@ class Cluster extends PositionComponent with HasGameReference<Forge2DGame> {
         {'builder': () => MonsterE(pos), 'weight': 0.15},
       ];
 
-      final double rand = math.Random().nextDouble();
+      final double rand = _rng.nextDouble();
       double cumulative = 0;
 
       for (final e in enemies) {

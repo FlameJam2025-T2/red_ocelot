@@ -22,7 +22,6 @@ class RedocelotWorld extends Forge2DWorld with HasGameReference<RedOcelotGame> {
 class RedOcelotMap extends Component with HasGameReference<RedOcelotGame> {
   static const double size = mapSize;
   static final Rectangle bounds = Rectangle.fromLTRB(-size, -size, size, size);
-  // ignore: unused_field
   static Random _rng = Random();
 
   final int? seed;
@@ -32,10 +31,12 @@ class RedOcelotMap extends Component with HasGameReference<RedOcelotGame> {
     _rng = seed != null ? Random(seed) : Random();
   }
 
+  static Random get rng => _rng;
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    cluster = Cluster(count: 40, radius: 250 * gameUnit)
+    cluster = Cluster(count: 40, radius: 250 * gameUnit, rng: _rng)
       ..position = Vector2(500 * gameUnit, 300 * gameUnit);
     await add(cluster);
   }

@@ -251,6 +251,7 @@ class _GamepadToggleState extends State<GamepadToggle> {
               child: Center(
                 child: Icon(
                   Icons.gamepad,
+                  size: widget.size / 2,
                   color:
                       _isPressed
                           ? Colors.white.withAlpha(128)
