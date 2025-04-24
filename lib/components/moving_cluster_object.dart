@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:flame/components.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/circular_boundary.dart';
@@ -16,8 +15,13 @@ class MovingClusterObject extends BodyComponent with ContactCallbacks {
   double changeDirectionTimer = 0;
   double changeInterval = 2.0; // seconds
   late TextPainter textPainter;
+  SpriteName spriteName;
 
-  MovingClusterObject(this.startPos, {this.color = Colors.orange});
+  MovingClusterObject(
+    this.startPos, {
+    required this.spriteName,
+    this.color = Colors.orange,
+  });
 
   @override
   Future<void> onLoad() {
@@ -35,7 +39,7 @@ class MovingClusterObject extends BodyComponent with ContactCallbacks {
     )..layout();
 
     AnimatedSprite anim =
-        AnimatedSprite(spriteName: SpriteName.monsterA)
+        AnimatedSprite(spriteName: spriteName)
           ..size = Vector2(radius * 1.5, radius * 1.5)
           ..position = Vector2(-radius * .75, -radius * .75);
     add(anim);
@@ -88,12 +92,12 @@ class MovingClusterObject extends BodyComponent with ContactCallbacks {
 
   @override
   void render(Canvas canvas) {
-    super.render(canvas);
+    // super.render(canvas);
 
-    canvas.drawCircle(Vector2.zero().toOffset(), radius.toDouble(), paint);
+    // canvas.drawCircle(Vector2.zero().toOffset(), radius.toDouble(), paint);
 
-    final offset = Offset(-textPainter.width / 2, -textPainter.height / 2);
+    // final offset = Offset(-textPainter.width / 2, -textPainter.height / 2);
 
-    textPainter.paint(canvas, offset);
+    // textPainter.paint(canvas, offset);
   }
 }

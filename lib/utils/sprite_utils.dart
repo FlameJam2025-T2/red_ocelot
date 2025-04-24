@@ -1,7 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 
-enum SpriteName { monsterA, monsterB, ufo }
+enum SpriteName { monsterA, monsterB, monsterC, monsterD, monsterE, ufo }
 
 class SpriteInfo {
   final String fileName;
@@ -33,6 +33,30 @@ extension SpriteTypeExtension on SpriteName {
       case SpriteName.monsterB:
         return SpriteInfo(
           fileName: "/SpaceMonsters/SpaceMonsterB.png",
+          frames: 2,
+          framesPerRow: 2,
+          frameSize: Vector2(57, 57),
+          stepTime: 0.07,
+        );
+      case SpriteName.monsterC:
+        return SpriteInfo(
+          fileName: "/SpaceMonsters/SpaceMonsterC.png",
+          frames: 2,
+          framesPerRow: 2,
+          frameSize: Vector2(57, 57),
+          stepTime: 0.07,
+        );
+      case SpriteName.monsterD:
+        return SpriteInfo(
+          fileName: "/SpaceMonsters/SpaceMonsterD.png",
+          frames: 2,
+          framesPerRow: 2,
+          frameSize: Vector2(57, 57),
+          stepTime: 0.07,
+        );
+      case SpriteName.monsterE:
+        return SpriteInfo(
+          fileName: "/SpaceMonsters/SpaceMonsterE.png",
           frames: 2,
           framesPerRow: 2,
           frameSize: Vector2(57, 57),

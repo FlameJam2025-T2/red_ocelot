@@ -3,10 +3,11 @@ import 'package:red_ocelot/components/moving_cluster_object.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/utils/sprite_utils.dart';
 
-class Ufo extends MovingClusterObject {
-  Ufo(super.startPos) : super(spriteName: SpriteName.ufo, color: Colors.blue) {
+class MonsterB extends MovingClusterObject {
+  MonsterB(super.startPos)
+    : super(spriteName: SpriteName.monsterB, color: Colors.green) {
     radius = 15 * gameUnit;
-    initialVelocity = 50 * gameUnit;
-    letter = 'U';
+    initialVelocity = 20 * gameUnit;
+    letter = 'M2';
   }
 }

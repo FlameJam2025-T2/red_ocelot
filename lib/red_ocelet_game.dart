@@ -8,7 +8,6 @@ import 'package:flame/input.dart';
 import 'package:flame/parallax.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
-import 'package:red_ocelot/components/minimap.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelet_world.dart';
@@ -47,7 +46,7 @@ class RedOceletGame extends Forge2DGame
   }) async {
     final minSide = size.x < size.y ? size.x : size.y;
     final zoom = minSide / (shipSizeMultiplier * shipSize);
-    camera.viewfinder.zoom = zoom * 0.7;
+    camera.viewfinder.zoom = zoom;
   }
 
   @override
@@ -90,6 +89,21 @@ class RedOceletGame extends Forge2DGame
     );
 
     await add(starfield = parallax);
+
+    //could not get this to work
+    // final minimapCamera =
+    //     CameraComponent(world: world)
+    //       ..viewfinder.zoom =
+    //           0.1 // zoomed out a lot to fit world
+    //       ..viewfinder.position = Vector2(0, 0); // center on your ship maybe
+
+    // camera.viewport.add(
+    //   MinimapComponent(
+    //     minimapCamera: minimapCamera,
+    //     size: Vector2(250, 250),
+    //     position: Vector2(0, 0), // top-right corner
+    //   ),
+    // );
   }
 
   void joystickInput(Vector2 input) {
@@ -102,22 +116,6 @@ class RedOceletGame extends Forge2DGame
     } else {
       sundiver.stopShooting();
     }
-
-    final minimapCamera =
-        CameraComponent(world: world)
-          ..viewfinder.zoom = 0.1
-          ..viewfinder.position = Vector2(
-            500,
-            300,
-          ); // Center of map or wherever
-
-    camera.viewport.add(
-      MinimapComponent(
-        minimapCamera: minimapCamera,
-        size: Vector2(150, 150),
-        position: Vector2(0, 0),
-      ),
-    );
   }
 
   @override

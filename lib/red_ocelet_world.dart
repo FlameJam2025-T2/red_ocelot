@@ -1,14 +1,12 @@
-import 'dart:math';
-
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
-
-import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/components/cluster.dart';
+import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelet_game.dart';
 
 class RedOceletWorld extends Forge2DWorld with HasGameReference<RedOceletGame> {
@@ -37,7 +35,7 @@ class RedOcelotMap extends Component {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    cluster = Cluster(count: 20, radius: 250 * gameUnit)
+    cluster = Cluster(count: 40, radius: 250 * gameUnit)
       ..position = Vector2(500 * gameUnit, 300 * gameUnit);
     add(cluster);
   }

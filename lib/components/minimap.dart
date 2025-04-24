@@ -12,29 +12,33 @@ class MinimapComponent extends PositionComponent
     Vector2? size,
     Vector2? position,
   }) {
-    this.size = Vector2(150, 150);
-    this.position = Vector2(500, 300);
-    priority = 1000; // render on top
+    this.size = size ?? Vector2(150, 150);
+    this.position = position ?? Vector2(0, 0);
+    priority = 1000;
+  }
+  @override
+  Future<void> onLoad() async {
+    super.onLoad();
+    print("🛰️ MinimapComponent onLoad");
+    print("   ↳ Size: $size");
+    print("   ↳ Position: $position");
   }
 
   @override
   void render(Canvas canvas) {
-    // Save the current canvas state
+    print("🎨 MinimapComponent render tick");
+    print("   ↳ Rendering at: $position with size $size");
     canvas.save();
-
-    // Translate canvas to minimap's position
     canvas.translate(position.x, position.y);
-
-    // Clip to the minimap area
     canvas.clipRect(Rect.fromLTWH(0, 0, size.x, size.y));
 
-    // Set up a scale to shrink the world into the minimap
-    final double scaleFactor = size.x / 1000; // Adjust based on your world size
+    // ✅ draw background for visibility
+    // final paint = Paint()..color = const Color(0x8800FF00);
+    // canvas.drawRect(Rect.fromLTWH(0, 0, size.x, size.y), paint);
+
+    final scaleFactor = size.x / 1000;
     canvas.scale(scaleFactor);
-
-    // Render the world manually using the minimap camera
     minimapCamera.render(canvas);
-
     canvas.restore();
   }
 

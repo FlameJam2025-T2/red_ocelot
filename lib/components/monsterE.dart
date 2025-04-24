@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/moving_cluster_object.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
+import 'package:red_ocelot/utils/sprite_utils.dart';
 
-class Monster2 extends MovingClusterObject {
-  Monster2(super.startPos) : super(color: Colors.green) {
-    radius = 23 * gameUnit;
+class MonsterE extends MovingClusterObject {
+  MonsterE(super.startPos)
+    : super(spriteName: SpriteName.monsterE, color: Colors.green) {
+    radius = 11 * gameUnit;
     initialVelocity = 20 * gameUnit;
     letter = 'M2';
   }
