@@ -16,6 +16,8 @@ const double shipDensity = 3 * gameUnit;
 const double shipAngularDamping = 10.0 * gameUnit;
 const double mapSize = 5000 * gameUnit;
 
+const int clusterCount = 10;
+
 class CollisionType {
   static const int sundiver = 0x0001;
   static const int monster = 0x0002;

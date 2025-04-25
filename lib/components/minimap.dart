@@ -31,7 +31,7 @@ class MinimapHUD extends PositionComponent
     );
     double viewFindersize =
         5000 / game.camera.viewfinder.zoom * hudSize / 2 / mapSize;
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < game.clusterMap.clusters.length; i++) {
       final cluster = game.clusterMap.clusters[i];
       Vector2 clusterPosition = cluster.position * hudSize / 2 / mapSize;
 
