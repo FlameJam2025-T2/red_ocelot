@@ -19,21 +19,18 @@ class Cluster extends PositionComponent with HasGameReference<RedOcelotGame> {
   double radius;
   final double percentageUFO = 0.2;
   final double percentageMonster1 = 0.5;
-  final Random _rng;
+
+  int clusterIndex;
   late final CircularBoundary circularBoundary;
   late final Vector2 _center;
   final List<Map<String, dynamic>> _enemyBuilders = [];
   final List<MovingClusterObject> _enemies = [];
 
-  Cluster({required this.count, required this.radius, Random? rng})
-    : _rng = rng ?? Random();
-
-  double gaussianRandom({double mean = 0, double stdDev = 1}) {
-    final u1 = _rng.nextDouble();
-    final u2 = _rng.nextDouble();
-    final z0 = sqrt(-2.0 * log(u1)) * cos(2.0 * pi * u2);
-    return z0 * stdDev + mean;
-  }
+  Cluster({
+    required this.clusterIndex,
+    required this.count,
+    required this.radius,
+  });
 
   @override
   Future<void> onLoad() async {
@@ -41,31 +38,44 @@ class Cluster extends PositionComponent with HasGameReference<RedOcelotGame> {
 
     game.world.add(circularBoundary = CircularBoundary(_center, radius));
 
-    final actualCount = max(
-      1,
-      gaussianRandom(mean: count.toDouble(), stdDev: standardDeviation).round(),
-    );
-
-    for (int i = 0; i < actualCount; i++) {
-      final angle = i * 2 * pi / actualCount;
+    for (int i = 0; i < count; i++) {
+      final angle = i * 2 * pi / count;
       final offset =
-          Vector2(cos(angle), sin(angle)) * radius * 0.9 * _rng.nextDouble();
+          Vector2(cos(angle), sin(angle)) *
+          radius *
+          0.9 *
+          Random().nextDouble();
 
       final pos = _center + offset; // world-space spawn pos
       _enemyBuilders.addAll([
-        {'builder': () => Ufo(pos), 'weight': 0.3},
-        {'builder': () => MonsterA(pos), 'weight': 0.15},
-        {'builder': () => MonsterB(pos), 'weight': 0.15},
-        {'builder': () => MonsterC(pos), 'weight': 0.1},
-        {'builder': () => MonsterD(pos), 'weight': 0.15},
-        {'builder': () => MonsterE(pos), 'weight': 0.15},
+        {'builder': () => Ufo(pos, clusterIndex: clusterIndex), 'weight': 0.3},
+        {
+          'builder': () => MonsterA(pos, clusterIndex: clusterIndex),
+          'weight': 0.15,
+        },
+        {
+          'builder': () => MonsterB(pos, clusterIndex: clusterIndex),
+          'weight': 0.15,
+        },
+        {
+          'builder': () => MonsterC(pos, clusterIndex: clusterIndex),
+          'weight': 0.1,
+        },
+        {
+          'builder': () => MonsterD(pos, clusterIndex: clusterIndex),
+          'weight': 0.15,
+        },
+        {
+          'builder': () => MonsterE(pos, clusterIndex: clusterIndex),
+          'weight': 0.15,
+        },
       ]);
       _addEnemies();
     }
   }
 
   void _addEnemies() {
-    final double rand = _rng.nextDouble();
+    final double rand = Random().nextDouble();
     double cumulative = 0;
 
     for (final e in _enemyBuilders) {

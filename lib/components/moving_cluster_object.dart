@@ -3,7 +3,6 @@ import 'dart:math' as math;
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/alive.dart';
-// import 'package:red_ocelot/components/circular_boundary.dart';
 import 'package:red_ocelot/components/health_bar.dart';
 import 'package:red_ocelot/components/player/laser.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
@@ -21,8 +20,11 @@ class MovingClusterObject extends BodyComponent<RedOcelotGame>
   late final HealthBar _healthBar;
   SpriteName spriteName;
 
+  int clusterIndex;
+
   MovingClusterObject(
     this.startPos, {
+    required this.clusterIndex,
     required this.spriteName,
     required hitPoints,
     this.color = Colors.orange,
@@ -32,6 +34,7 @@ class MovingClusterObject extends BodyComponent<RedOcelotGame>
 
   @override
   Future<void> onLoad() {
+    print("loading moving cluster object");
     paint = Paint()..color = color;
 
     AnimatedSprite anim =
@@ -93,11 +96,15 @@ class MovingClusterObject extends BodyComponent<RedOcelotGame>
 
   @override
   void beginContact(Object other, Contact contact) {
-    // if (other is CircularBoundary) {}
     if (other is Laser) {
       lifePoints -= Laser.damage;
       if (lifePoints <= 0) {
         game.incrementScore(points: hitPoints);
+        game.clusterMap.reduceClusterObject(clusterIndex: clusterIndex);
+        // if (game.clusterMap.numberClusterObjects[clusterIndex] <= 0) {
+        //   game.clusterMap.clusters[clusterIndex].removeFromParent();
+        // }
+
         removeFromParent();
       }
     }

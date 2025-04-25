@@ -14,6 +14,9 @@ class HealthBar extends PositionComponent {
   final double width = 4 * gameUnit;
   @override
   late double height;
+  late Paint paint;
+  late Paint bgPaint;
+  Color barColor = Colors.green;
 
   @override
   FutureOr<void> onLoad() {
@@ -22,6 +25,9 @@ class HealthBar extends PositionComponent {
       parentObject.radius / 2 + 5 * gameUnit,
       -parentObject.radius * 0.75,
     );
+
+    paint = Paint()..color = barColor;
+    bgPaint = Paint()..color = const Color.fromARGB(255, 174, 171, 171);
     return super.onLoad();
   }
 
@@ -30,7 +36,7 @@ class HealthBar extends PositionComponent {
     final double percent = parentObject.lifePoints / parentObject.hitPoints;
 
     // Interpolate from green to red
-    Color barColor = Colors.green;
+
     if (percent > 0.7) {
       barColor = Colors.green;
     } else if (percent > 0.4) {
@@ -40,9 +46,6 @@ class HealthBar extends PositionComponent {
     } else {
       barColor = Colors.red;
     }
-
-    final paint = Paint()..color = barColor;
-    final bgPaint = Paint()..color = const Color.fromARGB(255, 174, 171, 171);
 
     // Draw background
     canvas.drawRect(Rect.fromLTWH(0, 0, width, height), bgPaint);

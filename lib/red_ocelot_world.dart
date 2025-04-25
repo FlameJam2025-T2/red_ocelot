@@ -40,7 +40,8 @@ class RedOcelotMap extends Component
   static Random _rng = Random();
 
   final int? seed;
-  late Cluster cluster;
+  late List<Cluster> clusters;
+  late List<int> numberClusterObjects = [];
 
   RedOcelotMap({this.seed}) : super(priority: 0) {
     _rng = seed != null ? Random(seed) : Random();
@@ -48,26 +49,67 @@ class RedOcelotMap extends Component
 
   static Random get rng => _rng;
 
+  void reduceClusterObject({int clusterIndex = 0}) {
+    numberClusterObjects[clusterIndex]--;
+  }
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-  }
+    final double worldMin = -5000 * gameUnit;
+    final double worldMax = 5000 * gameUnit;
+    final double clusterRadius = 250 * gameUnit;
+    final double minDistance = clusterRadius * 2;
 
-  @override
-  Future<void> onMount() async {
-    cluster = Cluster(count: 40, radius: 250 * gameUnit, rng: _rng)
-      ..position = Vector2(500 * gameUnit, 300 * gameUnit);
-    await add(cluster);
-  }
+    double gaussianRandom({double mean = 0, double stdDev = 1}) {
+      final u1 = Random().nextDouble();
+      final u2 = Random().nextDouble();
+      final z0 = sqrt(-2.0 * log(u1)) * cos(2.0 * pi * u2);
+      return z0 * stdDev + mean;
+    }
 
-  @override
-  void reset() {
-    cluster.reset();
-  }
+    Vector2 generateCoordinates(List<Vector2> existing) {
+      const int maxTries = 1000;
+      for (int attempt = 0; attempt < maxTries; attempt++) {
+        final x =
+            _rng.nextDouble() * (worldMax - worldMin - 2 * clusterRadius) +
+            worldMin +
+            clusterRadius;
+        final y =
+            _rng.nextDouble() * (worldMax - worldMin - 2 * clusterRadius) +
+            worldMin +
+            clusterRadius;
+        final candidate = Vector2(x, y);
 
-  static Vector2 generateCoordinates() {
-    return Vector2.random()
-      ..scale(2 * size)
-      ..sub(Vector2.all(size));
+        bool overlaps = existing.any(
+          (c) => c.distanceToSquared(candidate) < minDistance * minDistance,
+        );
+
+        if (!overlaps) return candidate;
+      }
+
+      throw Exception(
+        "Could not place non-overlapping cluster after $maxTries attempts",
+      );
+    }
+
+    clusters = [];
+    final positions = <Vector2>[];
+
+    for (int i = 0; i < 10; i++) {
+      final coordinates = generateCoordinates(positions);
+      final count = max(1, gaussianRandom(mean: 35, stdDev: 5).round());
+      numberClusterObjects.add(count);
+      final cluster = Cluster(
+        clusterIndex: i,
+        count: count,
+        radius: clusterRadius,
+      )..position = coordinates;
+
+      clusters.add(cluster);
+      positions.add(coordinates);
+    }
+
+    await addAll(clusters);
   }
 }
