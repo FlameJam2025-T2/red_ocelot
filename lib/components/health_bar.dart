@@ -53,7 +53,7 @@ class HealthBar extends PositionComponent {
     // Draw foreground bar
     canvas.drawRect(
       Rect.fromLTWH(0, height * (1 - percent), width, height * percent),
-      paint,
+      paint..color = barColor,
     );
   }
 }
