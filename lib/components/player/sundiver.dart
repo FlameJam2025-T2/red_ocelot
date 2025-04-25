@@ -1,10 +1,8 @@
 import 'dart:math';
-import 'dart:ui';
 
-import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
-import 'package:flame/effects.dart';
-import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:flame/particles.dart';
+import 'package:flame_forge2d/flame_forge2d.dart' hide Particle;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
@@ -48,9 +46,22 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   bool _shooting = false;
 
   late final Timer _shotSpawner;
+  final _random = Random();
+
+  Vector2 getRandomVector() {
+    return (Vector2.random(_random) - Vector2(0.5, -1)) * 200;
+  }
+
+  @override
+  void onMount() {
+    // TODO: implement onMount
+
+    super.onMount();
+  }
 
   @override
   Future<void> onLoad() async {
+    debugMode = true;
     await super.onLoad();
   }
 
@@ -143,6 +154,35 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     position.clamp(minPosition, maxPosition);
     // positionText.text =
     //     '(x: ${position.x.toInt()}, y: ${position.y.toInt()}, 𝜃: ${angle.toStringAsPrecision(2)}, s: ${speed.toStringAsPrecision(2)}, vx: ${body.linearVelocity.x.toStringAsPrecision(2)}, vy: ${body.linearVelocity.y.toStringAsPrecision(2)})';
+    final angle = body.angle;
+    final offset = Vector2(
+      sin(angle) * (size.y / 2),
+      -cos(angle) * (size.y / 2),
+    );
+
+    final worldPos = body.position - offset;
+    final screenPos = game.worldToScreen(worldPos);
+
+    final particle = ParticleSystemComponent(
+      position: screenPos,
+      particle: Particle.generate(
+        count: 50,
+        lifespan: 0.4,
+        generator:
+            (i) => AcceleratedParticle(
+              acceleration:
+                  getRandomVector() * 0.15 * max(body.linearVelocity.length, 1),
+              speed:
+                  getRandomVector() * 0.2 * max(body.linearVelocity.length, 1),
+              child: CircleParticle(
+                radius: size.x,
+                paint: Paint()..color = Colors.orange.withOpacity(0.8),
+              ),
+            ),
+      ),
+    )..angle = body.angle;
+
+    game.add(particle); // Don't add it to the SunDiver (a Forge2D component)
   }
 
   /// add repulsion to world boundaries so as the ship approaches the boundaries
