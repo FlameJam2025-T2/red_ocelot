@@ -56,6 +56,10 @@ class RedOcelotMap extends Component
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+  }
+
+  @override
+  Future<void> onMount() async {
     final double worldMin = -5000 * gameUnit;
     final double worldMax = 5000 * gameUnit;
     final double clusterRadius = 250 * gameUnit;
@@ -111,5 +115,13 @@ class RedOcelotMap extends Component
     }
 
     await addAll(clusters);
+  }
+
+  @override
+  void reset() {
+    for (int i = 0; i < clusters.length; i++) {
+      clusters[i].reset();
+    }
+    numberClusterObjects = [];
   }
 }
