@@ -1,49 +1,93 @@
-import 'dart:ui';
-
 import 'package:flame/components.dart';
+import 'package:flutter/material.dart';
+import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 
-class MinimapComponent extends PositionComponent
+class MinimapHUD extends PositionComponent
     with HasGameReference<RedOcelotGame> {
-  final CameraComponent minimapCamera;
+  Paint paintBox =
+      Paint()
+        ..color = const Color.fromARGB(255, 196, 23, 23)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.0;
+  Paint shipPaint = Paint()..color = Colors.red;
+  Paint clusterPaint = Paint()..color = const Color.fromARGB(255, 27, 7, 118);
+  final fillPaint =
+      Paint()
+        ..color = Colors.grey.withOpacity(0.3) // adjust opacity to your liking
+        ..style = PaintingStyle.fill;
 
-  MinimapComponent({
-    required this.minimapCamera,
-    Vector2? size,
-    Vector2? position,
-  }) {
-    this.size = size ?? Vector2(150, 150);
-    this.position = position ?? Vector2(0, 0);
-    priority = 1000;
-  }
-  @override
-  Future<void> onLoad() async {
-    super.onLoad();
-    print("🛰️ MinimapComponent onLoad");
-    print("   ↳ Size: $size");
-    print("   ↳ Position: $position");
-  }
+  double hudSize = 300;
 
   @override
   void render(Canvas canvas) {
-    print("🎨 MinimapComponent render tick");
-    print("   ↳ Rendering at: $position with size $size");
-    canvas.save();
-    canvas.translate(position.x, position.y);
-    canvas.clipRect(Rect.fromLTWH(0, 0, size.x, size.y));
+    canvas.drawRect(
+      Rect.fromLTRB(-hudSize / 2, -hudSize / 2, hudSize / 2, hudSize / 2),
+      paintBox,
+    );
+    canvas.drawRect(
+      Rect.fromLTRB(-hudSize / 2, -hudSize / 2, hudSize / 2, hudSize / 2),
+      fillPaint,
+    );
+    double viewFindersize =
+        5000 / game.camera.viewfinder.zoom * hudSize / 2 / mapSize;
+    for (int i = 0; i < 10; i++) {
+      final cluster = game.clusterMap.clusters[i];
+      Vector2 clusterPosition = cluster.position * hudSize / 2 / mapSize;
 
-    // ✅ draw background for visibility
-    // final paint = Paint()..color = const Color(0x8800FF00);
-    // canvas.drawRect(Rect.fromLTWH(0, 0, size.x, size.y), paint);
+      // Draw the cluster circle
+      canvas.drawCircle(
+        Offset(clusterPosition.x, clusterPosition.y),
+        350 * gameUnit * hudSize / 2 / mapSize,
+        clusterPaint,
+      );
 
-    final scaleFactor = size.x / 1000;
-    canvas.scale(scaleFactor);
-    minimapCamera.render(canvas);
-    canvas.restore();
-  }
+      // Get the number of objects left in the cluster
+      final int objectsLeft =
+          game.clusterMap.numberClusterObjects[i]; // adjust based on your model
 
-  @override
-  void update(double dt) {
-    minimapCamera.update(dt); // Keep the minimap camera updated
+      // Draw the number at the cluster position
+      final textSpan = TextSpan(
+        text: '$objectsLeft',
+        style: const TextStyle(color: Colors.white, fontSize: 16),
+      );
+      final textPainter = TextPainter(
+        text: textSpan,
+        textAlign: TextAlign.center,
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+
+      textPainter.paint(
+        canvas,
+        Offset(
+          clusterPosition.x - textPainter.width / 2,
+          clusterPosition.y - textPainter.height / 2,
+        ),
+      );
+    }
+
+    // Draw the ship
+    Vector2 minimapSundriverPosition =
+        game.sundiver.position * hudSize / 2 / mapSize;
+    canvas.drawCircle(
+      Offset(minimapSundriverPosition.x, minimapSundriverPosition.y),
+      5,
+      shipPaint,
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(
+        -viewFindersize / 2 + minimapSundriverPosition.x,
+        -viewFindersize / 2 + minimapSundriverPosition.y,
+        viewFindersize,
+        viewFindersize,
+      ),
+
+      paintBox,
+    );
+
+    // Draw the minimap border
+
+    super.render(canvas);
   }
 }

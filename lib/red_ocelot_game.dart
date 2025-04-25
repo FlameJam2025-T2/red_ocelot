@@ -6,20 +6,21 @@ import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
-
 import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
 import 'package:red_ocelot/components/hud.dart';
+import 'package:red_ocelot/components/minimap.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
 //import 'package:red_ocelot/components/samplers/laser.dart';
 import 'package:red_ocelot/components/samplers/starfield.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_world.dart';
-import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
 
 class RedOcelotGame extends Forge2DGame
     with SingleGameInstance, HasKeyboardHandlerComponents {
   late final RouterComponent router;
   late SunDiver sundiver;
+  late RedOcelotMap clusterMap;
   final Vector2 viewportResolution;
   SamplerCamera? starfieldCamera;
   //  SamplerCamera? laserCamera;
@@ -94,7 +95,8 @@ class RedOcelotGame extends Forge2DGame
 
     RedocelotWorld redocelotWorld = RedocelotWorld();
     world = redocelotWorld;
-    world.add(RedOcelotMap());
+    clusterMap = RedOcelotMap();
+    world.add(clusterMap);
 
     await _setZoom(size: viewportResolution);
 
@@ -112,6 +114,11 @@ class RedOcelotGame extends Forge2DGame
 
     camera.viewport.add(FpsTextComponent());
     camera.viewport.add(HUDComponent()..position = Vector2(size.x - 200, 50));
+    camera.viewport.add(
+      MinimapHUD()
+        ..position = Vector2(150, 200)
+        ..size = Vector2(200, 200),
+    );
   }
 
   void joystickInput(Vector2 input) {

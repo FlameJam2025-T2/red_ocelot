@@ -61,7 +61,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
 
   @override
   Future<void> onLoad() async {
-    debugMode = true;
+    // debugMode = true;
     await super.onLoad();
   }
 
@@ -121,7 +121,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
       pixelRatio: 1.0,
     );
 
-    //game.add(_laserCamera);
+    // game.add(_laserCamera);
 
     return world.createBody(bodyDef)..createFixture(fixtureDef);
   }
