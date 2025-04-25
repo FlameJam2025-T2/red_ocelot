@@ -160,10 +160,11 @@ class SamplerCanvas<O extends SamplerOwner> implements Canvas {
     return actualCanvas.drawRRect(rrect, paint);
   }
 
-  @override
-  void drawRSuperellipse(RSuperellipse rsuperellipse, Paint paint) {
-    return actualCanvas.drawRSuperellipse(rsuperellipse, paint);
-  }
+  // flutter main channel
+  // @override
+  // void drawRSuperellipse(RSuperellipse rsuperellipse, Paint paint) {
+  //   return actualCanvas.drawRSuperellipse(rsuperellipse, paint);
+  // }
 
   @override
   void drawRawAtlas(
@@ -211,16 +212,17 @@ class SamplerCanvas<O extends SamplerOwner> implements Canvas {
     return actualCanvas.drawVertices(vertices, blendMode, paint);
   }
 
-  @override
-  void clipRSuperellipse(
-    RSuperellipse rsuperellipse, {
-    bool doAntiAlias = true,
-  }) {
-    return actualCanvas.clipRSuperellipse(
-      rsuperellipse,
-      doAntiAlias: doAntiAlias,
-    );
-  }
+  // flutter main channel
+  // @override
+  // void clipRSuperellipse(
+  //   RSuperellipse rsuperellipse, {
+  //   bool doAntiAlias = true,
+  // }) {
+  //   return actualCanvas.clipRSuperellipse(
+  //     rsuperellipse,
+  //     doAntiAlias: doAntiAlias,
+  //   );
+  // }
 
   @override
   Rect getDestinationClipBounds() {
