@@ -124,15 +124,17 @@ class RedOcelotGame extends Forge2DGame
     final RedOcelotWorld redOcelotWorld = RedOcelotWorld(map: clusterMap);
     world = redOcelotWorld;
 
-    starfieldCamera = SamplerCamera(
+    starfieldCamera = SamplerCamera.withFixedResolution(
       samplerOwner: StarfieldSamplerOwner(starfieldFrag.fragmentShader(), this),
-      viewport: FixedSizeViewport(viewportResolution.x, viewportResolution.y),
+      width: viewportResolution.x,
+      height: viewportResolution.y,
       world: world,
       pixelRatio: 1.0,
-    );
+    )..viewfinder.position = size / 2;
 
     sundiver = SunDiver(
       size: Vector2(shipSize, shipSize),
+      // todo: Randomize
       startPos: Vector2(550 * gameUnit, 330 * gameUnit),
     );
 

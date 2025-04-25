@@ -115,7 +115,6 @@ class SunDiver extends BodyComponent<RedOcelotGame>
       sprite: sprite,
       size: size,
       anchor: Anchor.center,
-      paint: Paint()..blendMode = BlendMode.xor,
       angle: 0,
       nativeAngle: 0,
     );
