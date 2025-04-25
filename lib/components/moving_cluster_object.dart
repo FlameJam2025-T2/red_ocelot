@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
+import 'package:red_ocelot/components/alive.dart';
 import 'package:red_ocelot/components/circular_boundary.dart';
 import 'package:red_ocelot/components/health_bar.dart';
 import 'package:red_ocelot/components/player/laser.dart';
@@ -10,7 +11,7 @@ import 'package:red_ocelot/red_ocelot_game.dart';
 import 'package:red_ocelot/utils/sprite_utils.dart';
 
 class MovingClusterObject extends BodyComponent<RedOcelotGame>
-    with ContactCallbacks {
+    with ContactCallbacks, Alive {
   final Vector2 startPos;
   final Color color;
   double radius = 10 * gameUnit;
@@ -18,15 +19,15 @@ class MovingClusterObject extends BodyComponent<RedOcelotGame>
   double changeDirectionTimer = 0;
   double changeInterval = 2.0; // seconds
   SpriteName spriteName;
-  int hitPoints;
-  int lifePoints = 10;
 
   MovingClusterObject(
     this.startPos, {
     required this.spriteName,
-    required this.hitPoints,
+    required hitPoints,
     this.color = Colors.orange,
-  });
+  }) : super() {
+    this.hitPoints = hitPoints;
+  }
 
   @override
   Future<void> onLoad() {

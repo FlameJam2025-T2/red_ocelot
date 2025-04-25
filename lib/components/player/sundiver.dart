@@ -7,6 +7,7 @@ import 'package:flame/effects.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:red_ocelot/components/alive.dart';
 import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
 import 'package:red_ocelot/components/player/laser.dart';
 import 'package:red_ocelot/components/samplers/laser.dart';
@@ -15,13 +16,19 @@ import 'package:red_ocelot/red_ocelot_game.dart';
 import 'package:red_ocelot/red_ocelot_world.dart';
 
 class SunDiver extends BodyComponent<RedOcelotGame>
-    with ContactCallbacks, KeyboardHandler {
-  SunDiver({Vector2? startPos, Vector2? size, super.priority = 2, super.key})
-    : super() {
+    with ContactCallbacks, KeyboardHandler, Alive {
+  SunDiver({
+    Vector2? startPos,
+    Vector2? size,
+    super.priority = 2,
+    int? hitPoints,
+    super.key,
+  }) : super() {
     // set the size of the ship
     this.size = size ?? Vector2.all(shipSize);
     // set the position of the ship
     this.startPos = startPos ?? Vector2.all(RedOcelotMap.size / 2);
+    this.hitPoints = hitPoints ?? 50;
   }
 
   static final TextPaint textRenderer = TextPaint(

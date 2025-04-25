@@ -17,7 +17,6 @@ class HealthBar extends PositionComponent {
 
   @override
   FutureOr<void> onLoad() {
-    // TODO: implement onLoad
     height = parentObject.radius * 1.5;
     position = Vector2(
       parentObject.radius / 2 + 5 * gameUnit,
