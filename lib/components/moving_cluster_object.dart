@@ -34,7 +34,6 @@ class MovingClusterObject extends BodyComponent<RedOcelotGame>
 
   @override
   Future<void> onLoad() {
-    print("loading moving cluster object");
     paint = Paint()..color = color;
 
     AnimatedSprite anim =

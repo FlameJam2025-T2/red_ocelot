@@ -7,7 +7,6 @@ import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flame_audio/flame_audio.dart';
-
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
 import 'package:red_ocelot/components/hud.dart';
@@ -18,7 +17,6 @@ import 'package:red_ocelot/components/samplers/starfield.dart';
 import 'package:red_ocelot/config/keys.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_world.dart';
-import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
 
 enum GameState {
   loading, // Initial state during loading
@@ -144,6 +142,7 @@ class RedOcelotGame extends Forge2DGame
     await world.add(sundiver);
 
     _gameInitialized = true;
+    camera.viewport.add(FpsTextComponent());
     camera.viewport.add(
       MinimapHUD()
         ..position = Vector2(150, 200)
