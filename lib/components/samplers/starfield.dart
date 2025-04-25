@@ -17,7 +17,6 @@ class StarfieldSamplerOwner extends SamplerOwner {
 
   @override
   void sampler(List<Image> images, Size size, Canvas canvas) {
-    // final origin = cameraComponent!.visibleWorldRect.topLeft.toVector2();
     shader.setFloatUniforms((value) {
       value
         ..setVector(size.toVector2())
@@ -28,11 +27,7 @@ class StarfieldSamplerOwner extends SamplerOwner {
 
     canvas
       ..save()
-      ..drawRect(
-        Offset.zero & size,
-        Paint()..shader = shader,
-        //  ..blendMode = BlendMod,
-      )
+      ..drawRect(Offset.zero & size, Paint()..shader = shader)
       ..restore();
   }
 

@@ -10,6 +10,7 @@ import 'package:flame/input.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:red_ocelot/components/hud.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
+//import 'package:red_ocelot/components/samplers/laser.dart';
 import 'package:red_ocelot/components/samplers/starfield.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_world.dart';
@@ -21,9 +22,14 @@ class RedOcelotGame extends Forge2DGame
   late SunDiver sundiver;
   final Vector2 viewportResolution;
   SamplerCamera? starfieldCamera;
+  //  SamplerCamera? laserCamera;
   final Future<FragmentProgram> _starfieldShader = FragmentProgram.fromAsset(
     'shaders/starfield.frag',
   );
+  final Future<FragmentProgram> _laserFrag = FragmentProgram.fromAsset(
+    'shaders/laser.frag',
+  );
+  late final FragmentShader laserShader;
 
   int totalScore = 0;
   int totalEnemiesKilled = 0;
@@ -70,6 +76,17 @@ class RedOcelotGame extends Forge2DGame
       pixelRatio: 1.0,
     );
     add(starfieldCamera!);
+
+    // // Load the laser shader
+    laserShader = (await _laserFrag).fragmentShader();
+    // laserCamera = SamplerCamera.withFixedResolution(
+    //   samplerOwner: LaserSamplerOwner(laserShader.fragmentShader(), this),
+    //   width: 100 * gameUnit,
+    //   height: 10 * gameUnit,
+    //   world: world,
+    //   pixelRatio: 1.0,
+    // );
+    // add(laserCamera!);
 
     camera = CameraComponent(
       viewport: FixedSizeViewport(viewportResolution.x, viewportResolution.y),

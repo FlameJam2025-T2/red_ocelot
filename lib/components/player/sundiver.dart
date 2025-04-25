@@ -1,10 +1,15 @@
 import 'dart:math';
+import 'dart:ui';
 
+import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
 import 'package:red_ocelot/components/player/laser.dart';
+import 'package:red_ocelot/components/samplers/laser.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 import 'package:red_ocelot/red_ocelot_world.dart';
@@ -33,6 +38,9 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   late final maxPosition = Vector2.all(RedOcelotMap.size - size.x / 2);
   late final minPosition = -maxPosition;
 
+  late final LaserSamplerOwner _laserShader;
+  late final SamplerCamera _laserCamera;
+
   bool _rotatingLeft = false;
   bool _rotatingRight = false;
   bool _accelerating = false;
@@ -44,16 +52,17 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+  }
+
+  @override
+  Body createBody() {
     _shotSpawner = Timer(
       Laser.cooldown,
       onTick: _shoot,
       repeat: true,
       autoStart: false,
     );
-  }
 
-  @override
-  Body createBody() {
     renderBody = false;
     final bodyDef = BodyDef(
       userData: this,
@@ -80,7 +89,6 @@ class SunDiver extends BodyComponent<RedOcelotGame>
           )
           ..filter.categoryBits = CollisionType.sundiver
           ..filter.maskBits = CollisionType.monster | CollisionType.laser;
-    ;
 
     final sprite = Sprite(game.images.fromCache('sundiver.png'));
 
@@ -93,12 +101,16 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     );
     add(ship);
 
-    // positionText = TextComponent(
-    //   textRenderer: textRenderer,
-    //   position: (size / 2)..y = size.y / 2 + (size.y / 3),
-    //   anchor: Anchor.center,
-    // );
-    // add(positionText);
+    _laserShader = LaserSamplerOwner(game.laserShader, game);
+    _laserCamera = SamplerCamera.withFixedResolution(
+      samplerOwner: _laserShader,
+      width: game.viewportResolution.x,
+      height: game.viewportResolution.y,
+      world: world,
+      pixelRatio: 1.0,
+    );
+
+    //game.add(_laserCamera);
 
     return world.createBody(bodyDef)..createFixture(fixtureDef);
   }
@@ -111,6 +123,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   @override
   void update(double dt) {
     super.update(dt);
+    _laserCamera.update(dt);
     _shotSpawner.update(dt);
     if (_rotatingLeft) {
       _rotateLeft(dt);
