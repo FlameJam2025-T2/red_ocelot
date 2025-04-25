@@ -129,6 +129,18 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     world.add(laser);
   }
 
+  void reset() {
+    lifePoints = hitPoints;
+    body.setTransform(startPos, 0);
+    body.linearVelocity = Vector2.zero();
+    body.angularVelocity = 0;
+    _shotSpawner.stop();
+    _shotSpawner.reset();
+    if (isRemoved) {
+      game.add(this);
+    }
+  }
+
   @override
   void update(double dt) {
     super.update(dt);
@@ -297,7 +309,9 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   void beginContact(Object other, Contact contact) {
     print('begin contact with $other');
     if (other is MovingClusterObject) {
-      game.pauseEngine();
+      if (game.isMounted) {
+        game.gameOver();
+      }
     }
   }
 

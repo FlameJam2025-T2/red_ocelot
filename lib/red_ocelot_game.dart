@@ -6,15 +6,25 @@ import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
+import 'package:flame_audio/flame_audio.dart';
 
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:red_ocelot/components/hud.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
 //import 'package:red_ocelot/components/samplers/laser.dart';
 import 'package:red_ocelot/components/samplers/starfield.dart';
+import 'package:red_ocelot/config/keys.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_world.dart';
 import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
+
+enum GameState {
+  loading, // Initial state during loading
+  menu, // At main menu
+  playing, // Game is active
+  paused, // Game is paused
+  gameOver, // Game is over
+}
 
 class RedOcelotGame extends Forge2DGame
     with SingleGameInstance, HasKeyboardHandlerComponents {
@@ -31,6 +41,9 @@ class RedOcelotGame extends Forge2DGame
   );
   late final FragmentProgram starfieldFrag;
   late final FragmentShader laserShader;
+
+  GameState _gameState = GameState.loading;
+  bool _gameInitialized = false;
 
   int totalScore = 0;
   int totalEnemiesKilled = 0;
@@ -94,15 +107,19 @@ class RedOcelotGame extends Forge2DGame
 
     // camera.viewport.add(FpsTextComponent());
     camera.viewport.add(HUDComponent()..position = Vector2(size.x - 200, 50));
+
+    _gameState = GameState.menu;
+
+    // Pause until ready
+    pauseEngine();
   }
 
   @override
   Future<void> onMount() async {
     super.onMount();
 
-    RedocelotWorld redocelotWorld = RedocelotWorld();
-    world = redocelotWorld;
-    await world.add(RedOcelotMap());
+    final RedOcelotWorld redOcelotWorld = RedOcelotWorld(map: RedOcelotMap());
+    world = redOcelotWorld;
 
     starfieldCamera = SamplerCamera(
       samplerOwner: StarfieldSamplerOwner(starfieldFrag.fragmentShader(), this),
@@ -120,10 +137,54 @@ class RedOcelotGame extends Forge2DGame
 
     await world.add(starfieldCamera!);
     await world.add(sundiver);
+
+    _gameInitialized = true;
   }
 
   void joystickInput(Vector2 input) {
     sundiver.handlJoystickInput(input);
+  }
+
+  void startGame() {
+    if (_gameState == GameState.playing) return;
+    overlays.clear();
+    overlays.add(gamepadToggleKey);
+    _gameState = GameState.playing;
+    resumeEngine();
+    if (!FlameAudio.bgm.isPlaying) {
+      FlameAudio.bgm.play('spaceW0rp.mp3', volume: 0.25);
+    }
+  }
+
+  void gameOver() {
+    if (_gameState == GameState.gameOver) return;
+    _gameState = GameState.gameOver;
+
+    overlays.add(gameOverKey);
+    if (overlays.isActive(gamepadKey)) {
+      overlays.remove(gamepadKey);
+    }
+    if (overlays.isActive(gamepadToggleKey)) {
+      overlays.remove(gamepadToggleKey);
+    }
+
+    pauseEngine();
+  }
+
+  void resetGame() {
+    totalScore = 0;
+    totalEnemiesKilled = 0;
+    (world as RedOcelotWorld).reset();
+    sundiver.reset();
+  }
+
+  void showMainMenu() {
+    pauseEngine();
+    overlays.clear();
+
+    overlays.add(mainMenuKey);
+
+    _gameState = GameState.menu;
   }
 
   void buttonInput(bool pressed) {

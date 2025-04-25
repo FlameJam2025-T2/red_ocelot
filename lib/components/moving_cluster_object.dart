@@ -18,6 +18,7 @@ class MovingClusterObject extends BodyComponent<RedOcelotGame>
   double initialVelocity = 10 * gameUnit;
   double changeDirectionTimer = 0;
   double changeInterval = 2.0; // seconds
+  late final HealthBar _healthBar;
   SpriteName spriteName;
 
   MovingClusterObject(
@@ -38,8 +39,18 @@ class MovingClusterObject extends BodyComponent<RedOcelotGame>
           ..size = Vector2(radius * 1.5, radius * 1.5)
           ..position = Vector2(-radius * .75, -radius * .75);
     add(anim);
-    add(HealthBar(parentObject: this)..position = Vector2(0, 0));
+    add(_healthBar = HealthBar(parentObject: this)..position = Vector2(0, 0));
     return super.onLoad();
+  }
+
+  void reset() {
+    lifePoints = hitPoints;
+    changeDirectionTimer = 0;
+    body.linearVelocity = _randomVelocity();
+    body.setTransform(startPos, 0);
+    if (isRemoved) {
+      game.add(this);
+    }
   }
 
   @override

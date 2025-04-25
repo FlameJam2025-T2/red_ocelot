@@ -27,7 +27,7 @@ class HealthBar extends PositionComponent {
 
   @override
   void render(Canvas canvas) {
-    final double percent = parentObject.lifePoints / 10;
+    final double percent = parentObject.lifePoints / parentObject.hitPoints;
 
     // Interpolate from green to red
     Color barColor = Colors.green;

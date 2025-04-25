@@ -6,15 +6,15 @@ import 'package:red_ocelot/config/world_parameters.dart';
 class CircularBoundary extends BodyComponent with ContactCallbacks {
   @override
   final Vector2 center;
-  final double radius;
+  double radius;
   final int segments = 50;
+  late FixtureDef _fixture;
 
   CircularBoundary(this.center, this.radius);
 
   @override
   Body createBody() {
-    final bodyDef = BodyDef()..position = center;
-    final body = world.createBody(bodyDef);
+    body = world.createBody(BodyDef()..position = center);
 
     for (int i = 0; i < segments; i++) {
       final angle1 = 2 * math.pi * i / segments;
@@ -25,15 +25,19 @@ class CircularBoundary extends BodyComponent with ContactCallbacks {
 
       final shape = EdgeShape()..set(v1, v2);
 
-      final fixtureDef =
+      _fixture =
           FixtureDef(shape)
             ..userData = this
             ..filter.categoryBits = CollisionType.boundary;
-      ; // 👈 this links the fixture to the component
 
-      body.createFixture(fixtureDef);
+      body.createFixture(_fixture);
     }
 
     return body;
+  }
+
+  void reset() {
+    body.transform.p.setFrom(center);
+    _fixture.shape.radius = radius;
   }
 }

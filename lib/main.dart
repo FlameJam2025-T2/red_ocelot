@@ -5,6 +5,7 @@ import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/config/keys.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
+import 'package:red_ocelot/ui/game_over.dart';
 import 'package:red_ocelot/ui/menu.dart';
 import 'package:red_ocelot/ui/pallette.dart';
 import 'package:red_ocelot/ui/gamepad.dart';
@@ -69,12 +70,7 @@ class _GameContainerState extends State<GameContainer> {
                   MenuItem(
                     title: 'Start Game',
                     onPressed: () {
-                      game.overlays.remove(mainMenuKey);
-                      game.overlays.add(gamepadToggleKey);
-                      // Start the game
-                      if (!FlameAudio.bgm.isPlaying) {
-                        FlameAudio.bgm.play('spaceW0rp.mp3', volume: 0.25);
-                      }
+                      game.startGame();
                     },
                   ),
                   MenuItem(
@@ -149,6 +145,9 @@ class _GameContainerState extends State<GameContainer> {
                         {game.overlays.add(gamepadKey)},
                     },
               );
+            },
+            gameOverKey: (_, RedOcelotGame game) {
+              return GameOverOverlay(game: game, score: game.totalScore);
             },
           },
 
