@@ -36,6 +36,10 @@ class RedOcelotMap extends Component with HasGameReference<RedOcelotGame> {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+  }
+
+  @override
+  Future<void> onMount() async {
     cluster = Cluster(count: 40, radius: 250 * gameUnit, rng: _rng)
       ..position = Vector2(500 * gameUnit, 300 * gameUnit);
     await add(cluster);

@@ -29,6 +29,7 @@ class RedOcelotGame extends Forge2DGame
   final Future<FragmentProgram> _laserFrag = FragmentProgram.fromAsset(
     'shaders/laser.frag',
   );
+  late final FragmentProgram starfieldFrag;
   late final FragmentShader laserShader;
 
   int totalScore = 0;
@@ -68,14 +69,7 @@ class RedOcelotGame extends Forge2DGame
     await loadSprite('sundiver.png');
 
     // Load the shader program
-    final shader = await _starfieldShader;
-    starfieldCamera = SamplerCamera(
-      samplerOwner: StarfieldSamplerOwner(shader.fragmentShader(), this),
-      viewport: FixedSizeViewport(viewportResolution.x, viewportResolution.y),
-      world: world,
-      pixelRatio: 1.0,
-    );
-    add(starfieldCamera!);
+    starfieldFrag = await _starfieldShader;
 
     // // Load the laser shader
     laserShader = (await _laserFrag).fragmentShader();
@@ -92,26 +86,40 @@ class RedOcelotGame extends Forge2DGame
       viewport: FixedSizeViewport(viewportResolution.x, viewportResolution.y),
     );
 
-    RedocelotWorld redocelotWorld = RedocelotWorld();
-    world = redocelotWorld;
-    world.add(RedOcelotMap());
-
     await _setZoom(size: viewportResolution);
 
-    await world.add(
-      sundiver = SunDiver(
-        size: Vector2(shipSize, shipSize),
-        startPos: Vector2(550 * gameUnit, 330 * gameUnit),
-      ),
-    );
     camera.viewfinder.position = size / 2;
 
     camera.setBounds(RedOcelotMap.bounds);
 
+    // camera.viewport.add(FpsTextComponent());
+    camera.viewport.add(HUDComponent()..position = Vector2(size.x - 200, 50));
+  }
+
+  @override
+  Future<void> onMount() async {
+    super.onMount();
+
+    RedocelotWorld redocelotWorld = RedocelotWorld();
+    world = redocelotWorld;
+    await world.add(RedOcelotMap());
+
+    starfieldCamera = SamplerCamera(
+      samplerOwner: StarfieldSamplerOwner(starfieldFrag.fragmentShader(), this),
+      viewport: FixedSizeViewport(viewportResolution.x, viewportResolution.y),
+      world: world,
+      pixelRatio: 1.0,
+    );
+
+    sundiver = SunDiver(
+      size: Vector2(shipSize, shipSize),
+      startPos: Vector2(550 * gameUnit, 330 * gameUnit),
+    );
+
     camera.follow(sundiver);
 
-    camera.viewport.add(FpsTextComponent());
-    camera.viewport.add(HUDComponent()..position = Vector2(size.x - 200, 50));
+    await world.add(starfieldCamera!);
+    await world.add(sundiver);
   }
 
   void joystickInput(Vector2 input) {
@@ -147,7 +155,7 @@ class RedOcelotGame extends Forge2DGame
     // Update your game logic here
     super.update(dt);
     // update parallax based on the sundiver's velocity
-    starfieldCamera!.update(dt);
+    starfieldCamera?.update(dt);
     // starfield.parallax?.baseVelocity = Vector2(
     //   velocity.x / gameUnit / 2,
     //   velocity.y / gameUnit / 2,

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:red_ocelot/components/alive.dart';
 import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
+import 'package:red_ocelot/components/moving_cluster_object.dart';
 import 'package:red_ocelot/components/player/laser.dart';
 import 'package:red_ocelot/components/samplers/laser.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
@@ -103,6 +104,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
       sprite: sprite,
       size: size,
       anchor: Anchor.center,
+      paint: Paint()..blendMode = BlendMode.xor,
       angle: 0,
       nativeAngle: 0,
     );
@@ -288,6 +290,14 @@ class SunDiver extends BodyComponent<RedOcelotGame>
       // this shouldn't be modified directly ....so be it?
       body.linearVelocity.scaleTo(maxSpeed);
       return;
+    }
+  }
+
+  @override
+  void beginContact(Object other, Contact contact) {
+    print('begin contact with $other');
+    if (other is MovingClusterObject) {
+      game.pauseEngine();
     }
   }
 

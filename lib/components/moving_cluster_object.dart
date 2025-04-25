@@ -50,7 +50,8 @@ class MovingClusterObject extends BodyComponent<RedOcelotGame>
           ..restitution = 1.0
           ..density = 1.0
           ..friction = 0.0
-          ..userData = this;
+          ..userData = this
+          ..filter.categoryBits = CollisionType.monster;
 
     final bodyDef =
         BodyDef()
