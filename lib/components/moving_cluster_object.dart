@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/alive.dart';
-import 'package:red_ocelot/components/circular_boundary.dart';
+// import 'package:red_ocelot/components/circular_boundary.dart';
 import 'package:red_ocelot/components/health_bar.dart';
 import 'package:red_ocelot/components/player/laser.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
@@ -81,12 +81,9 @@ class MovingClusterObject extends BodyComponent<RedOcelotGame>
 
   @override
   void beginContact(Object other, Contact contact) {
-    if (other is CircularBoundary) {
-      print("Collision with CircularBoundary");
-    }
+    // if (other is CircularBoundary) {}
     if (other is Laser) {
-      print("Collision with Laser");
-      lifePoints -= 2;
+      lifePoints -= Laser.damage;
       if (lifePoints <= 0) {
         game.incrementScore(points: hitPoints);
         removeFromParent();

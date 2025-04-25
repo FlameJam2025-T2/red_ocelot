@@ -23,6 +23,7 @@ class Laser extends BodyComponent<RedOcelotGame> with Weapon, ContactCallbacks {
     this.direction = Vector2(cos(direction), sin(direction));
   }
   static const double cooldown = 0.1;
+  static const int damage = 2;
   late final Vector2 startPos;
   late final Vector2 size;
   late final Vector2 direction;
@@ -70,7 +71,6 @@ class Laser extends BodyComponent<RedOcelotGame> with Weapon, ContactCallbacks {
 
   @override
   void beginContact(Object other, Contact contact) {
-    print('Laser contacted: $other');
     if (other is MovingClusterObject) {
       removeFromParent();
     }
