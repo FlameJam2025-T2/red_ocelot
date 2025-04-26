@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:math';
 
 import 'package:flame/components.dart';
@@ -35,7 +36,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   );
   late final Vector2 startPos;
   late final Vector2 size;
-  static const double maxSpeed = RedOcelotMap.size * shipMaxVelocity;
+  static const double maxSpeed = RedOcelotMap.size * shipMaxVelocity * 0.1;
   static double speed = 0;
   static const double _shipRotationSpeed = shipRotationSpeed;
   final Vector2 velocity = Vector2.zero();
@@ -269,6 +270,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     final isKeyDown = event is KeyDownEvent || event is KeyRepeatEvent;
 
     final bool handled;
+    print("body angle: ${body.angle}");
 
     // left / right key rotate the ship
     // up accellerates the ship, and down decellerates it (no reverse)
@@ -327,28 +329,40 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     _shotSpawner.stop();
   }
 
-  void handlJoystickInput(Vector2 input) {
-    if (input.x < -0.4) {
-      _rotatingLeft = true;
-      _rotatingRight = false;
-    } else if (input.x > 0.4) {
-      _rotatingLeft = false;
-      _rotatingRight = true;
-    } else {
-      _rotatingLeft = false;
-      _rotatingRight = false;
+  void reactToJoystickInput(Vector2 input) {
+    if (input.length < 0.2) {
+      // No input → no rotation or movement
+      _decelerating = true;
+      return;
+    }
+    _decelerating = false;
+    final desiredAngle = math.atan2(input.x, -input.y);
+    final currentAngle = body.angle;
+
+    double angleDifference = desiredAngle - currentAngle;
+
+    // Normalize angle to range [-π, π]
+    while (angleDifference > pi) angleDifference -= 2 * pi;
+    while (angleDifference < -pi) angleDifference += 2 * pi;
+
+    // Apply small rotation toward desiredAngle
+    const rotationStrength = 0.05; // Tweak this
+    final smoothedRotation = angleDifference * 0.01; // Easing toward target
+    body.applyAngularImpulse(smoothedRotation * rotationStrength);
+
+    // Apply forward thrust in current facing direction
+    const thrustStrength = 1.0; // Tweak this
+
+    if (body.linearVelocity.length > maxSpeed) {
+      body.linearVelocity.scaleTo(maxSpeed);
     }
 
-    if (input.y < -0.3) {
-      _accelerating = true;
-      _decelerating = false;
-    } else if (input.y > 0.3) {
-      _accelerating = false;
-      _decelerating = true;
-    } else {
-      _accelerating = false;
-      _decelerating = false;
-    }
+    body.applyForce(
+      Vector2(cos(desiredAngle - pi / 2), sin(desiredAngle - pi / 2)) *
+          thrustStrength *
+          input.length,
+    );
+    print("speed: ${body.linearVelocity.length}");
   }
 
   void _rotateLeft(double dt) {
@@ -392,9 +406,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
 
   void _decelerate(double dt) {
     final delta = (shipDeceleration * maxSpeed) * dt;
-    body.applyLinearImpulse(
-      Vector2(cos(angle - pi / 2) * -delta, sin(angle - pi / 2) * -delta),
-    );
+    body.applyLinearImpulse(body.linearVelocity * -delta);
 
     speed = body.linearVelocity.length;
 
