@@ -1,3 +1,6 @@
+import 'dart:math' as math;
+import 'dart:ui';
+
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
@@ -29,20 +32,16 @@ class MinimapHUD extends PositionComponent
       Rect.fromLTRB(-hudSize / 2, -hudSize / 2, hudSize / 2, hudSize / 2),
       fillPaint,
     );
-    double viewFindersize =
-        5000 / game.camera.viewfinder.zoom * hudSize / 2 / mapSize;
+
     for (int i = 0; i < clusterCount; i++) {
       final cluster = game.clusterMap.clusters[i];
       Vector2 clusterPosition = cluster.position * hudSize / 2 / mapSize;
-
-      // Draw the cluster circle
       canvas.drawCircle(
         Offset(clusterPosition.x, clusterPosition.y),
         350 * gameUnit * hudSize / 2 / mapSize,
         clusterPaint,
       );
 
-      // Get the number of objects left in the cluster
       final int objectsLeft =
           game.clusterMap.numberClusterObjects[i]; // adjust based on your model
 
@@ -66,25 +65,38 @@ class MinimapHUD extends PositionComponent
         ),
       );
     }
-
-    // Draw the ship
     Vector2 minimapSundriverPosition =
         game.sundiver.position * hudSize / 2 / mapSize;
-    canvas.drawCircle(
-      Offset(minimapSundriverPosition.x, minimapSundriverPosition.y),
-      5,
-      shipPaint,
-    );
-    canvas.drawRect(
-      Rect.fromLTWH(
-        -viewFindersize / 2 + minimapSundriverPosition.x,
-        -viewFindersize / 2 + minimapSundriverPosition.y,
-        viewFindersize,
-        viewFindersize,
-      ),
 
-      paintBox,
+    List<Offset> transformVertices({
+      required List<Offset> vertices,
+      required Offset offset,
+      required double rotation, // in radians
+    }) {
+      final cosTheta = math.cos(rotation);
+      final sinTheta = math.sin(rotation);
+
+      return vertices.map((vertex) {
+        final rotatedX = vertex.dx * cosTheta - vertex.dy * sinTheta;
+        final rotatedY = vertex.dx * sinTheta + vertex.dy * cosTheta;
+        return Offset(rotatedX + offset.dx, rotatedY + offset.dy);
+      }).toList();
+    }
+
+    final vertices = Vertices(
+      VertexMode.triangles,
+      transformVertices(
+        vertices: [
+          Offset(0, -75 * gameUnit), // Top point
+          Offset(-50 * gameUnit, 75 * gameUnit), // Bottom left
+          Offset(50 * gameUnit, 75 * gameUnit), // Bottom right
+        ],
+        offset: Offset(minimapSundriverPosition.x, minimapSundriverPosition.y),
+        rotation: game.sundiver.angle,
+      ),
     );
+
+    canvas.drawVertices(vertices, BlendMode.srcOver, shipPaint);
 
     // Draw the minimap border
 

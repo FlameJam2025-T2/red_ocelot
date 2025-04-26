@@ -3,11 +3,11 @@
 
 import 'dart:ui';
 
-import 'package:red_ocelot/components/flame_shaders/sampler_canvas.dart';
-import 'package:red_ocelot/components/flame_shaders/layer.dart';
 import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
+import 'package:red_ocelot/components/flame_shaders/layer.dart';
+import 'package:red_ocelot/components/flame_shaders/sampler_canvas.dart';
 
 class SamplerCamera<OwnerType extends SamplerOwner> extends CameraComponent {
   SamplerCamera({
@@ -72,10 +72,11 @@ class SamplerCamera<OwnerType extends SamplerOwner> extends CameraComponent {
 
   @override
   void renderTree(Canvas canvas) {
-    final offset = viewport.position;
+    // final offset = viewport.position;
+
     canvas
       ..save()
-      ..translate(offset.x, offset.y);
+      ..translate(-500, -500);
     layer.render(canvas, viewport.size.toSize());
     canvas.restore();
   }

@@ -74,6 +74,7 @@ class RedOcelotGame extends Forge2DGame
     final minSide = size.x < size.y ? size.x : size.y;
     final zoom = minSide / (shipSizeMultiplier * shipSize);
     camera.viewfinder.zoom = zoom;
+    starfieldCamera?.viewfinder.zoom = zoom;
   }
 
   @override
@@ -122,13 +123,19 @@ class RedOcelotGame extends Forge2DGame
     final RedOcelotWorld redOcelotWorld = RedOcelotWorld(map: clusterMap);
     world = redOcelotWorld;
 
-    starfieldCamera = SamplerCamera.withFixedResolution(
-      samplerOwner: StarfieldSamplerOwner(starfieldFrag.fragmentShader(), this),
-      width: viewportResolution.x,
-      height: viewportResolution.y,
-      world: world,
-      pixelRatio: 1.0,
-    )..viewfinder.position = size / 2;
+    starfieldCamera =
+        SamplerCamera.withFixedResolution(
+            samplerOwner: StarfieldSamplerOwner(
+              starfieldFrag.fragmentShader(),
+              this,
+            ),
+            width: 10000 * gameUnit,
+            height: 10000 * gameUnit,
+            world: world,
+            pixelRatio: 1.0,
+          )
+          ..viewfinder.position = size / 2
+          ..debugMode = true;
 
     sundiver = SunDiver(
       size: Vector2(shipSize, shipSize),
@@ -207,7 +214,11 @@ class RedOcelotGame extends Forge2DGame
   @override
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
-    starfieldCamera?.viewport.size = size;
+    starfieldCamera?.viewport.size = Vector2(
+      10000 * gameUnit,
+      10000 * gameUnit,
+    );
+    print("Resizing to $size");
     // Update the camera's viewport size
     camera.viewport.size = size;
     // Update the zoom level based on the new size

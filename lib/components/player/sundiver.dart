@@ -43,6 +43,18 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   late final Vector2 textPosition;
   late final maxPosition = Vector2.all(RedOcelotMap.size - size.x / 2);
   late final minPosition = -maxPosition;
+  Color currentColor = Colors.black;
+  double colorProgress = 0.0;
+  bool flashRed = false;
+  final shipColor =
+      Paint()
+        ..colorFilter = ColorFilter.mode(
+          const Color.fromARGB(255, 189, 4, 4),
+          BlendMode.srcIn, // ✅
+        );
+  void triggerFlash() {
+    flashRed = true;
+  }
 
   late final LaserSamplerOwner _laserShader;
   late final SamplerCamera _laserCamera;
@@ -117,6 +129,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
       anchor: Anchor.center,
       angle: 0,
       nativeAngle: 0,
+      paint: shipColor,
     );
     add(ship);
 
@@ -163,6 +176,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
       _rotateRight(dt);
     }
     if (_accelerating) {
+      triggerFlash();
       _accelerate(dt);
     }
     if (_decelerating) {
@@ -203,6 +217,28 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     )..angle = body.angle;
 
     game.add(particle); // Don't add it to the SunDiver (a Forge2D component)
+    if (flashRed) {
+      colorProgress += dt; // Increase progress
+      if (colorProgress >= 1.0) {
+        colorProgress = 1.0;
+        flashRed = false; // Flash done
+      }
+    } else if (colorProgress > 0) {
+      colorProgress -= dt; // Fade back to black
+      if (colorProgress <= 0) {
+        colorProgress = 0;
+      }
+    }
+
+    // Update the current color
+    currentColor =
+        Color.lerp(
+          const Color.fromARGB(255, 7, 60, 15),
+          const Color(0xFFBD0404), // Red
+          colorProgress.clamp(0.0, 1.0),
+        )!;
+
+    shipColor.colorFilter = ColorFilter.mode(currentColor, BlendMode.srcIn);
   }
 
   /// add repulsion to world boundaries so as the ship approaches the boundaries
