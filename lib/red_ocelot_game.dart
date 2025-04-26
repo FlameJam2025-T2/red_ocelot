@@ -119,7 +119,6 @@ class RedOcelotGame extends Forge2DGame
   Future<void> onMount() async {
     super.onMount();
     clusterMap = RedOcelotMap();
-    print("game viewport: ${camera.viewfinder.anchor}");
     final RedOcelotWorld redOcelotWorld = RedOcelotWorld(map: clusterMap);
     world = redOcelotWorld;
 
@@ -130,7 +129,6 @@ class RedOcelotGame extends Forge2DGame
       world: world,
       pixelRatio: 1.0,
     )..viewfinder.position = size / 2;
-    print("starfieldCamera: ${starfieldCamera?.viewfinder.position}");
 
     sundiver = SunDiver(
       size: Vector2(shipSize, shipSize),
