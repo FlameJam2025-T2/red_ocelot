@@ -62287,12 +62287,13 @@ a.bl()}}
 A.ov.prototype={
 Rj(a,b){return new A.uE($.a5().xc(a,null))},
 VQ(a){this.MC(a)},
-e8(a){var s,r
+e8(a){var s,r=this.ax
 a.bB()
-a.bQ(-500,-500)
+s=r.CW.a
+a.bQ(s[0],s[1])
 s=this.p2
 s===$&&A.b()
-r=this.ax.gG().a
+r=r.gG().a
 s.mt(a,new A.Z(r[0],r[1]))
 a.bl()},
 a7(a){this.l9(a)
