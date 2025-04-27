@@ -62654,7 +62654,7 @@ p=q.a[1]
 o=Math.cos(e)
 q=q.a[1]
 d=new A.d(new Float32Array(2))
-d.a0(s*(p/2),-o*(q/2))
+d.a0(-s*(p/8),o*(q/8))
 c=a0.ax.d.a.I(0,d)
 s=a0.gbQ().p1
 b=s.ax.kD(s.ay.ax.kD(c,a1),a1)
@@ -62687,10 +62687,10 @@ return!0}},
 qV(a,b){A.mM("begin contact with "+A.j(a))
 if(a instanceof A.e4)if((this.gbQ().a&4)!==0)this.gbQ().Kr()}}
 A.a0o.prototype={
-$1(a){var s,r=this.a,q=r.Av().C(0,0.15),p=r.ax
+$1(a){var s,r=this.a,q=r.Av().C(0,0.05),p=r.ax
 p===$&&A.b()
-p=q.C(0,Math.max(Math.sqrt(p.r.ge3()),1))
-q=r.Av().C(0,0.2).C(0,Math.max(Math.sqrt(r.ax.r.ge3()),1))
+p=q.C(0,Math.max(Math.sqrt(p.r.ge3()),0.5))
+q=r.Av().C(0,0.02).C(0,Math.max(Math.sqrt(r.ax.r.ge3()),0.5))
 r=r.to
 r===$&&A.b()
 r=r.a[0]
