@@ -85,7 +85,6 @@ class _GameContainerState extends State<GameContainer> {
                   MenuItem(
                     title: 'High Scores',
                     onPressed: () {
-                      game.overlays.remove(mainMenuKey);
                       game.overlays.add(highScoresKey);
                     },
                   ),

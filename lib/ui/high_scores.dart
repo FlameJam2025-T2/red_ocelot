@@ -1,13 +1,13 @@
-// lib/ui/high_scores.dart
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/config/game_settings.dart';
+import 'package:red_ocelot/config/keys.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 import 'package:red_ocelot/ui/pallette.dart';
 
 class HighScoresScreen extends StatefulWidget {
   final RedOcelotGame game;
 
-  const HighScoresScreen({Key? key, required this.game}) : super(key: key);
+  const HighScoresScreen({required this.game, super.key});
 
   @override
   State<HighScoresScreen> createState() => _HighScoresScreenState();
@@ -16,7 +16,7 @@ class HighScoresScreen extends StatefulWidget {
 class _HighScoresScreenState extends State<HighScoresScreen> {
   List<HighScore> highScores = [];
   bool isLoading = true;
-  bool sortByScores = true; // true = sort by score, false = sort by time
+  bool sortByScores = true;
 
   @override
   void initState() {
@@ -310,12 +310,11 @@ class _HighScoresScreenState extends State<HighScoresScreen> {
             // Back button
             TextButton.icon(
               onPressed: () {
-                widget.game.overlays.remove('HighScores');
-                widget.game.overlays.add('MainMenu');
+                widget.game.overlays.remove(highScoresKey);
               },
               icon: const Icon(Icons.arrow_back, color: textColor),
               label: const Text(
-                'Back to Menu',
+                'Back',
                 style: TextStyle(color: textColor, fontSize: 16),
               ),
             ),
