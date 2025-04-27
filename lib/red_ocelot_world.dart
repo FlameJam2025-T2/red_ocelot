@@ -36,7 +36,10 @@ class RedOcelotWorld extends Forge2DWorld with HasGameReference<RedOcelotGame> {
 class RedOcelotMap extends Component
     with WorldMap, HasGameReference<RedOcelotGame> {
   static const double size = mapSize;
-  static final Rectangle bounds = Rectangle.fromLTRB(-size, -size, size, size);
+  static final Rectangle bounds = Rectangle.fromCenter(
+    center: Vector2.zero(),
+    size: Vector2(size, size),
+  );
   static Random _rng = Random();
   final double clusterRadius = 250 * gameUnit;
 
@@ -68,8 +71,8 @@ class RedOcelotMap extends Component
   }
 
   Vector2 generateCoordinates(List<Vector2> existing) {
-    final double worldMin = -mapSize;
-    final double worldMax = mapSize;
+    final double worldMin = -mapSize / 2;
+    final double worldMax = mapSize / 2;
 
     final double minDistance = clusterRadius * 2;
     const int maxTries = 1000;

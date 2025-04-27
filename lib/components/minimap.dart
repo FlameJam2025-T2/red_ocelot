@@ -1,3 +1,6 @@
+import 'dart:math';
+import 'dart:ui';
+
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
@@ -7,14 +10,14 @@ class MinimapHUD extends PositionComponent
     with HasGameReference<RedOcelotGame> {
   Paint paintBox =
       Paint()
-        ..color = const Color.fromARGB(255, 196, 23, 23)
+        ..color = const Color.fromARGB(128, 196, 23, 23)
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2.0;
   Paint shipPaint = Paint()..color = Colors.red;
-  Paint clusterPaint = Paint()..color = const Color.fromARGB(255, 27, 7, 118);
+  Paint clusterPaint = Paint()..color = const Color.fromARGB(128, 27, 7, 118);
   final fillPaint =
       Paint()
-        ..color = Colors.grey.withOpacity(0.3) // adjust opacity to your liking
+        ..color = Colors.grey.withAlpha(50) // adjust opacity to your liking
         ..style = PaintingStyle.fill;
 
   double hudSize = 300;
@@ -29,16 +32,14 @@ class MinimapHUD extends PositionComponent
       Rect.fromLTRB(-hudSize / 2, -hudSize / 2, hudSize / 2, hudSize / 2),
       fillPaint,
     );
-    double viewFindersize =
-        5000 / game.camera.viewfinder.zoom * hudSize / 2 / mapSize;
     for (int i = 0; i < clusterCount; i++) {
       final cluster = game.clusterMap.clusters[i];
-      Vector2 clusterPosition = cluster.position * hudSize / 2 / mapSize;
+      Vector2 clusterPosition = cluster.position * hudSize / mapSize;
 
       // Draw the cluster circle
       canvas.drawCircle(
         Offset(clusterPosition.x, clusterPosition.y),
-        350 * gameUnit * hudSize / 2 / mapSize,
+        350 * gameUnit * hudSize / mapSize / 1.5,
         clusterPaint,
       );
 
@@ -69,25 +70,45 @@ class MinimapHUD extends PositionComponent
 
     // Draw the ship
     Vector2 minimapSundriverPosition =
-        game.sundiver.position * hudSize / 2 / mapSize;
-    canvas.drawCircle(
-      Offset(minimapSundriverPosition.x, minimapSundriverPosition.y),
-      5,
-      shipPaint,
-    );
-    canvas.drawRect(
-      Rect.fromLTWH(
-        -viewFindersize / 2 + minimapSundriverPosition.x,
-        -viewFindersize / 2 + minimapSundriverPosition.y,
-        viewFindersize,
-        viewFindersize,
-      ),
+        game.sundiver.position * hudSize / mapSize;
+    // canvas.drawCircle(
+    //   Offset(minimapSundriverPosition.x, minimapSundriverPosition.y),
+    //   5,
+    //   shipPaint,
+    // );
 
-      paintBox,
+    canvas.drawVertices(
+      _getShipVertices(minimapSundriverPosition, game.sundiver.body.angle),
+      BlendMode.srcOver,
+      shipPaint,
     );
 
     // Draw the minimap border
 
     super.render(canvas);
+  }
+
+  Vertices _getShipVertices(Vector2 position, double angle) {
+    final double size = 10.0; // Size of the ship on the minimap
+    final double halfSize = size / 2;
+
+    final List<Offset> vertices =
+        <Offset>[
+          Offset(0, -halfSize * 1.5), // Top vertex
+          Offset(-halfSize, halfSize * 1.5), // Bottom left vertex
+          Offset(halfSize, halfSize * 1.5), // Bottom right vertex
+        ].map((offset) {
+          return Offset(
+            position.x + offset.dx * cos(angle) - offset.dy * sin(angle),
+            position.y + offset.dx * sin(angle) + offset.dy * cos(angle),
+          );
+        }).toList();
+
+    return Vertices(
+      VertexMode.triangles,
+      vertices,
+      textureCoordinates: null,
+      colors: null,
+    );
   }
 }

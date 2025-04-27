@@ -41,7 +41,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   final Vector2 velocity = Vector2.zero();
   late final TextComponent positionText;
   late final Vector2 textPosition;
-  late final maxPosition = Vector2.all(RedOcelotMap.size - size.x / 2);
+  late final maxPosition = Vector2.all(RedOcelotMap.size / 2 - size.x);
   late final minPosition = -maxPosition;
 
   late final LaserSamplerOwner _laserShader;
