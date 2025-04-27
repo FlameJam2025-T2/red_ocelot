@@ -69,25 +69,14 @@ class MinimapHUD extends PositionComponent
     }
 
     // Draw the ship
-    Vector2 minimapSundriverPosition =
-        game.sundiver.position * hudSize / 2 / mapSize;
-    canvas.drawCircle(
-      Offset(minimapSundriverPosition.x, minimapSundriverPosition.y),
-      5,
+    final Vector2 minimapSundriverPosition =
+        game.sundiver.position * hudSize / mapSize;
+
+    canvas.drawVertices(
+      _getShipVertices(minimapSundriverPosition, game.sundiver.body.angle),
+      BlendMode.srcOver,
       shipPaint,
     );
-    canvas.drawRect(
-      Rect.fromLTWH(
-        -viewFindersize / 2 + minimapSundriverPosition.x,
-        -viewFindersize / 2 + minimapSundriverPosition.y,
-        viewFindersize,
-        viewFindersize,
-      ),
-
-      paintBox,
-    );
-
-    // Draw the minimap border
 
     super.render(canvas);
   }

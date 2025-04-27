@@ -14,7 +14,6 @@ import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
 import 'package:red_ocelot/components/hud.dart';
 import 'package:red_ocelot/components/minimap.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
-//import 'package:red_ocelot/components/samplers/laser.dart';
 import 'package:red_ocelot/components/samplers/starfield.dart';
 import 'package:red_ocelot/config/keys.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
@@ -48,7 +47,6 @@ class RedOcelotGame extends Forge2DGame
   MinimapHUD? minimapHUD;
 
   GameState _gameState = GameState.loading;
-  bool _gameInitialized = false;
 
   int totalScore = 0;
   int totalEnemiesKilled = 0;
@@ -152,7 +150,6 @@ class RedOcelotGame extends Forge2DGame
     await clusterMap.add(starfieldCamera!);
     await world.add(sundiver);
 
-    _gameInitialized = true;
     if (kDebugMode) {
       camera.viewport.add(FpsTextComponent());
     }
