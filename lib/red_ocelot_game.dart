@@ -85,6 +85,7 @@ class RedOcelotGame extends Forge2DGame
     final minSide = size.x < size.y ? size.x : size.y;
     final zoom = minSide / (shipSizeMultiplier * shipSize);
     camera.viewfinder.zoom = zoom;
+    starfieldCamera?.viewfinder.zoom = zoom;
   }
 
   @override
@@ -169,7 +170,7 @@ class RedOcelotGame extends Forge2DGame
   }
 
   void joystickInput(Vector2 input) {
-    sundiver.handlJoystickInput(input);
+    sundiver.reactToJoystickInput(input);
   }
 
   void startGame() {
@@ -225,7 +226,11 @@ class RedOcelotGame extends Forge2DGame
   @override
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
-    starfieldCamera?.viewport.size = size;
+    starfieldCamera?.viewport.size = Vector2(
+      10000 * gameUnit,
+      10000 * gameUnit,
+    );
+    print("Resizing to $size");
     // Update the camera's viewport size
     camera.viewport.size = size;
     // Update the zoom level based on the new size

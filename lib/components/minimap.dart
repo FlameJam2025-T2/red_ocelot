@@ -44,7 +44,6 @@ class MinimapHUD extends PositionComponent
         clusterPaint,
       );
 
-      // Get the number of objects left in the cluster
       final int objectsLeft =
           game.clusterMap.numberClusterObjects[cluster] ?? 0;
 
@@ -70,14 +69,25 @@ class MinimapHUD extends PositionComponent
     }
 
     // Draw the ship
-    final Vector2 minimapSundriverPosition =
-        game.sundiver.position * hudSize / mapSize;
-
-    canvas.drawVertices(
-      _getShipVertices(minimapSundriverPosition, game.sundiver.body.angle),
-      BlendMode.srcOver,
+    Vector2 minimapSundriverPosition =
+        game.sundiver.position * hudSize / 2 / mapSize;
+    canvas.drawCircle(
+      Offset(minimapSundriverPosition.x, minimapSundriverPosition.y),
+      5,
       shipPaint,
     );
+    canvas.drawRect(
+      Rect.fromLTWH(
+        -viewFindersize / 2 + minimapSundriverPosition.x,
+        -viewFindersize / 2 + minimapSundriverPosition.y,
+        viewFindersize,
+        viewFindersize,
+      ),
+
+      paintBox,
+    );
+
+    // Draw the minimap border
 
     super.render(canvas);
   }
