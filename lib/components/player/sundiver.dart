@@ -206,11 +206,11 @@ class SunDiver extends BodyComponent<RedOcelotGame>
             (i) => AcceleratedParticle(
               acceleration:
                   getRandomVector() *
-                  0.05 *
+                  0.15 *
                   max(body.linearVelocity.length, 0.5),
               speed:
                   getRandomVector() *
-                  0.02 *
+                  0.20 *
                   max(body.linearVelocity.length, 0.5),
               child: CircleParticle(
                 radius: size.x,
