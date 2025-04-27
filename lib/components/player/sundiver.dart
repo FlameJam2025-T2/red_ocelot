@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
 import 'package:flame_forge2d/flame_forge2d.dart' hide Particle;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:red_ocelot/components/alive.dart';
@@ -74,13 +75,6 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   }
 
   @override
-  void onMount() {
-    // TODO: implement onMount
-
-    super.onMount();
-  }
-
-  @override
   Future<void> onLoad() async {
     // debugMode = true;
     await super.onLoad();
@@ -142,8 +136,6 @@ class SunDiver extends BodyComponent<RedOcelotGame>
       world: world,
       pixelRatio: 1.0,
     );
-
-    // game.add(_laserCamera);
 
     return world.createBody(bodyDef)..createFixture(fixtureDef);
   }
@@ -345,8 +337,12 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     double angleDifference = desiredAngle - currentAngle;
 
     // Normalize angle to range [-π, π]
-    while (angleDifference > pi) angleDifference -= 2 * pi;
-    while (angleDifference < -pi) angleDifference += 2 * pi;
+    while (angleDifference > pi) {
+      angleDifference -= 2 * pi;
+    }
+    while (angleDifference < -pi) {
+      angleDifference += 2 * pi;
+    }
 
     // Apply small rotation toward desiredAngle
     const rotationStrength = 0.05; // Tweak this
@@ -368,16 +364,10 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   }
 
   void _rotateLeft(double dt) {
-    // angle -= _shipRotationSpeed * dt;
-    // angle = angle % (2 * pi);
-
     body.applyAngularImpulse(-_shipRotationSpeed * dt);
   }
 
   void _rotateRight(double dt) {
-    // angle += _shipRotationSpeed * dt;
-    // angle = angle % (2 * pi);
-
     body.applyAngularImpulse(_shipRotationSpeed * dt);
   }
 
@@ -398,7 +388,9 @@ class SunDiver extends BodyComponent<RedOcelotGame>
 
   @override
   void beginContact(Object other, Contact contact) {
-    print('begin contact with $other');
+    if (kDebugMode) {
+      print('begin contact with $other');
+    }
     if (other is MovingClusterObject) {
       if (game.isMounted) {
         game.gameOver();

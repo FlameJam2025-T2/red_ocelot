@@ -35,8 +35,9 @@ class StarfieldSamplerOwner extends SamplerOwner {
       ..save()
       ..drawRect(
         Offset(-viewportSize.x / 2, -viewportSize.y / 2) & size,
-        Paint()..shader = shader,
-        //..blendMode = BlendMode.overlay,
+        Paint()
+          ..shader = shader
+          ..blendMode = BlendMode.exclusion,
       )
       ..restore();
   }
@@ -57,6 +58,6 @@ class StarfieldSamplerOwner extends SamplerOwner {
     Vector2 velocityThisFrame = game.sundiver.body.linearVelocity.scaled(dt);
 
     // Add to our cumulative offset
-    cumulativeOffset.add(velocityThisFrame.scaled(0.001));
+    cumulativeOffset.add(velocityThisFrame.scaled(0.0001));
   }
 }
