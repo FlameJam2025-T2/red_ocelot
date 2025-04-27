@@ -62319,7 +62319,7 @@ l=new Float32Array(2)
 l[1]=j[1]
 l[0]=j[0]
 new A.d(l).a_(0.002)
-a1.fX(new A.H(l[0],l[1]),35*b.R8/500/1.5,r)
+a1.fX(new A.H(l[0],l[1]),m.p3*b.R8/500,r)
 j=b.bN$
 if(j==null){h=b.d4()
 h.toString
