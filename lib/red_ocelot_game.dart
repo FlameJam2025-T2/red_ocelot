@@ -33,6 +33,7 @@ class RedOcelotGame extends Forge2DGame
   late SunDiver sundiver;
   late RedOcelotMap clusterMap;
   final Vector2 viewportResolution;
+  final double devicePixelRatio;
   SamplerCamera? starfieldCamera;
   //  SamplerCamera? laserCamera;
   final Future<FragmentProgram> _starfieldShader = FragmentProgram.fromAsset(
@@ -50,13 +51,20 @@ class RedOcelotGame extends Forge2DGame
   int totalScore = 0;
   int totalEnemiesKilled = 0;
 
-  RedOcelotGame({required this.viewportResolution}) : super();
+  RedOcelotGame({
+    required this.viewportResolution,
+    required this.devicePixelRatio,
+  }) : super();
 
   // factory method for gamefactory, without requiring this.viewportResolution
   static RedOcelotGame Function() newGameWithViewport(
     Vector2 viewportResolution,
+    double devicePixelRatio,
   ) {
-    return () => RedOcelotGame(viewportResolution: viewportResolution);
+    return () => RedOcelotGame(
+      viewportResolution: viewportResolution,
+      devicePixelRatio: devicePixelRatio,
+    );
   }
 
   void incrementScore({required int points}) {
@@ -123,23 +131,23 @@ class RedOcelotGame extends Forge2DGame
     final RedOcelotWorld redOcelotWorld = RedOcelotWorld(map: clusterMap);
     world = redOcelotWorld;
 
+    sundiver = SunDiver(
+      size: Vector2(shipSize, shipSize),
+      // todo: Randomize
+      startPos: Vector2(0, 0),
+    );
+
     starfieldCamera = SamplerCamera.withFixedResolution(
       samplerOwner: StarfieldSamplerOwner(starfieldFrag.fragmentShader(), this),
       width: viewportResolution.x,
       height: viewportResolution.y,
       world: world,
-      pixelRatio: 1.0,
-    );
-
-    sundiver = SunDiver(
-      size: Vector2(shipSize, shipSize),
-      // todo: Randomize
-      startPos: Vector2(550 * gameUnit, 330 * gameUnit),
+      pixelRatio: devicePixelRatio,
     );
 
     camera.follow(sundiver);
 
-    await world.add(starfieldCamera!);
+    await clusterMap.add(starfieldCamera!);
     await world.add(sundiver);
 
     _gameInitialized = true;

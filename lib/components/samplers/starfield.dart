@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flame/components.dart';
 import 'package:red_ocelot/components/flame_shaders/sampler_canvas.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 import 'package:flame/extensions.dart';
@@ -8,12 +9,18 @@ class StarfieldSamplerOwner extends SamplerOwner {
   StarfieldSamplerOwner(super.shader, this.game) : super();
 
   final RedOcelotGame game;
-  Vector2 cumulativeOffset = Vector2.zero();
-  Vector2 position = Vector2.zero();
+  late final Vector2 viewportSize = Vector2.zero();
+  final Vector2 cumulativeOffset = Vector2.zero();
   double time = 0.0;
 
   @override
   int get passes => 0;
+
+  @override
+  void attachCamera(CameraComponent cameraComponent) {
+    super.attachCamera(cameraComponent);
+    viewportSize.setFrom(cameraComponent.viewport.size);
+  }
 
   @override
   void sampler(List<Image> images, Size size, Canvas canvas) {
@@ -24,11 +31,10 @@ class StarfieldSamplerOwner extends SamplerOwner {
         ..setFloat(cumulativeOffset.y)
         ..setFloat(time);
     });
-
     canvas
       ..save()
       ..drawRect(
-        Offset.zero & size,
+        Offset(-viewportSize.x / 2, -viewportSize.y / 2) & size,
         Paint()..shader = shader,
         //..blendMode = BlendMode.overlay,
       )
@@ -39,6 +45,7 @@ class StarfieldSamplerOwner extends SamplerOwner {
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
     cameraComponent?.viewport.size = size;
+    viewportSize.setFrom(size);
   }
 
   @override

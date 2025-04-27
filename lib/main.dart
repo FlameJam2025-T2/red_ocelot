@@ -60,6 +60,7 @@ class _GameContainerState extends State<GameContainer> {
               MediaQuery.of(context).size.width,
               MediaQuery.of(context).size.height,
             ),
+            MediaQuery.of(context).devicePixelRatio,
           ),
           overlayBuilderMap: {
             mainMenuKey: (_, RedOcelotGame game) {

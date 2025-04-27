@@ -14,7 +14,7 @@ const float scale = 3e4;
 #define F for(float i = .1; i <.9; i+=.04)
 void main()
 {	
-    vec2 u = FlutterFragCoord() / uSize.y;
+    vec2 u = FlutterFragCoord() / uSize.xy;
     f -= f;    
     F 
     {
