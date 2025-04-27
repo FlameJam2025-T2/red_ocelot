@@ -34,8 +34,7 @@ class MinimapHUD extends PositionComponent
       fillPaint,
     );
     for (Cluster cluster in game.clusterMap.clusters) {
-      final Vector2 clusterPosition =
-          (cluster.circularBoundary.center * hudSize / mapSize);
+      final Vector2 clusterPosition = (cluster.center * hudSize / mapSize);
 
       // Draw the cluster circle
       canvas.drawCircle(

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flame/components.dart';
+import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:red_ocelot/components/circular_boundary.dart';
 import 'package:red_ocelot/components/monster_a.dart';
 import 'package:red_ocelot/components/monster_b.dart';
@@ -20,10 +21,11 @@ class Cluster extends PositionComponent with HasGameReference<RedOcelotGame> {
   final double percentageMonster1 = 0.5;
 
   int clusterIndex;
-  late final CircularBoundary circularBoundary;
-  late final Vector2 _center;
-  final List<Map<String, dynamic>> _enemyBuilders = [];
-  final List<MovingClusterObject> _enemies = [];
+  late CircularBoundary circularBoundary;
+  @override
+  late Vector2 center;
+  List<Map<String, dynamic>> _enemyBuilders = [];
+  List<MovingClusterObject> _enemies = [];
 
   Cluster({
     required this.clusterIndex,
@@ -33,9 +35,15 @@ class Cluster extends PositionComponent with HasGameReference<RedOcelotGame> {
 
   @override
   Future<void> onLoad() async {
-    _center = position + size / 2; // world space center
+    size = Vector2.all(radius * 2);
+    _addClusterComponents();
+    super.onLoad();
+  }
 
-    game.world.add(circularBoundary = CircularBoundary(_center, radius));
+  void _addClusterComponents() {
+    center = position + size / 2; // world space center
+
+    game.world.add(circularBoundary = CircularBoundary(center, radius));
 
     for (int i = 0; i < count; i++) {
       final angle = i * 2 * pi / count;
@@ -45,7 +53,7 @@ class Cluster extends PositionComponent with HasGameReference<RedOcelotGame> {
           0.9 *
           Random().nextDouble();
 
-      final pos = _center + offset; // world-space spawn pos
+      final pos = center + offset; // world-space spawn pos
       _enemyBuilders.addAll([
         {'builder': () => Ufo(pos, cluster: this), 'weight': 0.3},
         {'builder': () => MonsterA(pos, cluster: this), 'weight': 0.15},
@@ -74,18 +82,17 @@ class Cluster extends PositionComponent with HasGameReference<RedOcelotGame> {
   }
 
   void reset() {
-    _center.setFrom(position + size / 2);
-    circularBoundary.center.setFrom(_center);
-    circularBoundary.radius = radius;
-    circularBoundary.reset();
-    for (final enemy in _enemies) {
-      enemy.reset();
+    _enemies = [];
+    _enemyBuilders = [];
+    List<BodyComponent> bodies =
+        game.world.children.whereType<BodyComponent>().toList();
+    for (final body in bodies) {
+      if (body is MovingClusterObject) {
+        body.removeFromParent();
+      }
+      if (body is CircularBoundary) {
+        body.removeFromParent();
+      }
     }
-  }
-
-  @override
-  void onGameResize(Vector2 size) {
-    super.onGameResize(size);
-    this.size = size;
   }
 }
