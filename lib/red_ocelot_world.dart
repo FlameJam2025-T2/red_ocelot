@@ -45,8 +45,8 @@ class RedOcelotMap extends Component
 
   final int? seed;
   final List<Cluster> clusters = [];
-  final List<Vector2> clusterPositions = [];
-  late List<int> numberClusterObjects = [];
+  final Map<Cluster, Vector2> clusterPositions = {};
+  late Map<Cluster, int> numberClusterObjects = {};
 
   RedOcelotMap({this.seed}) : super(priority: 0) {
     _rng = seed != null ? Random(seed) : Random();
@@ -54,8 +54,12 @@ class RedOcelotMap extends Component
 
   static Random get rng => _rng;
 
-  void reduceClusterObject({int clusterIndex = 0}) {
-    numberClusterObjects[clusterIndex]--;
+  void reduceClusterObject(Cluster cluster) {
+    if (numberClusterObjects[cluster] != null) {
+      numberClusterObjects[cluster] = numberClusterObjects[cluster]! - 1;
+    } else {
+      throw Exception("Cluster not found in numberClusterObjects");
+    }
   }
 
   @override
@@ -102,9 +106,10 @@ class RedOcelotMap extends Component
   @override
   Future<void> onMount() async {
     for (int i = 0; i < clusterCount; i++) {
-      final coordinates = generateCoordinates(clusterPositions);
+      final coordinates = generateCoordinates(
+        clusterPositions.values.toList(growable: false),
+      );
       final count = max(1, gaussianRandom(mean: 35, stdDev: 5).round());
-      numberClusterObjects.add(count);
       final cluster = Cluster(
         clusterIndex: i,
         count: count,
@@ -112,7 +117,8 @@ class RedOcelotMap extends Component
       )..position = coordinates;
 
       clusters.add(cluster);
-      clusterPositions.add(coordinates);
+      numberClusterObjects[cluster] = count;
+      clusterPositions[cluster] = coordinates;
     }
 
     await addAll(clusters);
@@ -120,13 +126,15 @@ class RedOcelotMap extends Component
 
   @override
   void reset() {
-    for (int i = 0; i < clusters.length; i++) {
-      final coordinates = generateCoordinates(clusterPositions);
+    for (Cluster cluster in clusters) {
+      final coordinates = generateCoordinates(
+        clusterPositions.values.toList(growable: false),
+      );
 
-      numberClusterObjects[i] = clusters[i].count;
-      clusters[i].position = coordinates;
-      clusterPositions[i] = coordinates;
-      clusters[i].reset();
+      numberClusterObjects[cluster] = cluster.count;
+      cluster.position = coordinates;
+      clusterPositions[cluster] = coordinates;
+      cluster.reset();
     }
   }
 }

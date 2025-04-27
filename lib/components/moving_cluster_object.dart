@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/alive.dart';
+import 'package:red_ocelot/components/cluster.dart';
 import 'package:red_ocelot/components/health_bar.dart';
 import 'package:red_ocelot/components/player/laser.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
@@ -17,15 +18,13 @@ class MovingClusterObject extends BodyComponent<RedOcelotGame>
   double initialVelocity = 10 * gameUnit;
   double changeDirectionTimer = 0;
   double changeInterval = 2.0; // seconds
-  late final HealthBar _healthBar;
   SpriteName spriteName;
-
-  int clusterIndex;
+  Cluster cluster;
 
   MovingClusterObject(
     this.startPos, {
-    required this.clusterIndex,
     required this.spriteName,
+    required this.cluster,
     required hitPoints,
     this.color = Colors.orange,
   }) : super() {
@@ -42,7 +41,7 @@ class MovingClusterObject extends BodyComponent<RedOcelotGame>
           ..size = Vector2(radius * 1.5, radius * 1.5)
           ..position = Vector2(-radius * .75, -radius * .75);
     add(anim);
-    add(_healthBar = HealthBar(parentObject: this)..position = Vector2(0, 0));
+    add(HealthBar(parentObject: this)..position = Vector2(0, 0));
     return super.onLoad();
   }
 
@@ -100,7 +99,7 @@ class MovingClusterObject extends BodyComponent<RedOcelotGame>
       lifePoints -= Laser.damage;
       if (lifePoints <= 0) {
         game.incrementScore(points: hitPoints);
-        game.clusterMap.reduceClusterObject(clusterIndex: clusterIndex);
+        game.clusterMap.reduceClusterObject(cluster);
         // if (game.clusterMap.numberClusterObjects[clusterIndex] <= 0) {
         //   game.clusterMap.clusters[clusterIndex].removeFromParent();
         // }

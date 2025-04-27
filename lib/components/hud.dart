@@ -22,7 +22,7 @@ class HUDComponent extends PositionComponent
            fontWeight: FontWeight.bold,
          ),
        ),
-       boxPaint = Paint()..color = Colors.blue.withOpacity(0.8) {
+       boxPaint = Paint()..color = Colors.blue.withAlpha(200) {
     this.position = position ?? Vector2.zero();
     size = Vector2(boxWidth, boxHeight);
   }

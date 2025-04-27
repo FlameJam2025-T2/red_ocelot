@@ -4,7 +4,7 @@ import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/utils/sprite_utils.dart';
 
 class MonsterD extends MovingClusterObject {
-  MonsterD(super.startPos, {required super.clusterIndex})
+  MonsterD(super.startPos, {required super.cluster})
     : super(
         spriteName: SpriteName.monsterD,
         hitPoints: 8,

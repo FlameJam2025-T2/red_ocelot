@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flame/components.dart';
-import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:red_ocelot/components/circular_boundary.dart';
 import 'package:red_ocelot/components/monster_a.dart';
 import 'package:red_ocelot/components/monster_b.dart';
@@ -48,27 +47,12 @@ class Cluster extends PositionComponent with HasGameReference<RedOcelotGame> {
 
       final pos = _center + offset; // world-space spawn pos
       _enemyBuilders.addAll([
-        {'builder': () => Ufo(pos, clusterIndex: clusterIndex), 'weight': 0.3},
-        {
-          'builder': () => MonsterA(pos, clusterIndex: clusterIndex),
-          'weight': 0.15,
-        },
-        {
-          'builder': () => MonsterB(pos, clusterIndex: clusterIndex),
-          'weight': 0.15,
-        },
-        {
-          'builder': () => MonsterC(pos, clusterIndex: clusterIndex),
-          'weight': 0.1,
-        },
-        {
-          'builder': () => MonsterD(pos, clusterIndex: clusterIndex),
-          'weight': 0.15,
-        },
-        {
-          'builder': () => MonsterE(pos, clusterIndex: clusterIndex),
-          'weight': 0.15,
-        },
+        {'builder': () => Ufo(pos, cluster: this), 'weight': 0.3},
+        {'builder': () => MonsterA(pos, cluster: this), 'weight': 0.15},
+        {'builder': () => MonsterB(pos, cluster: this), 'weight': 0.15},
+        {'builder': () => MonsterC(pos, cluster: this), 'weight': 0.1},
+        {'builder': () => MonsterD(pos, cluster: this), 'weight': 0.15},
+        {'builder': () => MonsterE(pos, cluster: this), 'weight': 0.15},
       ]);
       _addEnemies();
     }

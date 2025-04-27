@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
+import 'package:red_ocelot/components/cluster.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 
@@ -17,7 +18,7 @@ class MinimapHUD extends PositionComponent
   Paint clusterPaint = Paint()..color = const Color.fromARGB(128, 27, 7, 118);
   final fillPaint =
       Paint()
-        ..color = Colors.grey.withAlpha(50) // adjust opacity to your liking
+        ..color = Colors.grey.withAlpha(50)
         ..style = PaintingStyle.fill;
 
   double hudSize = 300;
@@ -25,16 +26,16 @@ class MinimapHUD extends PositionComponent
   @override
   void render(Canvas canvas) {
     canvas.drawRect(
-      Rect.fromLTRB(-hudSize / 2, -hudSize / 2, hudSize / 2, hudSize / 2),
+      Rect.fromCenter(center: Offset(0, 0), width: hudSize, height: hudSize),
       paintBox,
     );
     canvas.drawRect(
-      Rect.fromLTRB(-hudSize / 2, -hudSize / 2, hudSize / 2, hudSize / 2),
+      Rect.fromCenter(center: Offset(0, 0), width: hudSize, height: hudSize),
       fillPaint,
     );
-    for (int i = 0; i < clusterCount; i++) {
-      final cluster = game.clusterMap.clusters[i];
-      Vector2 clusterPosition = cluster.position * hudSize / mapSize;
+    for (Cluster cluster in game.clusterMap.clusters) {
+      final Vector2 clusterPosition =
+          (cluster.circularBoundary.center * hudSize / mapSize);
 
       // Draw the cluster circle
       canvas.drawCircle(
@@ -45,7 +46,7 @@ class MinimapHUD extends PositionComponent
 
       // Get the number of objects left in the cluster
       final int objectsLeft =
-          game.clusterMap.numberClusterObjects[i]; // adjust based on your model
+          game.clusterMap.numberClusterObjects[cluster] ?? 0;
 
       // Draw the number at the cluster position
       final textSpan = TextSpan(
@@ -69,21 +70,14 @@ class MinimapHUD extends PositionComponent
     }
 
     // Draw the ship
-    Vector2 minimapSundriverPosition =
+    final Vector2 minimapSundriverPosition =
         game.sundiver.position * hudSize / mapSize;
-    // canvas.drawCircle(
-    //   Offset(minimapSundriverPosition.x, minimapSundriverPosition.y),
-    //   5,
-    //   shipPaint,
-    // );
 
     canvas.drawVertices(
       _getShipVertices(minimapSundriverPosition, game.sundiver.body.angle),
       BlendMode.srcOver,
       shipPaint,
     );
-
-    // Draw the minimap border
 
     super.render(canvas);
   }
