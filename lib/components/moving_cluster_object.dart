@@ -8,7 +8,7 @@ import 'package:red_ocelot/components/health_bar.dart';
 import 'package:red_ocelot/components/player/laser.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
-import 'package:red_ocelot/utils/sprite_utils.dart';
+import 'package:red_ocelot/util/sprite_utils.dart';
 
 class MovingClusterObject extends BodyComponent<RedOcelotGame>
     with ContactCallbacks, Alive {

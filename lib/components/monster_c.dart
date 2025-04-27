@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/moving_cluster_object.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
-import 'package:red_ocelot/utils/sprite_utils.dart';
+import 'package:red_ocelot/util/sprite_utils.dart';
 
 class MonsterC extends MovingClusterObject {
   MonsterC(super.startPos, {required super.cluster})
