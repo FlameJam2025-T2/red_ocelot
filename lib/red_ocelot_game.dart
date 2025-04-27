@@ -71,7 +71,9 @@ class RedOcelotGame extends Forge2DGame
 
   void incrementScore({required int points}) {
     totalScore += points;
-    print("Score: $totalScore");
+    if (kDebugMode) {
+      print("Score: $totalScore");
+    }
   }
 
   /// Sets the zoom level so that the the smallest side of the screen is
@@ -93,6 +95,19 @@ class RedOcelotGame extends Forge2DGame
     await super.onLoad();
 
     await loadSprite('sundiver.png');
+
+    // final g = SineWaveGenerator(
+    //   frequency: 440,
+    //   amplitude: 0.1,
+    //   sampleRate: 44100,
+    //   bufferSize: 1024,
+    // );
+    // final audioStream = GeneratedAudio()..initFromGenerator(g);
+    // final completer = Completer<bool>();
+    // Future.delayed(const Duration(seconds: 1), () {
+    //   completer.complete(true);
+    // });
+    // audioStream.pushGenerator(g, completer.future);
 
     // Load the shader program
     starfieldFrag = await _starfieldShader;
@@ -237,7 +252,9 @@ class RedOcelotGame extends Forge2DGame
       10000 * gameUnit,
       10000 * gameUnit,
     );
-    print("Resizing to $size");
+    if (kDebugMode) {
+      print("Game resized to $size");
+    }
     // Update the camera's viewport size
     camera.viewport.size = size;
     // Update the zoom level based on the new size

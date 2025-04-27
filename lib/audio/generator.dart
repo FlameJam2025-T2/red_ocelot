@@ -1,11 +1,12 @@
+import 'dart:async';
 import 'dart:math';
-import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:mp_audio_stream/mp_audio_stream.dart';
 
 extension Float32ListExtension on Float32List {
   // 50% stream mix
-  operator +(Float32List other) {
+  Float32List operator +(Float32List other) {
     if (length != other.length) {
       throw ArgumentError('Length mismatch: $length != ${other.length}');
     }
@@ -20,6 +21,8 @@ extension Float32ListExtension on Float32List {
 class GeneratedAudio {
   static final GeneratedAudio _instance = GeneratedAudio._internal();
   factory GeneratedAudio() => _instance;
+  bool _playing = false;
+  bool _stop = false;
   GeneratedAudio._internal();
 
   late final AudioStream audioStream;
@@ -29,7 +32,21 @@ class GeneratedAudio {
     audioStream.init();
   }
 
+  void initFromGenerator(AudioGenerator generator) {
+    audioStream = getAudioStream();
+    audioStream.init(
+      bufferMilliSec: generator.bufferSize * 1000 ~/ generator.sampleRate,
+      channels: generator.channels,
+      sampleRate: generator.sampleRate,
+    );
+  }
+
   void play() {
+    if (_playing) {
+      return;
+    }
+    _playing = true;
+    _stop = false;
     audioStream.resume();
   }
 
@@ -37,16 +54,66 @@ class GeneratedAudio {
     audioStream.push(buffer);
   }
 
-  Future<void> fromGenerator(AudioGenerator generator, {int count = 1}) async {
-    final Float32List buffer = generator.generate();
-    for (int i = 0; i < count; i++) {
-      push(buffer);
+  Future<void> pushGenerator(
+    AudioGenerator generator,
+    Future<bool> futureStop,
+  ) async {
+    play();
+    futureStop.whenComplete(() {
+      _stop = true;
+      stop();
+    });
+
+    while (!_stop) {
+      final Float32List buffer = generator.generate();
+      if (_stop) {
+        stop();
+        break;
+      }
+      audioStream.push(buffer);
+    }
+  }
+
+  Future<void> pushGeneratorStream(
+    AudioGenerator generator,
+    Future<bool> futureStop,
+  ) async {
+    play();
+    if (kDebugMode) {
+      print('pushGeneratorStream');
+    }
+    futureStop.whenComplete(() {
+      _stop = true;
+      stop();
+    });
+    await for (final double sample in generator.generator()) {
+      if (_stop) {
+        stop();
+        break;
+      }
+      final Float32List buffer = Float32List(generator.bufferSize);
+      for (int i = 0; i < generator.bufferSize; i++) {
+        buffer[i] = sample;
+      }
+      audioStream.push(buffer);
+    }
+    if (_stop) {
+      stop();
     }
   }
 
   void stop() {
+    _stop = true;
+    if (!_playing) {
+      return;
+    }
+    _playing = false;
     audioStream.uninit();
   }
+}
+
+abstract class AudioGeneratorStop {
+  void stop();
 }
 
 abstract class AudioGenerator {
@@ -60,11 +127,12 @@ abstract class AudioGenerator {
     this.channels = 1,
   });
   Float32List generate();
+  Stream<double> generator();
 }
 
 class SineWaveGenerator extends AudioGenerator {
-  final double frequency;
-  final double amplitude;
+  double frequency;
+  double amplitude;
 
   SineWaveGenerator({
     required this.frequency,
@@ -74,16 +142,29 @@ class SineWaveGenerator extends AudioGenerator {
     super.channels = 1,
   });
 
+  double get period => sampleRate / frequency;
+  double get increment => (2 * pi * frequency) / sampleRate;
+
+  double _wave(int i) {
+    return amplitude * sin(increment * i);
+  }
+
   @override
   Float32List generate() {
     final Float32List buffer = Float32List(bufferSize);
-    final double increment = (2 * pi * frequency) / sampleRate;
 
     for (int i = 0; i < bufferSize; i++) {
-      buffer[i] = amplitude * sin(increment * i);
+      buffer[i] = _wave(i);
     }
 
     return buffer;
+  }
+
+  @override
+  Stream<double> generator() async* {
+    for (int i = 0; i < bufferSize; i++) {
+      yield _wave(i);
+    }
   }
 }
 
@@ -99,22 +180,28 @@ class SquareWaveGenerator extends AudioGenerator {
     super.channels = 1,
   });
 
+  double get period => sampleRate / frequency;
+  double get halfPeriod => period / 2;
+
+  double _wave(int i) {
+    return (i % period < halfPeriod) ? amplitude : -amplitude;
+  }
+
   @override
   Float32List generate() {
     final Float32List buffer = Float32List(bufferSize);
-    final double period = sampleRate / frequency;
 
     for (int i = 0; i < bufferSize; i++) {
-      buffer[i] = (i % period < period / 2) ? amplitude : -amplitude;
+      buffer[i] = _wave(i);
     }
 
     return buffer;
   }
 
-  Iterable<double> generator() sync* {
-    final double period = sampleRate / frequency;
+  @override
+  Stream<double> generator() async* {
     for (int i = 0; i < bufferSize; i++) {
-      yield (i % period < period / 2) ? amplitude : -amplitude;
+      yield _wave(i);
     }
   }
 }
