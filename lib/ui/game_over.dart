@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:red_ocelot/config/game_settings.dart';
 import 'package:red_ocelot/config/keys.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 import 'package:red_ocelot/ui/pallette.dart';
