@@ -110,8 +110,7 @@ class RedOcelotMap extends Component
     );
   }
 
-  @override
-  Future<void> onMount() async {
+  Future<void> populateClusters() async {
     for (int i = 0; i < clusterCount; i++) {
       final coordinates = generateCoordinates(
         clusterPositions.values.toList(growable: false),
@@ -127,21 +126,27 @@ class RedOcelotMap extends Component
       numberClusterObjects[cluster] = count;
       clusterPositions[cluster] = coordinates;
     }
-
     await addAll(clusters);
+  }
+
+  @override
+  Future<void> onMount() async {
+    super.onMount();
+    await populateClusters();
   }
 
   @override
   void reset() {
     for (Cluster cluster in clusters) {
-      final coordinates = generateCoordinates(
-        clusterPositions.values.toList(growable: false),
-      );
-
-      numberClusterObjects[cluster] = cluster.count;
-      cluster.position = coordinates;
-      clusterPositions[cluster] = coordinates;
       cluster.reset();
     }
+    List<Cluster> removeItems = children.whereType<Cluster>().toList();
+    for (Cluster cluster in removeItems) {
+      cluster.removeFromParent();
+    }
+    clusters.clear();
+    numberClusterObjects.clear();
+    clusterPositions.clear();
+    populateClusters();
   }
 }
