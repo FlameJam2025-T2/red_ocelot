@@ -27,7 +27,11 @@ class StarfieldSamplerOwner extends SamplerOwner {
 
     canvas
       ..save()
-      ..drawRect(Offset.zero & size, Paint()..shader = shader)
+      ..drawRect(
+        Offset.zero & size,
+        Paint()..shader = shader,
+        //..blendMode = BlendMode.overlay,
+      )
       ..restore();
   }
 

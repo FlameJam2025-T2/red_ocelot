@@ -8,6 +8,7 @@ import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:flutter/foundation.dart';
 import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
 import 'package:red_ocelot/components/hud.dart';
 import 'package:red_ocelot/components/minimap.dart';
@@ -128,7 +129,7 @@ class RedOcelotGame extends Forge2DGame
       height: viewportResolution.y,
       world: world,
       pixelRatio: 1.0,
-    )..viewfinder.position = size / 2;
+    );
 
     sundiver = SunDiver(
       size: Vector2(shipSize, shipSize),
@@ -142,7 +143,9 @@ class RedOcelotGame extends Forge2DGame
     await world.add(sundiver);
 
     _gameInitialized = true;
-    camera.viewport.add(FpsTextComponent());
+    if (kDebugMode) {
+      camera.viewport.add(FpsTextComponent());
+    }
     camera.viewport.add(
       MinimapHUD()
         ..position = Vector2(150, 200)
