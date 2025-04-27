@@ -24,3 +24,5 @@ class CollisionType {
   static const int boundary = 0x0004;
   static const int laser = 0x0008;
 }
+
+const int highScoreCount = 10;

@@ -9,7 +9,7 @@ uniform float time;
 
 out vec4 f;
 
-const float scale = 3e4;
+const float scale = 7e4;
 
 #define F for(float i = .1; i <.9; i+=.04)
 void main()
@@ -24,7 +24,7 @@ void main()
               b,
               c = 0.;
         F
-          p = abs(p)/a/a - .74, 
+          p = abs(p)/a/a - .7, 
           b = length(p),
           c += abs(a-b),
           a = b;        

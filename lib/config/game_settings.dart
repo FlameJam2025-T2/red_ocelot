@@ -1,4 +1,75 @@
+import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+class HighScore {
+  final Duration time;
+  final int score;
+  final DateTime dateTime;
+
+  HighScore(this.time, this.score, {DateTime? dateTime})
+    : dateTime = dateTime ?? DateTime.now();
+  @override
+  String toString() {
+    return 'HighScore{time: $time, score: $score}';
+  }
+}
+
+extension HighScoreList on List<HighScore> {
+  /// Sorts the list of high scores by score (higher is better)
+  /// + time (lower is better).
+  void sortByScore() {
+    sort((a, b) {
+      if (a.score != b.score) {
+        return b.score.compareTo(a.score);
+      } else {
+        return a.time.compareTo(b.time);
+      }
+    });
+  }
+
+  /// Sorts the list of high scores in ascending order based on the time.
+  void sortByTime() {
+    sort((a, b) => a.time.compareTo(b.time));
+  }
+
+  List<String> toPreferencesStringList() {
+    return map(
+      (e) => '${e.time.inMilliseconds},${e.score},${e.dateTime}',
+    ).toList();
+  }
+
+  static List<HighScore> fromPreferencesStringList(List<String> scores) {
+    return scores.map((e) {
+      final parts = e.split(',');
+      final time = Duration(milliseconds: int.parse(parts[0]));
+      final score = int.parse(parts[1]);
+      final dateTime = DateTime.parse(parts[2]);
+      return HighScore(time, score, dateTime: dateTime);
+    }).toList();
+  }
+
+  /// Adds a new high score to the list in scoring order.
+  /// If [addIfLower] is true, the new score will be added even if it is lower
+  /// than the lowest score in the list.
+  void addHighScore(
+    HighScore newScore,
+    int maxLength, {
+    bool addIfLower = false,
+  }) {
+    if (addIfLower || isEmpty || newScore.score > last.score) {
+      add(newScore);
+      sortByScore();
+      if (length > maxLength) {
+        removeRange(maxLength, length);
+      }
+    }
+  }
+
+  /// Clears the list of high scores.
+  void clearHighScores() {
+    clear();
+  }
+}
 
 //// [defaultSettings] contains the definitive list of game settings, and
 /// the default values for each setting.
@@ -9,6 +80,7 @@ const Map<String, dynamic> defaultSettings = {
   'musicVolume': 1.0,
   'vibrationEnabled': true,
   'vibrationStrength': 1.0,
+  'highScores': <HighScore>[],
 };
 
 /// This (singleton) class is used to manage the game settings.
@@ -83,5 +155,43 @@ class GameSettings {
       defaultSettings['vibrationStrength'];
   Future<void> setVibrationStrength(double value) async {
     (await _prefs).setDouble('vibrationStrength', value);
+  }
+
+  /// High scores setting
+  /// This is a list of HighScore objects
+  /// Default is an empty list
+  Future<List<HighScore>> get highScores async {
+    final List<String> scores =
+        (await _prefs).getStringList('highScores') ?? [];
+    return HighScoreList.fromPreferencesStringList(scores);
+  }
+
+  Future<void> setHighScores(List<HighScore> scores) async {
+    final List<String> scoresString =
+        HighScoreList(scores).toPreferencesStringList();
+    (await _prefs).setStringList('highScores', scoresString);
+  }
+
+  Future<void> addHighScore(HighScore newScore) async {
+    final List<HighScore> scores = await highScores;
+    scores.addHighScore(newScore, highScoreCount);
+    await setHighScores(scores);
+  }
+
+  Future<void> clearHighScores() async {
+    final List<HighScore> scores = await highScores;
+    scores.clearHighScores();
+    await setHighScores(scores);
+  }
+
+  Future<void> resetSettings() async {
+    final prefs = await _prefs;
+    for (final key in defaultSettings.keys) {
+      if (key == 'highScores') {
+        prefs.remove(key);
+      } else {
+        prefs.setString(key, defaultSettings[key].toString());
+      }
+    }
   }
 }
