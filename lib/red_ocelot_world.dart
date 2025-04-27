@@ -9,6 +9,13 @@ import 'package:red_ocelot/components/cluster.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 
+// addd sounds
+// laser,
+// accel
+// crash
+// explosion
+// hit
+
 abstract mixin class WorldMap {
   void reset();
 }
