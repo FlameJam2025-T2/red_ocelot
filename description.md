@@ -16,6 +16,9 @@ Travel from cluster to cluster and eliminate as many threats as possible before 
 
 Try to survive as long as you can and rack up as many points a possible. !
 
+WHERE TO PLAY - Github
+https://flamejam2025-t2.github.io/red_ocelot/
+
 STATEMENT
 
 All sounds were created by zeyus
