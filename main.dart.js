@@ -62788,10 +62788,10 @@ A.hP("speed: "+A.j(Math.sqrt(m.ax.r.gcR())))},
 qW(a,b){A.hP("begin contact with "+A.j(a))
 if(a instanceof A.e4)if((this.gbI().a&4)!==0)this.gbI().Kx()}}
 A.a0s.prototype={
-$1(a){var s,r=this.a,q=r.Ax().B(0,0.05),p=r.ax
+$1(a){var s,r=this.a,q=r.Ax().B(0,0.15),p=r.ax
 p===$&&A.b()
 p=q.B(0,Math.max(Math.sqrt(p.r.gcR()),0.5))
-q=r.Ax().B(0,0.02).B(0,Math.max(Math.sqrt(r.ax.r.gcR()),0.5))
+q=r.Ax().B(0,0.2).B(0,Math.max(Math.sqrt(r.ax.r.gcR()),0.5))
 r=r.to
 r===$&&A.b()
 r=r.a[0]
