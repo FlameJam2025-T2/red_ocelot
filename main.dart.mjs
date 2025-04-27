@@ -456,6 +456,8 @@ class CompiledApp {
       _1627: x0 => x0.remove(),
       _1628: x0 => x0.play(),
       _1629: x0 => x0.pause(),
+      _1634: (x0,x1) => x0.getItem(x1),
+      _1635: (x0,x1,x2) => x0.setItem(x1,x2),
       _1646: x0 => new Array(x0),
       _1648: x0 => x0.length,
       _1650: (x0,x1) => x0[x1],
@@ -513,11 +515,15 @@ class CompiledApp {
       _1754: s => s.toUpperCase(),
       _1755: s => s.toLowerCase(),
       _1756: (a, i) => a.push(i),
+      _1759: (a, l) => a.length = l,
       _1760: a => a.pop(),
       _1761: (a, i) => a.splice(i, 1),
       _1763: (a, s) => a.join(s),
       _1764: (a, s, e) => a.slice(s, e),
+      _1765: (a, s, e) => a.splice(s, e),
+      _1766: (a, b) => a == b ? 0 : (a > b ? 1 : -1),
       _1767: a => a.length,
+      _1768: (a, l) => a.length = l,
       _1769: (a, i) => a[i],
       _1770: (a, i, v) => a[i] = v,
       _1772: (o, offsetInBytes, lengthInBytes) => {
@@ -584,6 +590,7 @@ class CompiledApp {
       _1856: f => finalizeWrapper(f, function(x0) { return dartInstance.exports._1856(f,arguments.length,x0) }),
       _1858: (x0,x1,x2,x3) => x0.addEventListener(x1,x2,x3),
       _1859: (x0,x1,x2,x3) => x0.removeEventListener(x1,x2,x3),
+      _1865: (x0,x1) => x0.key(x1),
       _1881: (s, m) => {
         try {
           return new RegExp(s, m);
@@ -749,6 +756,8 @@ class CompiledApp {
       _2838: x0 => x0.code,
       _2839: x0 => x0.message,
       _3912: () => globalThis.window,
+      _4241: x0 => x0.localStorage,
+      _4588: x0 => x0.length,
       _6046: x0 => x0.destination,
       _6615: x0 => x0.signal,
       _6694: () => globalThis.document,
