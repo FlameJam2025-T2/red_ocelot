@@ -168,16 +168,15 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     if (_decelerating) {
       _decelerate(dt);
     }
-    //final deltaPosition = velocity;
-    //position.add(deltaPosition);
+
     _repulse();
+
     position.clamp(minPosition, maxPosition);
-    // positionText.text =
-    //     '(x: ${position.x.toInt()}, y: ${position.y.toInt()}, 𝜃: ${angle.toStringAsPrecision(2)}, s: ${speed.toStringAsPrecision(2)}, vx: ${body.linearVelocity.x.toStringAsPrecision(2)}, vy: ${body.linearVelocity.y.toStringAsPrecision(2)})';
     final angle = body.angle;
+
     final offset = Vector2(
-      sin(angle) * (size.y / 2),
-      -cos(angle) * (size.y / 2),
+      -sin(angle) * (size.y / 8),
+      cos(angle) * (size.y / 8),
     );
 
     final worldPos = body.position - offset;
@@ -191,9 +190,13 @@ class SunDiver extends BodyComponent<RedOcelotGame>
         generator:
             (i) => AcceleratedParticle(
               acceleration:
-                  getRandomVector() * 0.15 * max(body.linearVelocity.length, 1),
+                  getRandomVector() *
+                  0.05 *
+                  max(body.linearVelocity.length, 0.5),
               speed:
-                  getRandomVector() * 0.2 * max(body.linearVelocity.length, 1),
+                  getRandomVector() *
+                  0.02 *
+                  max(body.linearVelocity.length, 0.5),
               child: CircleParticle(
                 radius: size.x,
                 paint: Paint()..color = Colors.orange.withAlpha(128),
