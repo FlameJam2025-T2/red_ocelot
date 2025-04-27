@@ -273,7 +273,6 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     final isKeyDown = event is KeyDownEvent || event is KeyRepeatEvent;
 
     final bool handled;
-    print("body angle: ${body.angle}");
 
     // left / right key rotate the ship
     // up accellerates the ship, and down decellerates it (no reverse)
@@ -291,6 +290,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
       // accelerate the ship
       if (_accelerating != isKeyDown) {
         _accelerating = isKeyDown;
+        _decelerating = !_accelerating;
       }
       handled = true;
     } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
@@ -365,7 +365,6 @@ class SunDiver extends BodyComponent<RedOcelotGame>
           thrustStrength *
           input.length,
     );
-    print("speed: ${body.linearVelocity.length}");
   }
 
   void _rotateLeft(double dt) {

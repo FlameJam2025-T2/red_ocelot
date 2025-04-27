@@ -14,7 +14,7 @@ const double shipDeceleration = 0.1 * gameUnit;
 const double shipRotationSpeed = 1 * gameUnit;
 const double shipDensity = 3 * gameUnit;
 const double shipAngularDamping = 10.0 * gameUnit;
-const double mapSize = 5000 * gameUnit;
+const double mapSize = 3000 * gameUnit;
 
 const int clusterCount = 10;
 
