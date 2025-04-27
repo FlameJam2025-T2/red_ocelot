@@ -196,7 +196,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
                   getRandomVector() * 0.2 * max(body.linearVelocity.length, 1),
               child: CircleParticle(
                 radius: size.x,
-                paint: Paint()..color = Colors.orange.withOpacity(0.8),
+                paint: Paint()..color = Colors.orange.withAlpha(128),
               ),
             ),
       ),

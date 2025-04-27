@@ -30,6 +30,7 @@ class MovingClusterObject extends BodyComponent<RedOcelotGame>
     this.color = Colors.orange,
   }) : super() {
     this.hitPoints = hitPoints;
+    lifePoints = hitPoints;
   }
 
   @override
