@@ -103,7 +103,7 @@ class MovingClusterObject extends BodyComponent<RedOcelotGame>
         // if (game.clusterMap.numberClusterObjects[clusterIndex] <= 0) {
         //   game.clusterMap.clusters[clusterIndex].removeFromParent();
         // }
-
+        cluster.removeEnemy(this);
         removeFromParent();
       }
     }

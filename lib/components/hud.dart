@@ -1,5 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
+import 'package:red_ocelot/components/cluster.dart';
+import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 
 class HUDComponent extends PositionComponent
@@ -16,13 +18,9 @@ class HUDComponent extends PositionComponent
     this.boxHeight = 40,
     Vector2? position,
   }) : textPaint = TextPaint(
-         style: const TextStyle(
-           fontSize: 16,
-           color: Colors.white,
-           fontWeight: FontWeight.bold,
-         ),
+         style: TextStyle(fontSize: 12, color: Colors.white.withAlpha(200)),
        ),
-       boxPaint = Paint()..color = Colors.blue.withAlpha(200) {
+       boxPaint = Paint()..color = Colors.blue.withAlpha(50) {
     this.position = position ?? Vector2.zero();
     size = Vector2(boxWidth, boxHeight);
   }
@@ -33,7 +31,8 @@ class HUDComponent extends PositionComponent
     canvas.drawRect(size.toRect(), boxPaint);
 
     // Draw the score text centered
-    final text = 'Score: ${game.totalScore}';
+    final text =
+        '${game.elapsedTime()}\nScore: ${game.totalScore}\nClusters: ${clusterCount - game.clusterMap.clusters.remaining}/$clusterCount\nRemaining enenies: ${game.clusterMap.clusters.remainingEnemies}';
     final tp = textPaint.toTextPainter(text);
     final offset = Offset((size.x - tp.width) / 2, (size.y - tp.height) / 2);
     tp.paint(canvas, offset);

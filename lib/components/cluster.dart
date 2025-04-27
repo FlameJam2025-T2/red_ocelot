@@ -13,6 +13,11 @@ import 'package:red_ocelot/components/ufo.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 
+extension ClusterRemaining on List<Cluster> {
+  int get remaining => where((c) => c._enemies.isNotEmpty).length;
+  int get remainingEnemies => fold(0, (sum, c) => sum + c._enemies.length);
+}
+
 class Cluster extends PositionComponent with HasGameReference<RedOcelotGame> {
   final int count;
   double standardDeviation = 4 * gameUnit;
@@ -78,6 +83,18 @@ class Cluster extends PositionComponent with HasGameReference<RedOcelotGame> {
         game.world.add(enemy);
         break;
       }
+    }
+  }
+
+  int remainingEnemies() {
+    return _enemies.length;
+  }
+
+  removeEnemy(MovingClusterObject enemy) {
+    _enemies.remove(enemy);
+    if (_enemies.isEmpty) {
+      game.clusterMap.clusters.remove(this);
+      game.clusterMap.numberClusterObjects[this] = 0;
     }
   }
 

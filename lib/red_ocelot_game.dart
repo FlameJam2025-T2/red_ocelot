@@ -76,6 +76,14 @@ class RedOcelotGame extends Forge2DGame
     }
   }
 
+  String elapsedTime() {
+    if (_gameStartTime == null) return "00:00";
+    final elapsed = DateTime.now().difference(_gameStartTime!);
+    final minutes = elapsed.inMinutes;
+    final seconds = elapsed.inSeconds % 60;
+    return "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
+  }
+
   /// Sets the zoom level so that the the smallest side of the screen is
   /// at least shipSizeMultiplier times the size of the ship.
   /// This is useful for ensuring that the ship is always visible on the screen

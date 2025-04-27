@@ -14,6 +14,7 @@ class CircularBoundary extends BodyComponent with ContactCallbacks {
 
   @override
   Body createBody() {
+    renderBody = false;
     body = world.createBody(BodyDef()..position = center);
 
     for (int i = 0; i < segments; i++) {
@@ -28,6 +29,7 @@ class CircularBoundary extends BodyComponent with ContactCallbacks {
       _fixture =
           FixtureDef(shape)
             ..userData = this
+            ..isSensor = true
             ..filter.categoryBits = CollisionType.boundary;
 
       body.createFixture(_fixture);
