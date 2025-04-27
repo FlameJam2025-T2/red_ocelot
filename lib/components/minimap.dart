@@ -50,7 +50,7 @@ class MinimapHUD extends PositionComponent
       // Draw the number at the cluster position
       final textSpan = TextSpan(
         text: '$objectsLeft',
-        style: const TextStyle(color: Colors.white, fontSize: 16),
+        style: TextStyle(color: Colors.white, fontSize: 16 * (hudSize / 300)),
       );
       final textPainter = TextPainter(
         text: textSpan,

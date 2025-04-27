@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flame/camera.dart';
@@ -44,6 +45,7 @@ class RedOcelotGame extends Forge2DGame
   );
   late final FragmentProgram starfieldFrag;
   late final FragmentShader laserShader;
+  MinimapHUD? minimapHUD;
 
   GameState _gameState = GameState.loading;
   bool _gameInitialized = false;
@@ -137,10 +139,9 @@ class RedOcelotGame extends Forge2DGame
       startPos: Vector2(0, 0),
     );
 
-    starfieldCamera = SamplerCamera.withFixedResolution(
+    starfieldCamera = SamplerCamera(
       samplerOwner: StarfieldSamplerOwner(starfieldFrag.fragmentShader(), this),
-      width: viewportResolution.x,
-      height: viewportResolution.y,
+      viewport: FixedSizeViewport(viewportResolution.x, viewportResolution.y),
       world: world,
       pixelRatio: devicePixelRatio,
     );
@@ -154,10 +155,16 @@ class RedOcelotGame extends Forge2DGame
     if (kDebugMode) {
       camera.viewport.add(FpsTextComponent());
     }
+    final shortestSide = min(viewportResolution.x, viewportResolution.y);
+    final hudSize = shortestSide * 0.3;
+    final hudPos = hudSize / 2 + shortestSide * 0.05;
+
     camera.viewport.add(
-      MinimapHUD()
-        ..position = Vector2(150, 200)
-        ..size = Vector2(200, 200),
+      minimapHUD =
+          MinimapHUD()
+            ..position = Vector2(hudPos, hudPos)
+            ..size = Vector2(hudSize, hudSize)
+            ..hudSize = hudSize,
     );
   }
 
@@ -223,6 +230,16 @@ class RedOcelotGame extends Forge2DGame
     camera.viewport.size = size;
     // Update the zoom level based on the new size
     _setZoom(size: size);
+    // update the minimap HUD size and position
+
+    if (minimapHUD != null) {
+      final shortestSide = min(size.x, size.y);
+      final hudSize = shortestSide * 0.3;
+      final hudPos = hudSize / 2 + shortestSide * 0.05;
+      minimapHUD!.hudSize = hudSize;
+      minimapHUD!.size = Vector2(hudSize, hudSize);
+      minimapHUD!.position = Vector2(hudPos, hudPos);
+    }
   }
 
   @override
