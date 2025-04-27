@@ -40,7 +40,7 @@ class MinimapHUD extends PositionComponent
       // Draw the cluster circle
       canvas.drawCircle(
         Offset(clusterPosition.x, clusterPosition.y),
-        350 * gameUnit * hudSize / mapSize / 1.5,
+        cluster.radius * hudSize / mapSize,
         clusterPaint,
       );
 
