@@ -15,6 +15,7 @@ import 'package:red_ocelot/components/hud.dart';
 import 'package:red_ocelot/components/minimap.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
 import 'package:red_ocelot/components/samplers/starfield.dart';
+import 'package:red_ocelot/config/game_settings.dart';
 import 'package:red_ocelot/config/keys.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_world.dart';
@@ -47,6 +48,7 @@ class RedOcelotGame extends Forge2DGame
   MinimapHUD? minimapHUD;
 
   GameState _gameState = GameState.loading;
+  DateTime? _gameStartTime;
 
   int totalScore = 0;
   int totalEnemiesKilled = 0;
@@ -175,6 +177,7 @@ class RedOcelotGame extends Forge2DGame
     overlays.clear();
     overlays.add(gamepadToggleKey);
     _gameState = GameState.playing;
+    _gameStartTime = DateTime.now();
     resumeEngine();
     if (!FlameAudio.bgm.isPlaying) {
       FlameAudio.bgm.play('spaceW0rp.mp3', volume: 0.25);
@@ -184,6 +187,13 @@ class RedOcelotGame extends Forge2DGame
   void gameOver() {
     if (_gameState == GameState.gameOver) return;
     _gameState = GameState.gameOver;
+
+    final gameDuration =
+        _gameStartTime != null
+            ? DateTime.now().difference(_gameStartTime!)
+            : const Duration(seconds: 0);
+    final highScore = HighScore(gameDuration, totalScore);
+    GameSettings().addHighScore(highScore);
 
     overlays.add(gameOverKey);
     if (overlays.isActive(gamepadKey)) {

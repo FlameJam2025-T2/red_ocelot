@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:red_ocelot/config/keys.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 import 'package:red_ocelot/ui/game_over.dart';
+import 'package:red_ocelot/ui/high_scores.dart';
 import 'package:red_ocelot/ui/menu.dart';
 import 'package:red_ocelot/ui/pallette.dart';
 import 'package:red_ocelot/ui/gamepad.dart';
@@ -82,6 +83,13 @@ class _GameContainerState extends State<GameContainer> {
                     },
                   ),
                   MenuItem(
+                    title: 'High Scores',
+                    onPressed: () {
+                      game.overlays.remove(mainMenuKey);
+                      game.overlays.add(highScoresKey);
+                    },
+                  ),
+                  MenuItem(
                     title: 'Exit',
                     onPressed: () {
                       // Handle exit tap
@@ -149,6 +157,10 @@ class _GameContainerState extends State<GameContainer> {
             },
             gameOverKey: (_, RedOcelotGame game) {
               return GameOverOverlay(game: game, score: game.totalScore);
+            },
+
+            highScoresKey: (_, RedOcelotGame game) {
+              return HighScoresScreen(game: game);
             },
           },
 
