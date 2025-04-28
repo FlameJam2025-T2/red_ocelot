@@ -46,7 +46,8 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   late final Vector2 textPosition;
   late final maxPosition = Vector2.all(RedOcelotMap.size / 2 - size.x);
   late final minPosition = -maxPosition;
-  AudioPlayer? loopPlayer;
+  late final AudioPlayer loopPlayer;
+  late final Uri _cachedSample;
   Color currentColor = Colors.black;
   double colorProgress = 0.0;
   bool flashRed = false;
@@ -80,6 +81,15 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   Future<void> onLoad() async {
     // debugMode = true;
     await super.onLoad();
+    _cachedSample = await FlameAudio.audioCache.load('thrust3.mp3');
+    loopPlayer = AudioPlayer()..audioCache = FlameAudio.audioCache;
+    await loopPlayer.setReleaseMode(ReleaseMode.loop);
+    await loopPlayer.setAudioContext(
+      AudioContextConfig(focus: AudioContextConfigFocus.mixWithOthers).build(),
+    );
+    await loopPlayer.setSource(UrlSource(_cachedSample.toString()));
+    await loopPlayer.setVolume(0.5);
+    await loopPlayer.setPlaybackRate(1.0);
   }
 
   @override
@@ -263,10 +273,17 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   }
 
   Future<void> startEngineSound() async {
-    if (loopPlayer == null) {
-      loopPlayer = await FlameAudio.loop('thrust2.mp3');
-      print("loopPlayer beginning");
+    if (loopPlayer.state == PlayerState.playing) {
+      return;
     }
+    await loopPlayer.resume();
+  }
+
+  void stopEngineSound() async {
+    if (loopPlayer.state == PlayerState.stopped) {
+      return;
+    }
+    await loopPlayer.stop();
   }
 
   @override
@@ -293,10 +310,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
         startEngineSound();
       }
       if (!isKeyDown) {
-        if (loopPlayer != null) {
-          loopPlayer!.stop();
-          loopPlayer = null;
-        }
+        stopEngineSound();
       }
       if (_accelerating != isKeyDown) {
         _accelerating = isKeyDown;
@@ -346,13 +360,10 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     if (input.length < 0.2) {
       // No input → no rotation or movement
       _decelerating = true;
-      if (loopPlayer != null) {
-        loopPlayer!.stop();
-        loopPlayer = null;
-      }
+      stopEngineSound();
       return;
     }
-    await startEngineSound();
+    startEngineSound();
     _decelerating = false;
     final desiredAngle = math.atan2(input.x, -input.y);
     final currentAngle = body.angle;
