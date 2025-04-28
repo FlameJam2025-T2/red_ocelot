@@ -142,7 +142,7 @@ class RedOcelotGame extends Forge2DGame
     camera.setBounds(RedOcelotMap.bounds);
 
     // camera.viewport.add(FpsTextComponent());
-    camera.viewport.add(HUDComponent()..position = Vector2(size.x - 200, 50));
+    camera.viewport.add(HUDComponent()..position = Vector2(size.x - 110, 10));
 
     _gameState = GameState.menu;
 
