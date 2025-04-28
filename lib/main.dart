@@ -2,16 +2,15 @@ import 'dart:math';
 
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:red_ocelot/audio/audio_manager.dart';
 import 'package:red_ocelot/config/game_settings.dart';
 import 'package:red_ocelot/config/keys.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 import 'package:red_ocelot/ui/game_over.dart';
+import 'package:red_ocelot/ui/game_won.dart';
+import 'package:red_ocelot/ui/gamepad.dart';
 import 'package:red_ocelot/ui/high_scores.dart';
 import 'package:red_ocelot/ui/menu.dart';
 import 'package:red_ocelot/ui/pallette.dart';
-import 'package:red_ocelot/ui/gamepad.dart';
 import 'package:red_ocelot/ui/splash.dart';
 import 'package:red_ocelot/util/ltrb.dart';
 
@@ -179,6 +178,9 @@ class _GameContainerState extends State<GameContainer> {
             },
             gameOverKey: (_, RedOcelotGame game) {
               return GameOverOverlay(game: game, score: game.totalScore);
+            },
+            gameWonKey: (_, RedOcelotGame game) {
+              return GameWonOverlay(game: game, score: game.totalScore);
             },
 
             highScoresKey: (_, RedOcelotGame game) {

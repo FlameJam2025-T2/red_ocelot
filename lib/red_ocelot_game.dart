@@ -26,6 +26,7 @@ enum GameState {
   playing, // Game is active
   paused, // Game is paused
   gameOver, // Game is over
+  gameWon, // Game is won
 }
 
 class RedOcelotGame extends Forge2DGame
@@ -226,6 +227,28 @@ class RedOcelotGame extends Forge2DGame
     GameSettings().addHighScore(highScore);
 
     overlays.add(gameOverKey);
+    if (overlays.isActive(gamepadKey)) {
+      overlays.remove(gamepadKey);
+    }
+    if (overlays.isActive(gamepadToggleKey)) {
+      overlays.remove(gamepadToggleKey);
+    }
+
+    pauseEngine();
+  }
+
+  void gameWon() {
+    if (_gameState == GameState.gameWon) return;
+    _gameState = GameState.gameWon;
+
+    final gameDuration =
+        _gameStartTime != null
+            ? DateTime.now().difference(_gameStartTime!)
+            : const Duration(seconds: 0);
+    final highScore = HighScore(gameDuration, totalScore);
+    GameSettings().addHighScore(highScore);
+
+    overlays.add(gameWonKey);
     if (overlays.isActive(gamepadKey)) {
       overlays.remove(gamepadKey);
     }
