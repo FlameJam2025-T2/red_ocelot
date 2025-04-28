@@ -4,6 +4,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:red_ocelot/audio/audio_manager.dart';
+import 'package:red_ocelot/config/game_settings.dart';
 import 'package:red_ocelot/config/keys.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 import 'package:red_ocelot/ui/game_over.dart';
@@ -11,10 +12,12 @@ import 'package:red_ocelot/ui/high_scores.dart';
 import 'package:red_ocelot/ui/menu.dart';
 import 'package:red_ocelot/ui/pallette.dart';
 import 'package:red_ocelot/ui/gamepad.dart';
+import 'package:red_ocelot/ui/splash.dart';
 import 'package:red_ocelot/util/ltrb.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await GameSettings.init();
   runApp(const MyApp());
 }
 
@@ -53,6 +56,7 @@ class _GameContainerState extends State<GameContainer> {
       ),
       50.0,
     );
+
     return Scaffold(
       appBar: null,
       body: Center(
@@ -101,6 +105,12 @@ class _GameContainerState extends State<GameContainer> {
               );
             },
             settingsMenuKey: (_, RedOcelotGame game) {
+              final bool sfxEnabled =
+                  GameSettings.cache['soundEnabled'] == null ||
+                  GameSettings.cache['soundEnabled'] as bool;
+              final bool musicEnabled =
+                  GameSettings.cache['musicEnabled'] == null ||
+                  GameSettings.cache['musicEnabled'] as bool;
               return Menu(
                 game: game,
                 backButton: true,
@@ -108,18 +118,30 @@ class _GameContainerState extends State<GameContainer> {
                 title: 'Settings',
                 items: [
                   MenuItem(
-                    title: 'Audio',
-                    onPressed: () {
-                      // Handle audio settings tap
-                      // FlameAudio.bgm.isPlaying
-                      //     ? FlameAudio.bgm.stop()
-                      //     : FlameAudio.bgm.play('spaceW0rp.mp3', volume: 0.05);
+                    title: 'Background Music ${musicEnabled ? 'ON' : 'OFF'}',
+                    onPressed: () async {
+                      final enabled = !await GameSettings().musicEnabled;
+                      GameSettings().setMusicEnabled(enabled);
+                      if (enabled) {
+                        game.audioManager.enableBGM();
+                        game.audioManager.playBGM();
+                      } else {
+                        game.audioManager.disableBGM();
+                      }
+                      setState(() => {});
                     },
                   ),
                   MenuItem(
-                    title: 'Controls',
-                    onPressed: () {
-                      // Handle controls settings tap
+                    title: 'Sound FX ${sfxEnabled ? 'ON' : 'OFF'}',
+                    onPressed: () async {
+                      final enabled = !await GameSettings().soundEnabled;
+                      GameSettings().setSoundEnabled(enabled);
+                      if (enabled) {
+                        game.audioManager.enableSFX();
+                      } else {
+                        game.audioManager.disableSFX();
+                      }
+                      setState(() => {});
                     },
                   ),
                 ],
@@ -164,36 +186,7 @@ class _GameContainerState extends State<GameContainer> {
             },
             // splash screen with game name and "Press any key to start" text
             splashKey: (_, RedOcelotGame game) {
-              return KeyboardListener(
-                onKeyEvent: (KeyEvent event) {
-                  if (event is KeyUpEvent) {
-                    game.overlays.remove(splashKey);
-                    game.overlays.add(mainMenuKey);
-                    game.audioManager.init();
-                    game.audioManager.init().then((_) {
-                      game.audioManager.playBGM();
-                    });
-                  }
-                },
-                focusNode: FocusNode(),
-                child: Menu(
-                  game: game,
-                  title: 'Red Ocelot',
-                  items: [
-                    MenuItem(
-                      title: 'Press any key to start',
-                      onPressed: () {
-                        game.overlays.remove(splashKey);
-                        game.overlays.add(mainMenuKey);
-                        game.audioManager = AudioManager();
-                        game.audioManager.init().then((_) {
-                          game.audioManager.playBGM();
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              );
+              return SplashScreen(game: game);
             },
           },
 

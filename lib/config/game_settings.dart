@@ -96,80 +96,84 @@ const Map<String, dynamic> defaultSettings = {
 /// - vibrationStrength: A double value indicating the strength of the
 ///   vibration.
 class GameSettings {
-  final Future<SharedPreferencesWithCache> _prefs;
+  static final Map<String, Object> cache = {};
+  late final SharedPreferencesWithCache _prefs;
+
   static final GameSettings _instance = GameSettings._internal();
   factory GameSettings() {
     return _instance;
   }
 
-  GameSettings._internal()
-    : _prefs = SharedPreferencesWithCache.create(
-        cacheOptions: const SharedPreferencesWithCacheOptions(),
-      );
+  GameSettings._internal();
+
+  static Future<void> init() async {
+    _instance._prefs = await SharedPreferencesWithCache.create(
+      cache: cache,
+      cacheOptions: const SharedPreferencesWithCacheOptions(),
+    );
+  }
 
   /// Sound setting
   Future<bool> get soundEnabled async =>
-      (await _prefs).getBool('soundEnabled') ?? defaultSettings['soundEnabled'];
+      _prefs.getBool('soundEnabled') ?? defaultSettings['soundEnabled'];
   Future<void> setSoundEnabled(bool value) async {
-    (await _prefs).setBool('soundEnabled', value);
+    _prefs.setBool('soundEnabled', value);
   }
 
   /// Sound volume setting
   /// This value is between 0.0 and 1.0
   /// Default is 1.0
   Future<double> get soundVolume async =>
-      (await _prefs).getDouble('soundVolume') ?? defaultSettings['soundVolume'];
+      _prefs.getDouble('soundVolume') ?? defaultSettings['soundVolume'];
   Future<void> setSoundVolume(double value) async {
-    (await _prefs).setDouble('soundVolume', value);
+    _prefs.setDouble('soundVolume', value);
   }
 
   /// Music setting
   Future<bool> get musicEnabled async =>
-      (await _prefs).getBool('musicEnabled') ?? defaultSettings['musicEnabled'];
+      _prefs.getBool('musicEnabled') ?? defaultSettings['musicEnabled'];
   Future<void> setMusicEnabled(bool value) async {
-    (await _prefs).setBool('musicEnabled', value);
+    _prefs.setBool('musicEnabled', value);
   }
 
   /// Music volume setting
   /// This value is between 0.0 and 1.0
   /// Default is 1.0
   Future<double> get musicVolume async =>
-      (await _prefs).getDouble('musicVolume') ?? defaultSettings['musicVolume'];
+      _prefs.getDouble('musicVolume') ?? defaultSettings['musicVolume'];
   Future<void> setMusicVolume(double value) async {
-    (await _prefs).setDouble('musicVolume', value);
+    _prefs.setDouble('musicVolume', value);
   }
 
   /// Vibration setting
   Future<bool> get vibrationEnabled async =>
-      (await _prefs).getBool('vibrationEnabled') ??
-      defaultSettings['vibrationEnabled'];
+      _prefs.getBool('vibrationEnabled') ?? defaultSettings['vibrationEnabled'];
   Future<void> setVibrationEnabled(bool value) async {
-    (await _prefs).setBool('vibrationEnabled', value);
+    _prefs.setBool('vibrationEnabled', value);
   }
 
   /// Vibration strength setting
   /// This value is between 0.0 and 1.0
   /// Default is 1.0
   Future<double> get vibrationStrength async =>
-      (await _prefs).getDouble('vibrationStrength') ??
+      _prefs.getDouble('vibrationStrength') ??
       defaultSettings['vibrationStrength'];
   Future<void> setVibrationStrength(double value) async {
-    (await _prefs).setDouble('vibrationStrength', value);
+    _prefs.setDouble('vibrationStrength', value);
   }
 
   /// High scores setting
   /// This is a list of HighScore objects
   /// Default is an empty list
   Future<List<HighScore>> get highScores async {
-    final List<String> scores =
-        (await _prefs).getStringList('highScores') ?? [];
+    final List<String> scores = _prefs.getStringList('highScores') ?? [];
     return HighScoreList.fromPreferencesStringList(scores);
   }
 
   Future<void> setHighScores(List<HighScore> scores) async {
     final List<String> scoresString =
         HighScoreList(scores).toPreferencesStringList();
-    (await _prefs).setStringList('highScores', scoresString);
+    _prefs.setStringList('highScores', scoresString);
   }
 
   Future<void> addHighScore(HighScore newScore) async {
