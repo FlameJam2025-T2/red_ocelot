@@ -263,7 +263,10 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   }
 
   Future<void> startEngineSound() async {
-    loopPlayer ??= await FlameAudio.loop('thrust2.mp3');
+    if (loopPlayer == null) {
+      loopPlayer = await FlameAudio.loop('thrust2.mp3');
+      print("loopPlayer beginning");
+    }
   }
 
   @override
@@ -339,12 +342,17 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     _shotSpawner.stop();
   }
 
-  void reactToJoystickInput(Vector2 input) {
+  Future<void> reactToJoystickInput(Vector2 input) async {
     if (input.length < 0.2) {
       // No input → no rotation or movement
       _decelerating = true;
+      if (loopPlayer != null) {
+        loopPlayer!.stop();
+        loopPlayer = null;
+      }
       return;
     }
+    await startEngineSound();
     _decelerating = false;
     final desiredAngle = math.atan2(input.x, -input.y);
     final currentAngle = body.angle;

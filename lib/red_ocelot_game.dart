@@ -197,8 +197,8 @@ class RedOcelotGame extends Forge2DGame
     );
   }
 
-  void joystickInput(Vector2 input) {
-    sundiver.reactToJoystickInput(input);
+  void joystickInput(Vector2 input) async {
+    await sundiver.reactToJoystickInput(input);
   }
 
   void startGame() {
