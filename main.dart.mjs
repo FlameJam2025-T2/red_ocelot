@@ -464,7 +464,6 @@ class CompiledApp {
       _1657: x0 => globalThis.Module_soloud._free(x0),
       _1658: x0 => globalThis.Module_soloud._free(x0),
       _1690: (x0,x1) => globalThis.Module_soloud._setPause(x0,x1),
-      _1691: x0 => globalThis.Module_soloud._getPause(x0),
       _1694: x0 => globalThis.Module_soloud._malloc(x0),
       _1695: (x0,x1,x2,x3,x4,x5,x6) => globalThis.Module_soloud._play(x0,x1,x2,x3,x4,x5,x6),
       _1696: (x0,x1) => globalThis.Module_soloud.getValue(x0,x1),
