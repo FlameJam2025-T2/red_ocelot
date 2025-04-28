@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flame/game.dart';
-import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/config/keys.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
@@ -44,7 +43,7 @@ class _GameContainerState extends State<GameContainer> {
 
   @override
   Widget build(BuildContext context) {
-    FlameAudio.bgm.initialize();
+    // FlameAudio.bgm.initialize();
     final double tenpct = max(
       min(
         MediaQuery.of(context).size.width / 10,
@@ -92,8 +91,8 @@ class _GameContainerState extends State<GameContainer> {
                     title: 'Exit',
                     onPressed: () {
                       // Handle exit tap
-                      FlameAudio.bgm.stop();
-                      FlameAudio.bgm.dispose();
+                      // FlameAudio.bgm.stop();
+                      // FlameAudio.bgm.dispose();
                     },
                   ),
                 ],
@@ -110,9 +109,9 @@ class _GameContainerState extends State<GameContainer> {
                     title: 'Audio',
                     onPressed: () {
                       // Handle audio settings tap
-                      FlameAudio.bgm.isPlaying
-                          ? FlameAudio.bgm.stop()
-                          : FlameAudio.bgm.play('spaceW0rp.mp3', volume: 0.05);
+                      // FlameAudio.bgm.isPlaying
+                      //     ? FlameAudio.bgm.stop()
+                      //     : FlameAudio.bgm.play('spaceW0rp.mp3', volume: 0.05);
                     },
                   ),
                   MenuItem(
