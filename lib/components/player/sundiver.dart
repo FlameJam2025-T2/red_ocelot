@@ -83,6 +83,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     await super.onLoad();
     _cachedSample = await FlameAudio.audioCache.load('thrust3.mp3');
     loopPlayer = AudioPlayer()..audioCache = FlameAudio.audioCache;
+    await loopPlayer.setPlayerMode(PlayerMode.lowLatency);
     await loopPlayer.setReleaseMode(ReleaseMode.loop);
     await loopPlayer.setAudioContext(
       AudioContextConfig(focus: AudioContextConfigFocus.mixWithOthers).build(),
