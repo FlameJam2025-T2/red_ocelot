@@ -9,7 +9,7 @@ import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_soloud/flutter_soloud.dart';
+import 'package:red_ocelot/audio/audio_manager.dart';
 import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
 import 'package:red_ocelot/components/hud.dart';
 import 'package:red_ocelot/components/minimap.dart';
@@ -45,11 +45,11 @@ class RedOcelotGame extends Forge2DGame
   );
   late final FragmentProgram starfieldFrag;
   late final FragmentShader laserShader;
-  late final SoundHandle bgmHandle;
   MinimapHUD? minimapHUD;
 
   GameState _gameState = GameState.loading;
   DateTime? _gameStartTime;
+  AudioManager? _audioManager;
 
   int totalScore = 0;
   int totalEnemiesKilled = 0;
@@ -99,21 +99,21 @@ class RedOcelotGame extends Forge2DGame
     starfieldCamera?.viewfinder.zoom = zoom;
   }
 
+  AudioManager get audioManager {
+    _audioManager ??= AudioManager();
+    return _audioManager!;
+  }
+
+  set audioManager(AudioManager audioManager) {
+    _audioManager = audioManager;
+  }
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
 
     await loadSprite('sundiver.png');
-    // await FlameAudio.audioCache.loadAll(['thrust.mp3', 'thrust3.mp3']);
-    final soloud = SoLoud.instance;
-    await soloud.init();
-    final bgmSource = await soloud.loadAsset('assets/audio/spaceW0rp.mp3');
-    bgmHandle = await soloud.play(
-      bgmSource,
-      volume: 0.25,
-      looping: true,
-      paused: true,
-    );
+
     // final g = SineWaveGenerator(
     //   frequency: 440,
     //   amplitude: 0.1,
@@ -212,10 +212,6 @@ class RedOcelotGame extends Forge2DGame
     _gameState = GameState.playing;
     _gameStartTime = DateTime.now();
     resumeEngine();
-    // if (!FlameAudio.bgm.isPlaying) {
-    //   FlameAudio.bgm.play('spaceW0rp.mp3', volume: 0.25);
-    // }
-    SoLoud.instance.setPause(bgmHandle, false);
   }
 
   void gameOver() {

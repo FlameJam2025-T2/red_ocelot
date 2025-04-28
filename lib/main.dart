@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:red_ocelot/audio/audio_manager.dart';
 import 'package:red_ocelot/config/keys.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 import 'package:red_ocelot/ui/game_over.dart';
@@ -160,9 +162,42 @@ class _GameContainerState extends State<GameContainer> {
             highScoresKey: (_, RedOcelotGame game) {
               return HighScoresScreen(game: game);
             },
+            // splash screen with game name and "Press any key to start" text
+            splashKey: (_, RedOcelotGame game) {
+              return KeyboardListener(
+                onKeyEvent: (KeyEvent event) {
+                  if (event is KeyUpEvent) {
+                    game.overlays.remove(splashKey);
+                    game.overlays.add(mainMenuKey);
+                    game.audioManager.init();
+                    game.audioManager.init().then((_) {
+                      game.audioManager.playBGM();
+                    });
+                  }
+                },
+                focusNode: FocusNode(),
+                child: Menu(
+                  game: game,
+                  title: 'Red Ocelot',
+                  items: [
+                    MenuItem(
+                      title: 'Press any key to start',
+                      onPressed: () {
+                        game.overlays.remove(splashKey);
+                        game.overlays.add(mainMenuKey);
+                        game.audioManager = AudioManager();
+                        game.audioManager.init().then((_) {
+                          game.audioManager.playBGM();
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
           },
 
-          initialActiveOverlays: const [mainMenuKey],
+          initialActiveOverlays: const [splashKey],
         ),
       ),
     );

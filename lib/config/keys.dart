@@ -6,3 +6,4 @@ const gameKey = 'Game';
 const gamepadToggleKey = 'GamepadToggle';
 const gamepadKey = 'Gamepad';
 const highScoresKey = 'HighScores';
+const splashKey = 'Splash';

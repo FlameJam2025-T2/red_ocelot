@@ -7,7 +7,6 @@ import 'package:flame_forge2d/flame_forge2d.dart' hide Particle;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_soloud/flutter_soloud.dart';
 import 'package:red_ocelot/components/alive.dart';
 import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
 import 'package:red_ocelot/components/moving_cluster_object.dart';
@@ -46,8 +45,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   late final Vector2 textPosition;
   late final maxPosition = Vector2.all(RedOcelotMap.size / 2 - size.x);
   late final minPosition = -maxPosition;
-  late final SoundHandle loopPlayer;
-  late final AudioSource _cachedSample;
+
   Color currentColor = Colors.black;
   double colorProgress = 0.0;
   bool flashRed = false;
@@ -81,29 +79,6 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   Future<void> onLoad() async {
     // debugMode = true;
     await super.onLoad();
-    // _cachedSample = await FlameAudio.audioCache.fetchToMemory('thrust3.mp3');
-    // loopPlayer = AudioPlayer(playerId: 'sdt')
-    //   ..audioCache = FlameAudio.audioCache;
-
-    // await loopPlayer.setSource(DeviceFileSource(_cachedSample.toString()));
-    // await loopPlayer.setAudioContext(
-    //   AudioContextConfig(focus: AudioContextConfigFocus.mixWithOthers).build(),
-    // );
-    // await loopPlayer.setVolume(0.5);
-    // await loopPlayer.setPlayerMode(PlayerMode.lowLatency);
-    // await loopPlayer.setReleaseMode(ReleaseMode.loop);
-
-    _cachedSample = await SoLoud.instance.loadAsset('assets/audio/thrust3.mp3');
-
-    loopPlayer = await SoLoud.instance.play(
-      _cachedSample,
-      paused: true,
-      looping: true,
-      volume: 0.5,
-    );
-
-    //await loopPlayer.setVolume(0.5);
-    // await loopPlayer.setPlaybackRate(1.0);
   }
 
   @override
@@ -287,16 +262,11 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   }
 
   Future<void> startEngineSound() async {
-    if (!SoLoud.instance.getPause(loopPlayer)) {
-      return;
-    }
-    SoLoud.instance.setPause(loopPlayer, false);
+    return;
   }
 
   void stopEngineSound() async {
-    if (!SoLoud.instance.getPause(loopPlayer)) {
-      SoLoud.instance.setPause(loopPlayer, true);
-    }
+    return;
   }
 
   @override
