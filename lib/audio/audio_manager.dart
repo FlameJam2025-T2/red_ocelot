@@ -12,6 +12,9 @@ class AudioManager {
   // late final SoundHandle musicHandle;
   static final SoLoud soloud = SoLoud.instance;
 
+  static bool sfxEnabled = true;
+  static bool bgmEnabled = true;
+
   /// for web, this should only be called after user interaction.
   Future<void> init() async {
     await soloud.init();
@@ -42,7 +45,46 @@ class AudioManager {
     );
   }
 
+  /// from 0 - 1
+  void setSoundFXVolume(double volume) {
+    soloud.setVolume(thrustHandle, volume * 0.2);
+    soloud.setVolume(laserHandle, volume * 0.15);
+  }
+
+  /// from 0 - 1
+  void setBGMVolume(double volume) {
+    soloud.setVolume(bgmHandle, volume * 0.25);
+  }
+
+  void disableSFX() {
+    sfxEnabled = false;
+    if (!soloud.getPause(thrustHandle)) {
+      soloud.setPause(thrustHandle, true);
+    }
+    if (!soloud.getPause(laserHandle)) {
+      soloud.setPause(laserHandle, true);
+    }
+  }
+
+  void enableSFX() {
+    sfxEnabled = true;
+  }
+
+  void disableBGM() {
+    bgmEnabled = false;
+    if (!soloud.getPause(bgmHandle)) {
+      soloud.setPause(bgmHandle, true);
+    }
+  }
+
+  void enableBGM() {
+    bgmEnabled = true;
+  }
+
   void playBGM() {
+    if (!bgmEnabled) {
+      return;
+    }
     if (soloud.getPause(bgmHandle)) {
       soloud.setPause(bgmHandle, false);
     }
@@ -55,6 +97,9 @@ class AudioManager {
   }
 
   void playThrust() {
+    if (!sfxEnabled) {
+      return;
+    }
     if (soloud.getPause(thrustHandle)) {
       soloud.setPause(thrustHandle, false);
     }
@@ -67,6 +112,9 @@ class AudioManager {
   }
 
   void playLaser() {
+    if (!sfxEnabled) {
+      return;
+    }
     soloud.setPause(laserHandle, false);
   }
 
@@ -74,5 +122,9 @@ class AudioManager {
     if (!soloud.getPause(laserHandle)) {
       soloud.setPause(laserHandle, true);
     }
+  }
+
+  void dispose() {
+    soloud.deinit();
   }
 }

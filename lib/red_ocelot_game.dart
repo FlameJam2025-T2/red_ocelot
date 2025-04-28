@@ -303,4 +303,15 @@ class RedOcelotGame extends Forge2DGame
     //   velocity.y / gameUnit / 2,
     // );
   }
+
+  @override
+  void onDispose() {
+    super.onDispose();
+    if (kDebugMode) {
+      print("Disposing game");
+    }
+    _gameState = GameState.loading;
+    _gameStartTime = null;
+    audioManager.dispose();
+  }
 }
