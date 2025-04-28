@@ -8,6 +8,7 @@ class AudioManager {
 
   late final SoundHandle bgmHandle;
   late final SoundHandle thrustHandle;
+  late final SoundHandle laserHandle;
   // late final SoundHandle musicHandle;
   static final SoLoud soloud = SoLoud.instance;
 
@@ -25,9 +26,19 @@ class AudioManager {
     final sfxSource = await soloud.loadAsset('assets/audio/thrust3.mp3');
     thrustHandle = await soloud.play(
       sfxSource,
-      volume: 0.3,
+      volume: 0.2,
       looping: true,
       paused: true,
+    );
+
+    final laserSource = await soloud.loadAsset('assets/audio/laser.mp3');
+
+    laserHandle = await soloud.play(
+      laserSource,
+      volume: 0.15,
+      looping: true,
+      paused: true,
+      loopingStartAt: Duration(milliseconds: 2620),
     );
   }
 
@@ -52,6 +63,16 @@ class AudioManager {
   void stopThrust() {
     if (!soloud.getPause(thrustHandle)) {
       soloud.setPause(thrustHandle, true);
+    }
+  }
+
+  void playLaser() {
+    soloud.setPause(laserHandle, false);
+  }
+
+  void stopLaser() {
+    if (!soloud.getPause(laserHandle)) {
+      soloud.setPause(laserHandle, true);
     }
   }
 }

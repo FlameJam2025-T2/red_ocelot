@@ -310,11 +310,10 @@ class SunDiver extends BodyComponent<RedOcelotGame>
       // shoot a bullet
 
       if (_shooting != isKeyDown) {
-        _shooting = isKeyDown;
-        if (_shooting) {
-          _shotSpawner.start();
+        if (isKeyDown) {
+          startShooting();
         } else {
-          _shotSpawner.stop();
+          stopShooting();
         }
       }
       handled = true;
@@ -332,11 +331,13 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   void startShooting() {
     _shooting = true;
     _shotSpawner.start();
+    game.audioManager.playLaser();
   }
 
   void stopShooting() {
     _shooting = false;
     _shotSpawner.stop();
+    game.audioManager.stopLaser();
   }
 
   Future<void> reactToJoystickInput(Vector2 input) async {
