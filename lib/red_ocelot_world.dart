@@ -115,7 +115,7 @@ class RedOcelotMap extends Component
       final coordinates = generateCoordinates(
         clusterPositions.values.toList(growable: false),
       );
-      final count = max(1, gaussianRandom(mean: 35, stdDev: 5).round());
+      final count = max(1, gaussianRandom(mean: 30, stdDev: 5).round());
       final cluster = Cluster(
         clusterIndex: i,
         count: count,
