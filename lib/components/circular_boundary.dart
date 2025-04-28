@@ -13,6 +13,12 @@ class CircularBoundary extends BodyComponent with ContactCallbacks {
   CircularBoundary(this.center, this.radius);
 
   @override
+  Future<void> onLoad() {
+    // debugMode = true;
+    return super.onLoad();
+  }
+
+  @override
   Body createBody() {
     renderBody = false;
     body = world.createBody(BodyDef()..position = center);
@@ -29,7 +35,7 @@ class CircularBoundary extends BodyComponent with ContactCallbacks {
       _fixture =
           FixtureDef(shape)
             ..userData = this
-            ..isSensor = true
+            ..isSensor = false
             ..filter.categoryBits = CollisionType.boundary;
 
       body.createFixture(_fixture);
@@ -38,8 +44,17 @@ class CircularBoundary extends BodyComponent with ContactCallbacks {
     return body;
   }
 
-  void reset() {
-    body.transform.p.setFrom(center);
-    _fixture.shape.radius = radius;
-  }
+  // @override
+  // void render(Canvas canvas) {
+  //   super.render(canvas);
+
+  //   final paint =
+  //       Paint()
+  //         ..color = Colors.white
+  //         ..style = PaintingStyle.stroke
+  //         ..strokeWidth = 0.2; // thickness of the line
+
+  //   // Draw at (0,0) because body is positioned at center already
+  //   canvas.drawCircle(Offset.zero, radius, paint);
+  // }
 }

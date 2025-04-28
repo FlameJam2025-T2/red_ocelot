@@ -33,7 +33,11 @@ class MinimapHUD extends PositionComponent
       Rect.fromCenter(center: Offset(0, 0), width: hudSize, height: hudSize),
       fillPaint,
     );
-    for (Cluster cluster in game.clusterMap.clusters) {
+    // final List<MovingClusterObject> enemies =
+    //     game.world.children.whereType<MovingClusterObject>().toList();
+
+    for (int i = 0; i < game.clusterMap.clusters.length; i++) {
+      Cluster cluster = game.clusterMap.clusters[i];
       final Vector2 clusterPosition = (cluster.center * hudSize / mapSize);
 
       // Draw the cluster circle
@@ -42,7 +46,8 @@ class MinimapHUD extends PositionComponent
         cluster.radius * hudSize / mapSize,
         clusterPaint,
       );
-
+      // int enemiesLeft =
+      //     enemies.where((e) => e.cluster.clusterIndex == i).length;
       final int objectsLeft =
           game.clusterMap.numberClusterObjects[cluster] ?? 0;
 
