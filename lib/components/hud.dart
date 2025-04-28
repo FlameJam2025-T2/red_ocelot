@@ -7,18 +7,23 @@ import 'package:red_ocelot/red_ocelot_game.dart';
 class HUDComponent extends PositionComponent
     with HasGameReference<RedOcelotGame> {
   int score;
-  final TextPaint textPaint;
+  final TextPainter textPainter;
   final double boxWidth;
   final double boxHeight;
   final Paint boxPaint;
+  final TextStyle textStyle = TextStyle(
+    fontSize: 12,
+    color: Colors.white.withAlpha(200),
+  );
 
   HUDComponent({
     this.score = 0,
     this.boxWidth = 100,
-    this.boxHeight = 40,
+    this.boxHeight = 80,
     Vector2? position,
-  }) : textPaint = TextPaint(
-         style: TextStyle(fontSize: 12, color: Colors.white.withAlpha(200)),
+  }) : textPainter = TextPainter(
+         textDirection: TextDirection.ltr,
+         textAlign: TextAlign.right,
        ),
        boxPaint = Paint()..color = Colors.blue.withAlpha(50) {
     this.position = position ?? Vector2.zero();
@@ -31,10 +36,17 @@ class HUDComponent extends PositionComponent
     canvas.drawRect(size.toRect(), boxPaint);
 
     // Draw the score text centered
-    final text =
-        '${game.elapsedTime()}\nScore: ${game.totalScore}\nClusters: ${clusterCount - game.clusterMap.clusters.remaining}/$clusterCount\nRemaining enenies: ${game.clusterMap.clusters.remainingEnemies}';
-    final tp = textPaint.toTextPainter(text);
-    final offset = Offset((size.x - tp.width) / 2, (size.y - tp.height) / 2);
-    tp.paint(canvas, offset);
+    final text = TextSpan(
+      text:
+          '${game.elapsedTime()}\nScore: ${game.totalScore}\nClusters: ${game.clusterMap.clusters.remaining}\nEnenies: ${game.clusterMap.clusters.remainingEnemies}',
+    );
+    // final tp = textPaint.toTextPainter(text);
+    textPainter.text = text;
+    textPainter.layout();
+    final offset = Offset(
+      (size.x - textPainter.width) / 2,
+      (size.y - textPainter.height) / 2,
+    );
+    textPainter.paint(canvas, offset);
   }
 }
