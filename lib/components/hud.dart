@@ -24,7 +24,9 @@ class HUDComponent extends PositionComponent
          textDirection: TextDirection.ltr,
          textAlign: TextAlign.right,
        ),
-       boxPaint = Paint()..color = Colors.blue.withAlpha(50) {
+       boxPaint =
+           Paint()
+             ..color = const Color.fromARGB(255, 204, 220, 234).withAlpha(50) {
     this.position = position ?? Vector2.zero();
     size = Vector2(boxWidth, boxHeight);
   }
@@ -45,6 +47,7 @@ class HUDComponent extends PositionComponent
 
     // Draw the score text centered
     final text = TextSpan(
+      style: textStyle,
       text:
           '${game.elapsedTime()}\nScore: ${game.totalScore}\nClusters: ${game.clusterMap.clusters.remaining}\nEnenies: ${game.clusterMap.clusters.remainingEnemies}',
     );
