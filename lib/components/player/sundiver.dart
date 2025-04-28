@@ -51,8 +51,8 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   final shipColor =
       Paint()
         ..colorFilter = ColorFilter.mode(
-          const Color.fromARGB(255, 189, 4, 4),
-          BlendMode.srcIn, // ✅
+          const Color.fromARGB(0, 0, 0, 0),
+          BlendMode.clear, // ✅
         );
   void triggerFlash() {
     flashRed = true;
@@ -229,8 +229,8 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     // Update the current color
     currentColor =
         Color.lerp(
-          const Color.fromARGB(255, 7, 60, 15),
-          const Color(0xFFBD0404), // Red
+          const Color.fromARGB(255, 156, 232, 85),
+          const Color.fromARGB(255, 255, 74, 74), // Red
           colorProgress.clamp(0.0, 1.0),
         )!;
 
