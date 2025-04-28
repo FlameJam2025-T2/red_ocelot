@@ -49,7 +49,7 @@ class HUDComponent extends PositionComponent
     final text = TextSpan(
       style: textStyle,
       text:
-          '${game.elapsedTime()}\nScore: ${game.totalScore}\nClusters: ${game.clusterMap.clusters.remaining}\nEnenies: ${game.clusterMap.clusters.remainingEnemies}',
+          '${game.elapsedTime()}\nScore: ${game.totalScore}\nClusters: ${game.clusterMap.clusters.remaining}\nEnemies: ${game.clusterMap.clusters.remainingEnemies}',
     );
 
     textPainter.text = text;

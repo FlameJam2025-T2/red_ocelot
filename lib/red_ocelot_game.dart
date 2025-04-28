@@ -41,11 +41,11 @@ class RedOcelotGame extends Forge2DGame
   final Future<FragmentProgram> _starfieldShader = FragmentProgram.fromAsset(
     'shaders/starfield.frag',
   );
-  final Future<FragmentProgram> _laserFrag = FragmentProgram.fromAsset(
-    'shaders/laser.frag',
-  );
+  // final Future<FragmentProgram> _laserFrag = FragmentProgram.fromAsset(
+  //   'shaders/laser.frag',
+  // );
   late final FragmentProgram starfieldFrag;
-  late final FragmentShader laserShader;
+  //late final FragmentShader laserShader;
   MinimapHUD? minimapHUD;
 
   GameState _gameState = GameState.loading;
@@ -132,7 +132,7 @@ class RedOcelotGame extends Forge2DGame
     starfieldFrag = await _starfieldShader;
 
     // // Load the laser shader
-    laserShader = (await _laserFrag).fragmentShader();
+    // laserShader = (await _laserFrag).fragmentShader();
     // laserCamera = SamplerCamera.withFixedResolution(
     //   samplerOwner: LaserSamplerOwner(laserShader.fragmentShader(), this),
     //   width: 100 * gameUnit,
@@ -159,6 +159,20 @@ class RedOcelotGame extends Forge2DGame
 
     // Pause until ready
     pauseEngine();
+  }
+
+  // constrain the max resolution of the shader's long side to 512px
+  // but maintain the aspect ratio
+  static Vector2 limitedShaderSize(Vector2 resolution) {
+    const double maxShaderSize = 10;
+    final double aspectRatio = resolution.x / resolution.y;
+    if (resolution.x < maxShaderSize && resolution.y < maxShaderSize) {
+      return Vector2(resolution.x, resolution.y);
+    } else if (resolution.x > resolution.y) {
+      return Vector2(maxShaderSize, maxShaderSize / aspectRatio);
+    } else {
+      return Vector2(maxShaderSize * aspectRatio, maxShaderSize);
+    }
   }
 
   @override
@@ -286,10 +300,7 @@ class RedOcelotGame extends Forge2DGame
   @override
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
-    starfieldCamera?.viewport.size = Vector2(
-      10000 * gameUnit,
-      10000 * gameUnit,
-    );
+
     if (kDebugMode) {
       print("Game resized to $size");
     }

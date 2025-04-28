@@ -86,4 +86,10 @@ class SamplerCamera<OwnerType extends SamplerOwner> extends CameraComponent {
     super.update(dt);
     samplerOwner.update(dt);
   }
+
+  @override
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    samplerOwner.onGameResize(size);
+  }
 }

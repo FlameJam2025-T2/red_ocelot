@@ -59,8 +59,8 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     flashRed = true;
   }
 
-  late final LaserSamplerOwner _laserShader;
-  late final SamplerCamera _laserCamera;
+  // late final LaserSamplerOwner _laserShader;
+  // late final SamplerCamera _laserCamera;
 
   bool _rotatingLeft = false;
   bool _rotatingRight = false;
@@ -129,14 +129,14 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     );
     add(ship);
 
-    _laserShader = LaserSamplerOwner(game.laserShader, game);
-    _laserCamera = SamplerCamera.withFixedResolution(
-      samplerOwner: _laserShader,
-      width: game.viewportResolution.x,
-      height: game.viewportResolution.y,
-      world: world,
-      pixelRatio: 1.0,
-    );
+    // _laserShader = LaserSamplerOwner(game.laserShader, game);
+    // _laserCamera = SamplerCamera.withFixedResolution(
+    //   samplerOwner: _laserShader,
+    //   width: game.viewportResolution.x,
+    //   height: game.viewportResolution.y,
+    //   world: world,
+    //   pixelRatio: 1.0,
+    // );
 
     return world.createBody(bodyDef)..createFixture(fixtureDef);
   }
@@ -161,7 +161,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   @override
   void update(double dt) {
     super.update(dt);
-    _laserCamera.update(dt);
+    //_laserCamera.update(dt);
     _shotSpawner.update(dt);
     if (_rotatingLeft) {
       _rotateLeft(dt);
