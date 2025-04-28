@@ -40,13 +40,13 @@ class Cluster extends PositionComponent with HasGameReference<RedOcelotGame> {
 
   @override
   Future<void> onLoad() async {
-    size = Vector2.all(radius * 2);
+    center = position + Vector2.all(radius.toDouble());
     _addClusterComponents();
     super.onLoad();
   }
 
   void _addClusterComponents() {
-    center = position + size / 2; // world space center
+    // world space center
 
     game.world.add(circularBoundary = CircularBoundary(center, radius));
 
