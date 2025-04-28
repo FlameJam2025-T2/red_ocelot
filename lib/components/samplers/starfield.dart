@@ -23,46 +23,47 @@ class StarfieldSamplerOwner extends SamplerOwner {
   @override
   void attachCamera(CameraComponent cameraComponent) {
     super.attachCamera(cameraComponent);
-    viewportSize.setFrom(cameraComponent.viewport.size);
+    viewportSize.setFrom(
+      RedOcelotGame.limitedShaderSize(cameraComponent.viewport.size),
+    );
   }
 
   @override
   void sampler(List<Image> images, Size size, Canvas canvas) {
     if (kDebugMode) {
       print('StarfieldSamplerOwner.sampler');
+      print(viewportSize);
       print(size);
+      print(images);
     }
     shader.setFloatUniforms((value) {
       value
-        ..setVector(viewportSize)
-        ..setFloat(cumulativeOffset.x * scaleFactor)
-        ..setFloat(cumulativeOffset.y * scaleFactor)
+        ..setVector(size.toVector2() * scaleFactor)
+        ..setFloat(cumulativeOffset.x)
+        ..setFloat(cumulativeOffset.y)
         ..setFloat(time);
     });
     final Paint shaderPaint = Paint()..shader = shader;
     final PictureRecorder recorder = PictureRecorder();
-    final canvas2 = Canvas(
-      recorder,
-      Rect.fromPoints(Offset.zero, Offset(viewportSize.x, viewportSize.y)),
-    );
-    canvas2.drawRect(
-      Rect.fromLTWH(0, 0, viewportSize.x, viewportSize.y),
-      shaderPaint,
-    );
+    final canvas2 = Canvas(recorder);
+    canvas2.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), shaderPaint);
     final pic = recorder.endRecording();
 
     canvas
       ..save()
       ..drawImageRect(
-        pic.toImageSync(viewportSize.x.toInt(), viewportSize.y.toInt()),
-        Rect.fromLTWH(0, 0, viewportSize.x, viewportSize.y),
-        Rect.fromLTWH(0, 0, size.width, size.height),
-        Paint()
-          ..blendMode = BlendMode.lighten
-          ..colorFilter = ColorFilter.mode(
-            Colors.white.withAlpha(0),
-            BlendMode.srcATop,
-          ),
+        pic.toImageSync(
+          (size.width * scaleFactor).toInt(),
+          (size.height * scaleFactor).toInt(),
+        ),
+        Rect.fromLTWH(
+          0,
+          0,
+          size.width * scaleFactor,
+          size.height * scaleFactor,
+        ),
+        Offset(-viewportSize.x / 2, -viewportSize.y / 2) & size,
+        Paint()..blendMode = BlendMode.srcOver,
       )
       ..restore();
   }

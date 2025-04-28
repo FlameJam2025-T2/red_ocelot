@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:red_ocelot/components/flame_shaders/layer.dart';
 import 'package:red_ocelot/components/flame_shaders/sampler_canvas.dart';
 
