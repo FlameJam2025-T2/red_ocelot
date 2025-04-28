@@ -3,9 +3,10 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"assets/AssetManifest.json": "18c258955eb89af4466dd78485ffd575",
-"assets/AssetManifest.bin": "d345c547234edbae31fb449a48c134da",
+const RESOURCES = {"assets/AssetManifest.json": "c895f0efb26abcf3fd5b8c416032ff3e",
+"assets/AssetManifest.bin": "d815c308af30fdc67b2bc2a5fba80a06",
 "assets/assets/audio/spaceW0rp.mp3": "81694d3c9610623e19a8b2c8aedfdcc7",
+"assets/assets/audio/thrust2.mp3": "a5036440b8f94ec6b003f53ac9f5d966",
 "assets/assets/audio/thrust.mp3": "cb2cda50e4dcd1dc897e6a1014f063e8",
 "assets/assets/images/UFO/UFO.png": "9be3a1c8a40d80afbf41c2c59f42700b",
 "assets/assets/images/sundiver.png": "dc0b4f0c4c9ea44c6920dbb1f7dd678c",
@@ -16,7 +17,7 @@ const RESOURCES = {"assets/AssetManifest.json": "18c258955eb89af4466dd78485ffd57
 "assets/assets/images/SpaceMonsters/SpaceMonsterC.png": "86338b22451652946f66bde9603edba6",
 "assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
 "assets/fonts/MaterialIcons-Regular.otf": "dda80d5251f466bc2ac0dc4fbbb41ab5",
-"assets/AssetManifest.bin.json": "a2491c1242c2d4561426d7e0d1c0149e",
+"assets/AssetManifest.bin.json": "53f7dbd47ede88a2c7f41b7bde743ace",
 "assets/shaders/laser.frag": "da3b19b08ca86504dae7bd9f4583e686",
 "assets/shaders/starfield.frag": "e0fc501d541ba56b8bfaf6e253fb1718",
 "assets/shaders/ink_sparkle.frag": "ecc85a2e95f5e9f53123dcaf8cb9b6ce",
@@ -39,7 +40,7 @@ const RESOURCES = {"assets/AssetManifest.json": "18c258955eb89af4466dd78485ffd57
 "canvaskit/skwasm_st.js.symbols": "c7e7aac7cd8b612defd62b43e3050bdd",
 "index.html": "0e9d12f3fb994734c2d5a888a9c53c84",
 "/": "0e9d12f3fb994734c2d5a888a9c53c84",
-"flutter_bootstrap.js": "5277aa678c2b82d16b37336293d1968a",
+"flutter_bootstrap.js": "e9306d70f7383327815fa9ad857a9b3f",
 "main.dart.wasm": "eafe742c893b9bfb97bff4fa4bcf8cd5",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
