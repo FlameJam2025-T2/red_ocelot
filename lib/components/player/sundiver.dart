@@ -81,16 +81,20 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   Future<void> onLoad() async {
     // debugMode = true;
     await super.onLoad();
-    _cachedSample = await FlameAudio.audioCache.load('thrust3.mp3');
-    loopPlayer = AudioPlayer()..audioCache = FlameAudio.audioCache;
-    await loopPlayer.setPlayerMode(PlayerMode.lowLatency);
-    await loopPlayer.setReleaseMode(ReleaseMode.loop);
+    _cachedSample = await FlameAudio.audioCache.fetchToMemory('thrust3.mp3');
+    loopPlayer = AudioPlayer(playerId: 'sdt')
+      ..audioCache = FlameAudio.audioCache;
+
+    await loopPlayer.setSource(DeviceFileSource(_cachedSample.toString()));
     await loopPlayer.setAudioContext(
       AudioContextConfig(focus: AudioContextConfigFocus.mixWithOthers).build(),
     );
-    await loopPlayer.setSource(UrlSource(_cachedSample.toString()));
     await loopPlayer.setVolume(0.5);
-    await loopPlayer.setPlaybackRate(1.0);
+    await loopPlayer.setPlayerMode(PlayerMode.lowLatency);
+    await loopPlayer.setReleaseMode(ReleaseMode.loop);
+
+    //await loopPlayer.setVolume(0.5);
+    // await loopPlayer.setPlaybackRate(1.0);
   }
 
   @override
