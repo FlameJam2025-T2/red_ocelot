@@ -3,9 +3,10 @@ const MANIFEST = 'flutter-app-manifest';
 const TEMP = 'flutter-temp-cache';
 const CACHE_NAME = 'flutter-app-cache';
 
-const RESOURCES = {"assets/AssetManifest.json": "64ccde960edb283253f60bde5ec9a0b4",
-"assets/AssetManifest.bin": "de316e568b0d71890b4e6a1834ad3b21",
+const RESOURCES = {"assets/AssetManifest.json": "18c258955eb89af4466dd78485ffd575",
+"assets/AssetManifest.bin": "d345c547234edbae31fb449a48c134da",
 "assets/assets/audio/spaceW0rp.mp3": "81694d3c9610623e19a8b2c8aedfdcc7",
+"assets/assets/audio/thrust.mp3": "cb2cda50e4dcd1dc897e6a1014f063e8",
 "assets/assets/images/UFO/UFO.png": "9be3a1c8a40d80afbf41c2c59f42700b",
 "assets/assets/images/sundiver.png": "dc0b4f0c4c9ea44c6920dbb1f7dd678c",
 "assets/assets/images/SpaceMonsters/SpaceMonsterD.png": "c372df6301d6713636dd9a71d09a0c01",
@@ -15,7 +16,7 @@ const RESOURCES = {"assets/AssetManifest.json": "64ccde960edb283253f60bde5ec9a0b
 "assets/assets/images/SpaceMonsters/SpaceMonsterC.png": "86338b22451652946f66bde9603edba6",
 "assets/FontManifest.json": "dc3d03800ccca4601324923c0b1d6d57",
 "assets/fonts/MaterialIcons-Regular.otf": "dda80d5251f466bc2ac0dc4fbbb41ab5",
-"assets/AssetManifest.bin.json": "9c9b216391ba1a1b7b92ee2df42f70de",
+"assets/AssetManifest.bin.json": "a2491c1242c2d4561426d7e0d1c0149e",
 "assets/shaders/laser.frag": "da3b19b08ca86504dae7bd9f4583e686",
 "assets/shaders/starfield.frag": "e0fc501d541ba56b8bfaf6e253fb1718",
 "assets/shaders/ink_sparkle.frag": "ecc85a2e95f5e9f53123dcaf8cb9b6ce",
@@ -38,7 +39,7 @@ const RESOURCES = {"assets/AssetManifest.json": "64ccde960edb283253f60bde5ec9a0b
 "canvaskit/skwasm_st.js.symbols": "c7e7aac7cd8b612defd62b43e3050bdd",
 "index.html": "0e9d12f3fb994734c2d5a888a9c53c84",
 "/": "0e9d12f3fb994734c2d5a888a9c53c84",
-"flutter_bootstrap.js": "87245ac1506db495ffafb327adc84f8e",
+"flutter_bootstrap.js": "5277aa678c2b82d16b37336293d1968a",
 "main.dart.wasm": "eafe742c893b9bfb97bff4fa4bcf8cd5",
 "icons/Icon-192.png": "ac9a721a12bbc803b44f645561ecb1e1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
