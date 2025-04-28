@@ -164,7 +164,7 @@ class RedOcelotGame extends Forge2DGame
   // constrain the max resolution of the shader's long side to 512px
   // but maintain the aspect ratio
   static Vector2 limitedShaderSize(Vector2 resolution) {
-    const double maxShaderSize = 10;
+    const double maxShaderSize = 512;
     final double aspectRatio = resolution.x / resolution.y;
     if (resolution.x < maxShaderSize && resolution.y < maxShaderSize) {
       return Vector2(resolution.x, resolution.y);

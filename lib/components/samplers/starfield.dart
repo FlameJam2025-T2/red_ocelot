@@ -2,9 +2,11 @@ import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' show Colors;
 import 'package:red_ocelot/components/flame_shaders/sampler_canvas.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 import 'package:flame/extensions.dart';
+//import 'package:vector_math/vector_math_64.dart' as v64;
 
 class StarfieldSamplerOwner extends SamplerOwner {
   StarfieldSamplerOwner(super.shader, this.game) : super();
@@ -37,20 +39,31 @@ class StarfieldSamplerOwner extends SamplerOwner {
         ..setFloat(cumulativeOffset.y * scaleFactor)
         ..setFloat(time);
     });
+    final Paint shaderPaint = Paint()..shader = shader;
+    final PictureRecorder recorder = PictureRecorder();
+    final canvas2 = Canvas(
+      recorder,
+      Rect.fromPoints(Offset.zero, Offset(viewportSize.x, viewportSize.y)),
+    );
+    canvas2.drawRect(
+      Rect.fromLTWH(0, 0, viewportSize.x, viewportSize.y),
+      shaderPaint,
+    );
+    final pic = recorder.endRecording();
+
     canvas
       ..save()
-      ..drawRect(
-        Offset(-viewportSize.x / 2, -viewportSize.y / 2) &
-            Size(viewportSize.x, viewportSize.y),
+      ..drawImageRect(
+        pic.toImageSync(viewportSize.x.toInt(), viewportSize.y.toInt()),
+        Rect.fromLTWH(0, 0, viewportSize.x, viewportSize.y),
+        Rect.fromLTWH(0, 0, size.width, size.height),
         Paint()
-          ..shader = shader
-          ..blendMode = BlendMode.srcOver,
+          ..blendMode = BlendMode.lighten
+          ..colorFilter = ColorFilter.mode(
+            Colors.white.withAlpha(0),
+            BlendMode.srcATop,
+          ),
       )
-      ..clipRect(
-        Offset(-viewportSize.x / 2, -viewportSize.y / 2) &
-            Size(viewportSize.x, viewportSize.y),
-      )
-      ..scale(scaleFactor)
       ..restore();
   }
 
