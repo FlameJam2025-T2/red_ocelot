@@ -7,8 +7,8 @@ class AudioManager {
   AudioManager._internal();
 
   late final SoundHandle bgmHandle;
-  late final SoundHandle sfxHandle;
-  late final SoundHandle musicHandle;
+  late final SoundHandle thrustHandle;
+  // late final SoundHandle musicHandle;
   static final SoLoud soloud = SoLoud.instance;
 
   /// for web, this should only be called after user interaction.
@@ -23,19 +23,35 @@ class AudioManager {
       paused: true,
     );
     final sfxSource = await soloud.loadAsset('assets/audio/thrust3.mp3');
-    sfxHandle = await soloud.play(
+    thrustHandle = await soloud.play(
       sfxSource,
       volume: 0.3,
-      looping: false,
+      looping: true,
       paused: true,
     );
   }
 
   void playBGM() {
-    soloud.setPause(bgmHandle, false);
+    if (soloud.getPause(bgmHandle)) {
+      soloud.setPause(bgmHandle, false);
+    }
   }
 
   void stopBGM() {
-    soloud.setPause(bgmHandle, true);
+    if (!soloud.getPause(bgmHandle)) {
+      soloud.setPause(bgmHandle, true);
+    }
+  }
+
+  void playThrust() {
+    if (soloud.getPause(thrustHandle)) {
+      soloud.setPause(thrustHandle, false);
+    }
+  }
+
+  void stopThrust() {
+    if (!soloud.getPause(thrustHandle)) {
+      soloud.setPause(thrustHandle, true);
+    }
   }
 }

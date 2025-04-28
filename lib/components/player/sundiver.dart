@@ -262,11 +262,11 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   }
 
   Future<void> startEngineSound() async {
-    return;
+    game.audioManager.playThrust();
   }
 
   void stopEngineSound() async {
-    return;
+    game.audioManager.stopThrust();
   }
 
   @override
