@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_forge2d/flame_forge2d.dart' hide Particle;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   late final Vector2 textPosition;
   late final maxPosition = Vector2.all(RedOcelotMap.size / 2 - size.x);
   late final minPosition = -maxPosition;
+  AudioPlayer? loopPlayer;
   Color currentColor = Colors.black;
   double colorProgress = 0.0;
   bool flashRed = false;
@@ -260,6 +262,10 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     }
   }
 
+  Future<void> startEngineSound() async {
+    loopPlayer ??= await FlameAudio.loop('tone.wav');
+  }
+
   @override
   bool onKeyEvent(KeyEvent event, Set<LogicalKeyboardKey> keysPressed) {
     final isKeyDown = event is KeyDownEvent || event is KeyRepeatEvent;
@@ -280,6 +286,15 @@ class SunDiver extends BodyComponent<RedOcelotGame>
       handled = true;
     } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
       // accelerate the ship
+      if (isKeyDown) {
+        startEngineSound();
+      }
+      if (!isKeyDown) {
+        if (loopPlayer != null) {
+          loopPlayer!.stop();
+          loopPlayer = null;
+        }
+      }
       if (_accelerating != isKeyDown) {
         _accelerating = isKeyDown;
         _decelerating = !_accelerating;
