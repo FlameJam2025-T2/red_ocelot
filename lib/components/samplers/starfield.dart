@@ -32,7 +32,7 @@ class StarfieldSamplerOwner extends SamplerOwner {
     }
     shader.setFloatUniforms((value) {
       value
-        ..setVector(viewportSize)
+        ..setVector(size.toVector2())
         ..setFloat(cumulativeOffset.x * scaleFactor)
         ..setFloat(cumulativeOffset.y * scaleFactor)
         ..setFloat(time);
@@ -40,17 +40,11 @@ class StarfieldSamplerOwner extends SamplerOwner {
     canvas
       ..save()
       ..drawRect(
-        Offset(-viewportSize.x / 2, -viewportSize.y / 2) &
-            Size(viewportSize.x, viewportSize.y),
+        Offset(-viewportSize.x / 2, -viewportSize.y / 2) & size,
         Paint()
           ..shader = shader
           ..blendMode = BlendMode.srcOver,
       )
-      ..clipRect(
-        Offset(-viewportSize.x / 2, -viewportSize.y / 2) &
-            Size(viewportSize.x, viewportSize.y),
-      )
-      ..scale(scaleFactor)
       ..restore();
   }
 
@@ -59,7 +53,7 @@ class StarfieldSamplerOwner extends SamplerOwner {
     super.onGameResize(size);
 
     cameraComponent?.viewport.size = size;
-    viewportSize.setFrom(RedOcelotGame.limitedShaderSize(size));
+    viewportSize.setFrom(size);
     if (kDebugMode) {
       print('StarfieldSamplerOwner.onGameResize');
       print(cameraComponent?.viewport.size);
