@@ -105,8 +105,9 @@ class RedOcelotGame extends Forge2DGame
     await loadSprite('sundiver.png');
     await FlameAudio.audioCache.loadAll([
       'rocket.wav',
-      'tone.wav'
-          'thrust.mp3',
+      'tone.wav',
+      'thrust.mp3',
+      'thrust2.mp3',
     ]);
 
     // final g = SineWaveGenerator(

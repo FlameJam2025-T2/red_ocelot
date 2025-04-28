@@ -263,7 +263,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   }
 
   Future<void> startEngineSound() async {
-    loopPlayer ??= await FlameAudio.loop('tone.wav');
+    loopPlayer ??= await FlameAudio.loop('thrust2.mp3');
   }
 
   @override
