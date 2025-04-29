@@ -16,6 +16,14 @@ class StarfieldSamplerOwner extends SamplerOwner {
   final Vector2 cumulativeOffset = Vector2.zero();
   double time = 0.0;
   double scaleFactor = 1;
+  Image? _cachedImage;
+  final Map<String, dynamic> _cacheProps = {
+    'position': Vector2.zero(),
+    'size': Size.zero,
+    'viewportSize': Vector2.zero(),
+    'scaleFactor': 0.0,
+    'cumulativeOffset': Vector2.zero(),
+  };
 
   @override
   int get passes => 0;
@@ -28,44 +36,86 @@ class StarfieldSamplerOwner extends SamplerOwner {
     );
   }
 
+  Image _cacheOrGenerate(Size size) {
+    if (_cachedImage != null &&
+        _cacheProps['position'] == game.sundiver.position &&
+        _cacheProps['size'] == size &&
+        _cacheProps['viewportSize'] == viewportSize &&
+        _cacheProps['scaleFactor'] == scaleFactor &&
+        _cacheProps['cumulativeOffset'] == cumulativeOffset) {
+      return _cachedImage!;
+    }
+
+    shader.setFloatUniforms((value) {
+      value
+        ..setVector(size.toVector2() * (1 / scaleFactor))
+        ..setFloat(cumulativeOffset.x)
+        ..setFloat(cumulativeOffset.y)
+        ..setFloat(time);
+    });
+    final Paint shaderPaint =
+        Paint()
+          ..shader = shader
+          ..blendMode = BlendMode.srcOver;
+
+    final recorder = PictureRecorder();
+    final canvas = Canvas(
+      recorder,
+      Rect.fromPoints(Offset.zero, Offset(size.width, size.height)),
+    );
+    canvas.drawRect(
+      Rect.fromLTWH(
+        game.sundiver.position.x * (1 / scaleFactor),
+        game.sundiver.position.y * (1 / scaleFactor),
+        viewportSize.x,
+        viewportSize.y,
+      ),
+      shaderPaint,
+    );
+    final picture = recorder.endRecording();
+    _cachedImage = picture.toImageSync(
+      (size.width).ceil(),
+      (size.height).ceil(),
+    );
+    _cacheProps['position'] = game.sundiver.position;
+    _cacheProps['size'] = size;
+    _cacheProps['viewportSize'] = viewportSize;
+    _cacheProps['scaleFactor'] = scaleFactor;
+    _cacheProps['cumulativeOffset'] = cumulativeOffset;
+    return _cachedImage!;
+  }
+
   @override
   void sampler(List<Image> images, Size size, Canvas canvas) {
     if (kDebugMode) {
       print('StarfieldSamplerOwner.sampler');
       print(viewportSize);
       print(size);
-      print(images);
+      print(scaleFactor);
+      print(cameraComponent?.viewport.size);
+      print(cameraComponent?.viewport.position);
+      print(cameraComponent?.viewfinder.position);
     }
-    shader.setFloatUniforms((value) {
-      value
-        ..setVector(size.toVector2() * scaleFactor)
-        ..setFloat(cumulativeOffset.x)
-        ..setFloat(cumulativeOffset.y)
-        ..setFloat(time);
-    });
-    final Paint shaderPaint = Paint()..shader = shader;
-    final PictureRecorder recorder = PictureRecorder();
-    final canvas2 = Canvas(recorder);
-    canvas2.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), shaderPaint);
-    final pic = recorder.endRecording();
 
-    canvas
-      ..save()
-      ..drawImageRect(
-        pic.toImageSync(
-          (size.width * scaleFactor).toInt(),
-          (size.height * scaleFactor).toInt(),
+    final img = _cacheOrGenerate(size);
+
+    canvas.save();
+    canvas.drawImageRect(
+      img,
+      Rect.fromLTWH(0, 0, size.width, size.height),
+      Rect.fromCenter(
+        center: Offset(
+          game.sundiver.position.x * scaleFactor,
+          game.sundiver.position.y * scaleFactor,
         ),
-        Rect.fromLTWH(
-          0,
-          0,
-          size.width * scaleFactor,
-          size.height * scaleFactor,
-        ),
-        Offset(-viewportSize.x / 2, -viewportSize.y / 2) & size,
-        Paint()..blendMode = BlendMode.srcOver,
-      )
-      ..restore();
+        width: size.width * scaleFactor / 2,
+        height: size.height * scaleFactor / 2,
+      ),
+      Paint()
+        ..color = Colors.white
+        ..blendMode = BlendMode.srcOver,
+    );
+    canvas.restore();
   }
 
   @override
