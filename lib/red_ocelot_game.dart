@@ -15,6 +15,7 @@ import 'package:red_ocelot/components/hud.dart';
 import 'package:red_ocelot/components/minimap.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
 import 'package:red_ocelot/components/samplers/starfield.dart';
+import 'package:red_ocelot/components/starfield_background.dart';
 import 'package:red_ocelot/config/game_settings.dart';
 import 'package:red_ocelot/config/keys.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
@@ -37,6 +38,7 @@ class RedOcelotGame extends Forge2DGame
   final Vector2 viewportResolution;
   final double devicePixelRatio;
   SamplerCamera? starfieldCamera;
+  StarfieldBackground? starfieldBackground;
   //  SamplerCamera? laserCamera;
   final Future<FragmentProgram> _starfieldShader = FragmentProgram.fromAsset(
     'shaders/starfield.frag',
@@ -164,7 +166,7 @@ class RedOcelotGame extends Forge2DGame
   // constrain the max resolution of the shader's long side to 512px
   // but maintain the aspect ratio
   static Vector2 limitedShaderSize(Vector2 resolution) {
-    const double maxShaderSize = 10;
+    const double maxShaderSize = 128;
     final double aspectRatio = resolution.x / resolution.y;
     if (resolution.x < maxShaderSize && resolution.y < maxShaderSize) {
       return Vector2(resolution.x, resolution.y);
@@ -188,16 +190,19 @@ class RedOcelotGame extends Forge2DGame
       startPos: Vector2(0, 0),
     );
 
-    starfieldCamera = SamplerCamera(
-      samplerOwner: StarfieldSamplerOwner(starfieldFrag.fragmentShader(), this),
-      viewport: FixedSizeViewport(viewportResolution.x, viewportResolution.y),
-      world: world,
-      pixelRatio: devicePixelRatio,
-    );
+    // starfieldCamera = SamplerCamera(
+    //   samplerOwner: StarfieldSamplerOwner(starfieldFrag.fragmentShader(), this),
+    //   viewport: FixedSizeViewport(viewportResolution.x, viewportResolution.y),
+    //   world: world,
+    //   pixelRatio: devicePixelRatio,
+    // );
+    // starfieldCamera!.follow(sundiver);
+    starfieldBackground = StarfieldBackground(starfieldFrag.fragmentShader());
+    add(starfieldBackground!);
 
     camera.follow(sundiver);
 
-    await clusterMap.add(starfieldCamera!);
+    // await clusterMap.add(starfieldCamera!);
     await world.add(sundiver);
 
     if (kDebugMode) {
@@ -309,7 +314,7 @@ class RedOcelotGame extends Forge2DGame
     // Update the zoom level based on the new size
     _setZoom(size: size);
     // update the minimap HUD size and position
-
+    starfieldCamera?.viewport.size = size;
     if (minimapHUD != null) {
       final shortestSide = min(size.x, size.y);
       final hudSize = shortestSide * 0.3;

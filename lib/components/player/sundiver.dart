@@ -242,20 +242,61 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   /// it will experience a force pushing it back to the center of the screen
   void _repulse() {
     const double radius =
-        100 *
-        gameUnit; // how close to the edge before the force is gradually applied
-    const double decay = 0.2; // how much the force decays per unit distance
-    final currentPosition = body.position;
+        100 * gameUnit; // Distance from edge where force begins
+    const double forceScale = 5.0; // Base scale for the force
+    const double maxForce = 500.0 * gameUnit; // Maximum force to apply
 
-    final x = currentPosition.x;
-    final y = currentPosition.y;
-    final dx = (x > maxPosition.x - radius) ? maxPosition.x - x : 0;
-    final dy = (y > maxPosition.y - radius) ? maxPosition.y - y : 0;
-    final ax = (x < minPosition.x + radius) ? minPosition.x - x : 0;
-    final ay = (y < minPosition.y + radius) ? minPosition.y - y : 0;
-    final forceX = (dx + ax) * 1 / radius / decay;
-    final forceY = (dy + ay) * 1 / radius / decay;
+    final currentPosition = body.position;
+    final velocity = body.linearVelocity;
+
+    // Initialize force components
+    double forceX = 0.0;
+    double forceY = 0.0;
+
+    // right boundary
+    if (currentPosition.x > maxPosition.x - radius) {
+      double penetration =
+          (currentPosition.x - (maxPosition.x - radius)) / radius;
+      forceX = -forceScale * penetration * penetration * radius;
+    }
+
+    // left boundary
+    if (currentPosition.x < minPosition.x + radius) {
+      double penetration =
+          ((minPosition.x + radius) - currentPosition.x) / radius;
+      forceX = forceScale * penetration * penetration * radius;
+    }
+
+    // bottom boundary
+    if (currentPosition.y > maxPosition.y - radius) {
+      double penetration =
+          (currentPosition.y - (maxPosition.y - radius)) / radius;
+      forceY = -forceScale * penetration * penetration * radius;
+    }
+
+    // top boundary
+    if (currentPosition.y < minPosition.y + radius) {
+      double penetration =
+          ((minPosition.y + radius) - currentPosition.y) / radius;
+      forceY = forceScale * penetration * penetration * radius;
+    }
+
+    //damping
+    if (forceX != 0 || forceY != 0) {
+      forceX -= velocity.x * 0.5;
+      forceY -= velocity.y * 0.5;
+    } else {
+      return; // No force to apply
+    }
+
     final force = Vector2(forceX, forceY);
+
+    // limit the max force
+    if (force.length > maxForce) {
+      force.normalize();
+      force.scale(maxForce);
+    }
+
     if (force.length > 0) {
       body.applyForce(force);
     }

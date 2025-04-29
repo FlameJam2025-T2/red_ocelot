@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:flame/camera.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:red_ocelot/components/flame_shaders/layer.dart';
 import 'package:red_ocelot/components/flame_shaders/sampler_canvas.dart';
 
@@ -76,8 +77,12 @@ class SamplerCamera<OwnerType extends SamplerOwner> extends CameraComponent {
 
     canvas
       ..save()
-      ..translate(offset.x, offset.y);
+      ..translate(
+        offset.x - viewport.anchor.x * viewport.size.x,
+        offset.y - viewport.anchor.y * viewport.size.y,
+      );
     layer.render(canvas, viewport.size.toSize());
+    //super.renderTree(canvas);
     canvas.restore();
   }
 
