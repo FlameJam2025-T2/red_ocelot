@@ -77,8 +77,12 @@ class SamplerCamera<OwnerType extends SamplerOwner> extends CameraComponent {
 
     canvas
       ..save()
-      ..translate(offset.x, offset.y);
+      ..translate(
+        offset.x - viewport.anchor.x * viewport.size.x,
+        offset.y - viewport.anchor.y * viewport.size.y,
+      );
     layer.render(canvas, viewport.size.toSize());
+    //super.renderTree(canvas);
     canvas.restore();
   }
 

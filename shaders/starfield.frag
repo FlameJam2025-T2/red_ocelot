@@ -9,7 +9,7 @@ uniform float time;
 
 out vec4 f;
 
-const float scale = 7e4;
+const float scale = 5e4;
 
 #define F for(float i = .1; i <.9; i+=.04)
 void main()
@@ -24,7 +24,7 @@ void main()
               b,
               c = 0.;
         F
-          p = abs(p)/a/a - .7, 
+          p = abs(p)/a/a - .73, 
           b = length(p),
           c += abs(a-b),
           a = b;        
@@ -35,7 +35,7 @@ void main()
         starColor.r += i * 1.5 + sin(cumulativeX * 0.2)*0.5;      // Add some red for closer stars
         starColor.b += (1.0-i) * 0.7 + cos(cumulativeY * 0.5)*0.5; // Add some blue for distant stars
         
-        // Apply the star color with proper scaling
+
         f += c * vec4(starColor, 0) / scale;
     }	
 }
