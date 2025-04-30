@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame/particles.dart';
@@ -8,10 +9,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:red_ocelot/components/alive.dart';
-import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
+import 'package:red_ocelot/components/laser.dart';
 import 'package:red_ocelot/components/moving_cluster_object.dart';
 import 'package:red_ocelot/components/player/laser.dart';
-import 'package:red_ocelot/components/samplers/laser.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
 import 'package:red_ocelot/red_ocelot_game.dart';
 import 'package:red_ocelot/red_ocelot_world.dart';
@@ -45,6 +45,10 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   late final Vector2 textPosition;
   late final maxPosition = Vector2.all(RedOcelotMap.size / 2 - size.x);
   late final minPosition = -maxPosition;
+  final Future<FragmentProgram> _laserFrag = FragmentProgram.fromAsset(
+    'shaders/laser.frag',
+  );
+  late final LaserBeam laserBeam;
 
   Color currentColor = Colors.black;
   double colorProgress = 0.0;
@@ -79,6 +83,10 @@ class SunDiver extends BodyComponent<RedOcelotGame>
   Future<void> onLoad() async {
     // debugMode = true;
     await super.onLoad();
+    laserBeam = LaserBeam((await _laserFrag).fragmentShader());
+    laserBeam.zoom = game.camera.viewfinder.zoom;
+
+    add(laserBeam);
   }
 
   @override

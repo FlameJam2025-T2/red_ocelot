@@ -197,7 +197,10 @@ class RedOcelotGame extends Forge2DGame
     //   pixelRatio: devicePixelRatio,
     // );
     // starfieldCamera!.follow(sundiver);
-    starfieldBackground = StarfieldBackground(starfieldFrag.fragmentShader());
+    starfieldBackground = StarfieldBackground(
+      starfieldFrag.fragmentShader(),
+      destSize: viewportResolution,
+    );
     add(starfieldBackground!);
 
     camera.follow(sundiver);
