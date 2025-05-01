@@ -24,7 +24,7 @@ extension SpriteTypeExtension on SpriteName {
     switch (this) {
       case SpriteName.monsterA:
         return SpriteInfo(
-          fileName: "/SpaceMonsters/SpaceMonsterA.png",
+          fileName: "SpaceMonsters/SpaceMonsterA.png",
           frames: 2,
           framesPerRow: 2,
           frameSize: Vector2(57, 57),
@@ -32,7 +32,7 @@ extension SpriteTypeExtension on SpriteName {
         );
       case SpriteName.monsterB:
         return SpriteInfo(
-          fileName: "/SpaceMonsters/SpaceMonsterB.png",
+          fileName: "SpaceMonsters/SpaceMonsterB.png",
           frames: 2,
           framesPerRow: 2,
           frameSize: Vector2(57, 57),
@@ -40,7 +40,7 @@ extension SpriteTypeExtension on SpriteName {
         );
       case SpriteName.monsterC:
         return SpriteInfo(
-          fileName: "/SpaceMonsters/SpaceMonsterC.png",
+          fileName: "SpaceMonsters/SpaceMonsterC.png",
           frames: 2,
           framesPerRow: 2,
           frameSize: Vector2(57, 57),
@@ -48,7 +48,7 @@ extension SpriteTypeExtension on SpriteName {
         );
       case SpriteName.monsterD:
         return SpriteInfo(
-          fileName: "/SpaceMonsters/SpaceMonsterD.png",
+          fileName: "SpaceMonsters/SpaceMonsterD.png",
           frames: 2,
           framesPerRow: 2,
           frameSize: Vector2(57, 57),
@@ -56,7 +56,7 @@ extension SpriteTypeExtension on SpriteName {
         );
       case SpriteName.monsterE:
         return SpriteInfo(
-          fileName: "/SpaceMonsters/SpaceMonsterE.png",
+          fileName: "SpaceMonsters/SpaceMonsterE.png",
           frames: 2,
           framesPerRow: 2,
           frameSize: Vector2(57, 57),
@@ -64,7 +64,7 @@ extension SpriteTypeExtension on SpriteName {
         );
       case SpriteName.ufo:
         return SpriteInfo(
-          fileName: "/UFO/UFO.png",
+          fileName: "UFO/UFO.png",
           frames: 3,
           framesPerRow: 3,
           frameSize: Vector2(113, 86),

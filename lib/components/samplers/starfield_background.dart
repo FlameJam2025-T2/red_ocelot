@@ -37,13 +37,12 @@ class StarfieldBackground extends ShaderComponent<RedOcelotGame> {
 
   @override
   void setShaderUniforms(Vector2 renderSize) {
-    shader.setFloatUniforms((value) {
-      value
-        ..setVector(renderSize)
-        ..setFloat(cumulativeOffset.x)
-        ..setFloat(cumulativeOffset.y)
-        ..setFloat(time);
-    });
+    shader
+      ..setFloat(0, renderSize.x)
+      ..setFloat(1, renderSize.y)
+      ..setFloat(2, cumulativeOffset.x)
+      ..setFloat(3, cumulativeOffset.y);
+
     _lastOffset.setFrom(cumulativeOffset);
   }
 

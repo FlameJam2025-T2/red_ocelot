@@ -2,13 +2,13 @@
 // modified by: @zeyus
 #include <flutter/runtime_effect.glsl>
 
+
 uniform vec2 uSize;
 uniform float cumulativeX;
 uniform float cumulativeY;
-uniform float time;
+
 
 out vec4 f;
-
 const float scale = 5e4;
 
 #define F for(float i = .1; i <.9; i+=.04)
