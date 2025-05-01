@@ -10,6 +10,7 @@ import 'package:flame/input.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flutter/foundation.dart';
 import 'package:red_ocelot/audio/audio_manager.dart';
+import 'package:red_ocelot/components/flame_shader_limited/shader_component.dart';
 import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
 import 'package:red_ocelot/components/hud.dart';
 import 'package:red_ocelot/components/minimap.dart';
@@ -164,16 +165,11 @@ class RedOcelotGame extends Forge2DGame
       startPos: Vector2(0, 0),
     );
 
-    // starfieldCamera = SamplerCamera(
-    //   samplerOwner: StarfieldSamplerOwner(starfieldFrag.fragmentShader(), this),
-    //   viewport: FixedSizeViewport(viewportResolution.x, viewportResolution.y),
-    //   world: world,
-    //   pixelRatio: devicePixelRatio,
-    // );
-    // starfieldCamera!.follow(sundiver);
     starfieldBackground = StarfieldBackground(
       starfieldFrag.fragmentShader(),
-      destSize: viewportResolution,
+      maxShaderDimension: 512,
+      destSize: Vector2(512, 512),
+      scaleMode: ScaleMode.cover,
     );
     add(starfieldBackground!);
 

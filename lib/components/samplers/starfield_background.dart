@@ -9,7 +9,14 @@ class StarfieldBackground extends ShaderComponent<RedOcelotGame> {
 
   final Vector2 _lastOffset = Vector2.zero();
 
-  StarfieldBackground(super.shader, {required super.destSize});
+  StarfieldBackground(
+    super.shader, {
+    required super.destSize,
+    super.maxShaderDimension,
+    super.blendMode,
+    super.destOffsetFromCenter,
+    super.scaleMode,
+  });
 
   @override
   void update(double dt) {

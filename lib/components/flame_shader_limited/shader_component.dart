@@ -13,7 +13,7 @@ enum ScaleMode {
 
   /// Scale the shader to fill the screen, maintaining the aspect ratio.
   /// this is the default.
-  fill,
+  cover,
 
   /// Scale the shader to fill the screen, ignoring the aspect ratio.
   stretch,
@@ -29,6 +29,7 @@ abstract class ShaderComponent<T extends FlameGame> extends PositionComponent
   double minUpdateInterval = 1 / 60; // 60 FPS
   double zoom = 1.0;
   final Vector2 shaderDestSize = Vector2.zero();
+  late final double shaderAspectRatio;
   final Vector2 screenSize = Vector2.zero();
   final BlendMode blendMode;
   Offset destOffsetFromCenter;
@@ -50,10 +51,12 @@ abstract class ShaderComponent<T extends FlameGame> extends PositionComponent
     this.maxShaderDimension = 512.0,
     this.blendMode = BlendMode.srcOver,
     this.destOffsetFromCenter = Offset.zero,
-    this.scaleMode = ScaleMode.fill,
+    this.scaleMode = ScaleMode.cover,
   }) : super(priority: -100) {
     // Set the initial shader destination size
     shaderDestSize.setFrom(destSize);
+    // Calculate the shader aspect ratio
+    shaderAspectRatio = shaderDestSize.x / shaderDestSize.y;
   }
 
   /// Update the shader destination size and / or other offsets if the
@@ -77,7 +80,6 @@ abstract class ShaderComponent<T extends FlameGame> extends PositionComponent
   // shader aspect ratio).
   @protected
   Vector2 calculateShaderSize(Vector2 destSize) {
-    final double shaderAspectRatio = destSize.x / destSize.y;
     double width = min(destSize.x, maxShaderDimension);
     double height = width / shaderAspectRatio;
 
@@ -97,28 +99,26 @@ abstract class ShaderComponent<T extends FlameGame> extends PositionComponent
         return shaderSize;
       case ScaleMode.stretch:
         return destSize;
-      case ScaleMode.fill:
-        // Calculate the aspect ratio of the shader and destination sizes
-        final double shaderAspectRatio = shaderSize.x / shaderSize.y;
-        final double destAspectRatio = destSize.x / destSize.y;
+      case ScaleMode.cover:
+        // make sure the shader is at least as big as the destSize (it's ok if
+        // one dimension is larger)
+        // but we maintain the aspect ratio of the shader
 
-        if (shaderAspectRatio > destAspectRatio) {
-          // Shader is wider than destination, fill by height
+        // if the shader is larger than the destSize, we need to scale it down
+        // to fit
+        if (destSize.x > destSize.y) {
+          return Vector2(destSize.x, destSize.x / shaderAspectRatio);
+        } else {
           return Vector2(destSize.y * shaderAspectRatio, destSize.y);
-        } else {
-          // Shader is taller than destination, fill by width
-          return Vector2(destSize.x, destSize.x / shaderAspectRatio);
         }
-      case ScaleMode.fit:
-        // Calculate the aspect ratio of the shader and destination sizes
-        final double shaderAspectRatio = shaderSize.x / shaderSize.y;
-        final double destAspectRatio = destSize.x / destSize.y;
 
-        if (shaderAspectRatio > destAspectRatio) {
-          // Shader is wider than destination, fit by width
+      case ScaleMode.fit:
+        // make sure the shader completely fits in the destSize
+        // (it's ok if one dimension is smaller)
+        // but we maintain the aspect ratio of the shader
+        if (shaderSize.x > shaderSize.y) {
           return Vector2(destSize.x, destSize.x / shaderAspectRatio);
         } else {
-          // Shader is taller than destination, fit by height
           return Vector2(destSize.y * shaderAspectRatio, destSize.y);
         }
     }

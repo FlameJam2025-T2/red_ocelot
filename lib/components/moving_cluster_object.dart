@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flame_forge2d/flame_forge2d.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:red_ocelot/components/alive.dart';
 import 'package:red_ocelot/components/cluster.dart';
@@ -99,7 +100,14 @@ class MovingClusterObject extends BodyComponent<RedOcelotGame>
       lifePoints -= Laser.damage;
       if (lifePoints <= 0) {
         game.incrementScore(points: hitPoints);
-        game.clusterMap.reduceClusterObject(cluster);
+        try {
+          game.clusterMap.reduceClusterObject(cluster);
+        } catch (e) {
+          if (kDebugMode) {
+            print("Error: $e");
+          }
+        }
+
         // if (game.clusterMap.numberClusterObjects[clusterIndex] <= 0) {
         //   game.clusterMap.clusters[clusterIndex].removeFromParent();
         // }
