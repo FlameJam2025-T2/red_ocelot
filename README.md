@@ -1,5 +1,6 @@
 # 🚀 Red Ocelot
 
+> **Version: 1.1.1 update:**: laser shader tweak, fixed occasional crash from missing cluster (further investigation reqired)
 > **Version: 1.1.0 update:**: new laser shader, fixed reset bug when clicking on high score, fixed scoreboard positioning
 > **UPDATE:** Patched build to fix shader crashing and terrible performance (at higher resolutions).
 
