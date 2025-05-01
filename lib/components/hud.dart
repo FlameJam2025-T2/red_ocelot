@@ -10,6 +10,7 @@ class HUDComponent extends PositionComponent
   final double boxWidth;
   final double boxHeight;
   final Paint boxPaint;
+  Offset offset;
   final TextStyle textStyle = TextStyle(
     fontSize: 12,
     color: Colors.white.withAlpha(200),
@@ -19,7 +20,7 @@ class HUDComponent extends PositionComponent
     this.score = 0,
     this.boxWidth = 100,
     this.boxHeight = 80,
-    Vector2? position,
+    this.offset = Offset.zero,
   }) : textPainter = TextPainter(
          textDirection: TextDirection.ltr,
          textAlign: TextAlign.right,
@@ -27,8 +28,15 @@ class HUDComponent extends PositionComponent
        boxPaint =
            Paint()
              ..color = const Color.fromARGB(255, 204, 220, 234).withAlpha(50) {
-    this.position = position ?? Vector2.zero();
     size = Vector2(boxWidth, boxHeight);
+    anchor = Anchor.topRight;
+  }
+
+  @override
+  void onMount() {
+    super.onMount();
+
+    position = Vector2(game.viewportResolution.x - offset.dx, offset.dy);
   }
 
   @override
@@ -59,5 +67,11 @@ class HUDComponent extends PositionComponent
       (size.y - textPainter.height) / 2,
     );
     textPainter.paint(canvas, offset);
+  }
+
+  @override
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    position = Vector2(size.x - offset.dx, offset.dy);
   }
 }

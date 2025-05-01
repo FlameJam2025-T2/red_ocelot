@@ -7,6 +7,21 @@ import 'package:meta/meta.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 
+enum ScaleMode {
+  /// Scale the shader to fit the screen, maintaining the aspect ratio.
+  fit,
+
+  /// Scale the shader to fill the screen, maintaining the aspect ratio.
+  /// this is the default.
+  fill,
+
+  /// Scale the shader to fill the screen, ignoring the aspect ratio.
+  stretch,
+
+  /// do not scale
+  none,
+}
+
 abstract class ShaderComponent<T extends FlameGame> extends PositionComponent
     with HasGameReference<T> {
   final FragmentShader shader;
@@ -17,23 +32,25 @@ abstract class ShaderComponent<T extends FlameGame> extends PositionComponent
   final Vector2 screenSize = Vector2.zero();
   final BlendMode blendMode;
   Offset destOffsetFromCenter;
+  final ScaleMode scaleMode;
+  bool enabled = true;
 
   // Cache for the rendered shader
   Image? _cachedImage;
   double _lastTime = 0.0;
   final Vector2 _lastDestSize = Vector2.zero();
+  final Vector2 _lastScaledDestSize = Vector2.zero();
 
   // Maximum resolution for shader rendering
   final double maxShaderDimension;
-  final double shaderAspectRatio;
 
   ShaderComponent(
     this.shader, {
     required Vector2 destSize,
     this.maxShaderDimension = 512.0,
-    this.shaderAspectRatio = 1.0,
     this.blendMode = BlendMode.srcOver,
     this.destOffsetFromCenter = Offset.zero,
+    this.scaleMode = ScaleMode.fill,
   }) : super(priority: -100) {
     // Set the initial shader destination size
     shaderDestSize.setFrom(destSize);
@@ -60,6 +77,7 @@ abstract class ShaderComponent<T extends FlameGame> extends PositionComponent
   // shader aspect ratio).
   @protected
   Vector2 calculateShaderSize(Vector2 destSize) {
+    final double shaderAspectRatio = destSize.x / destSize.y;
     double width = min(destSize.x, maxShaderDimension);
     double height = width / shaderAspectRatio;
 
@@ -69,6 +87,41 @@ abstract class ShaderComponent<T extends FlameGame> extends PositionComponent
     }
 
     return Vector2(width, height);
+  }
+
+  @protected
+  Vector2 calculateRenderSize(Vector2 shaderSize, Vector2 destSize) {
+    // Calculate the render size based on the scale mode
+    switch (scaleMode) {
+      case ScaleMode.none:
+        return shaderSize;
+      case ScaleMode.stretch:
+        return destSize;
+      case ScaleMode.fill:
+        // Calculate the aspect ratio of the shader and destination sizes
+        final double shaderAspectRatio = shaderSize.x / shaderSize.y;
+        final double destAspectRatio = destSize.x / destSize.y;
+
+        if (shaderAspectRatio > destAspectRatio) {
+          // Shader is wider than destination, fill by height
+          return Vector2(destSize.y * shaderAspectRatio, destSize.y);
+        } else {
+          // Shader is taller than destination, fill by width
+          return Vector2(destSize.x, destSize.x / shaderAspectRatio);
+        }
+      case ScaleMode.fit:
+        // Calculate the aspect ratio of the shader and destination sizes
+        final double shaderAspectRatio = shaderSize.x / shaderSize.y;
+        final double destAspectRatio = destSize.x / destSize.y;
+
+        if (shaderAspectRatio > destAspectRatio) {
+          // Shader is wider than destination, fit by width
+          return Vector2(destSize.x, destSize.x / shaderAspectRatio);
+        } else {
+          // Shader is taller than destination, fit by height
+          return Vector2(destSize.y * shaderAspectRatio, destSize.y);
+        }
+    }
   }
 
   // Check if we need to regenerate the shader image
@@ -105,13 +158,6 @@ abstract class ShaderComponent<T extends FlameGame> extends PositionComponent
 
     // Set shader uniforms
     setShaderUniforms(shaderSize);
-    // shader.setFloatUniforms((value) {
-    //   value
-    //     ..setVector(shaderSize.toVector2())
-    //     ..setFloat(cumulativeOffset.x)
-    //     ..setFloat(cumulativeOffset.y)
-    //     ..setFloat(time);
-    // });
 
     // Create a recorder and render the shader
     final recorder = PictureRecorder();
@@ -130,12 +176,18 @@ abstract class ShaderComponent<T extends FlameGame> extends PositionComponent
     // Update cache tracking values
     _lastTime = time;
     _lastDestSize.setFrom(shaderDestSize);
+    _lastScaledDestSize.setFrom(
+      calculateRenderSize(shaderSize, shaderDestSize),
+    );
 
     return image;
   }
 
   @override
   void render(Canvas canvas) {
+    if (!enabled) {
+      return;
+    }
     // Check if we need to regenerate the shader image
     if (_needsRegeneration()) {
       _cachedImage?.dispose();
@@ -154,8 +206,8 @@ abstract class ShaderComponent<T extends FlameGame> extends PositionComponent
         ),
         Rect.fromCenter(
           center: destOffset,
-          width: shaderDestSize.x,
-          height: shaderDestSize.y,
+          width: _lastScaledDestSize.x,
+          height: _lastScaledDestSize.y,
         ),
         Paint()
           ..filterQuality = FilterQuality.medium

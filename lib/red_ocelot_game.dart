@@ -14,8 +14,7 @@ import 'package:red_ocelot/components/flame_shaders/sampler_camera.dart';
 import 'package:red_ocelot/components/hud.dart';
 import 'package:red_ocelot/components/minimap.dart';
 import 'package:red_ocelot/components/player/sundiver.dart';
-import 'package:red_ocelot/components/samplers/starfield.dart';
-import 'package:red_ocelot/components/starfield_background.dart';
+import 'package:red_ocelot/components/samplers/starfield_background.dart';
 import 'package:red_ocelot/config/game_settings.dart';
 import 'package:red_ocelot/config/keys.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
@@ -117,32 +116,8 @@ class RedOcelotGame extends Forge2DGame
 
     await loadSprite('sundiver.png');
 
-    // final g = SineWaveGenerator(
-    //   frequency: 440,
-    //   amplitude: 0.1,
-    //   sampleRate: 44100,
-    //   bufferSize: 1024,
-    // );
-    // final audioStream = GeneratedAudio()..initFromGenerator(g);
-    // final completer = Completer<bool>();
-    // Future.delayed(const Duration(seconds: 1), () {
-    //   completer.complete(true);
-    // });
-    // audioStream.pushGenerator(g, completer.future);
-
     // Load the shader program
     starfieldFrag = await _starfieldShader;
-
-    // // Load the laser shader
-    // laserShader = (await _laserFrag).fragmentShader();
-    // laserCamera = SamplerCamera.withFixedResolution(
-    //   samplerOwner: LaserSamplerOwner(laserShader.fragmentShader(), this),
-    //   width: 100 * gameUnit,
-    //   height: 10 * gameUnit,
-    //   world: world,
-    //   pixelRatio: 1.0,
-    // );
-    // add(laserCamera!);
 
     camera = CameraComponent(
       viewport: FixedSizeViewport(viewportResolution.x, viewportResolution.y),
@@ -154,8 +129,7 @@ class RedOcelotGame extends Forge2DGame
 
     camera.setBounds(RedOcelotMap.bounds);
 
-    // camera.viewport.add(FpsTextComponent());
-    camera.viewport.add(HUDComponent()..position = Vector2(size.x - 110, 10));
+    camera.viewport.add(HUDComponent(offset: Offset(10, 10)));
 
     _gameState = GameState.menu;
 
@@ -230,6 +204,12 @@ class RedOcelotGame extends Forge2DGame
 
   void startGame() {
     if (_gameState == GameState.playing) return;
+    if (_gameState == GameState.gameOver || _gameState == GameState.gameWon) {
+      resetGame();
+    }
+    if (kDebugMode) {
+      print("Starting game");
+    }
     overlays.clear();
     overlays.add(gamepadToggleKey);
     _gameState = GameState.playing;

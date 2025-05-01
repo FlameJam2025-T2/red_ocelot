@@ -11,25 +11,22 @@ import 'package:red_ocelot/components/flame_shader_limited/shader_component.dart
 class LaserBeam extends ShaderComponent<RedOcelotGame> {
   @override
   LaserBeam(super.shader)
-    : super(
-        destSize: Vector2(1, 1),
-        blendMode: BlendMode.srcOver,
-        shaderAspectRatio: 0.1,
-      ) {
+    : super(destSize: Vector2(1, 1), blendMode: BlendMode.srcOver) {
     angle = pi / 2;
   }
 
   Vector2 _getShaderSize() {
-    return Vector2(
-      game.viewportResolution.x / 4 * gameUnit,
-      game.viewportResolution.y / 10 * gameUnit,
+    final longestSide = max(
+      game.viewportResolution.x,
+      game.viewportResolution.y,
     );
+    return Vector2(longestSide / 3 * gameUnit, longestSide / 30 * gameUnit);
   }
 
-  @override
-  void update(double dt) {
-    super.update(dt);
-  }
+  // @override
+  // void update(double dt) {
+  //   super.update(dt);
+  // }
 
   @override
   void onGameResize(Vector2 size) {

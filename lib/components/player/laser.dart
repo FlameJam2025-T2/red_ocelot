@@ -66,6 +66,7 @@ class Laser extends BodyComponent<RedOcelotGame> with Weapon, ContactCallbacks {
         removeFromParent();
       },
     );
+    renderBody = false;
     return body;
   }
 

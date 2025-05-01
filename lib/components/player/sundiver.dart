@@ -9,7 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:red_ocelot/components/alive.dart';
-import 'package:red_ocelot/components/laser.dart';
+import 'package:red_ocelot/components/samplers/laser_beam.dart';
 import 'package:red_ocelot/components/moving_cluster_object.dart';
 import 'package:red_ocelot/components/player/laser.dart';
 import 'package:red_ocelot/config/world_parameters.dart';
@@ -85,7 +85,7 @@ class SunDiver extends BodyComponent<RedOcelotGame>
     await super.onLoad();
     laserBeam = LaserBeam((await _laserFrag).fragmentShader());
     laserBeam.zoom = game.camera.viewfinder.zoom;
-
+    laserBeam.enabled = false;
     add(laserBeam);
   }
 
@@ -136,15 +136,6 @@ class SunDiver extends BodyComponent<RedOcelotGame>
       paint: shipColor,
     );
     add(ship);
-
-    // _laserShader = LaserSamplerOwner(game.laserShader, game);
-    // _laserCamera = SamplerCamera.withFixedResolution(
-    //   samplerOwner: _laserShader,
-    //   width: game.viewportResolution.x,
-    //   height: game.viewportResolution.y,
-    //   world: world,
-    //   pixelRatio: 1.0,
-    // );
 
     return world.createBody(bodyDef)..createFixture(fixtureDef);
   }
@@ -379,12 +370,14 @@ class SunDiver extends BodyComponent<RedOcelotGame>
 
   void startShooting() {
     _shooting = true;
+    laserBeam.enabled = true;
     _shotSpawner.start();
     game.audioManager.playLaser();
   }
 
   void stopShooting() {
     _shooting = false;
+    laserBeam.enabled = false;
     _shotSpawner.stop();
     game.audioManager.stopLaser();
   }

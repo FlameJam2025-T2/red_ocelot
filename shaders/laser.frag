@@ -24,7 +24,7 @@ vec3 Strand(in vec2 fragCoord, in vec3 color, in float hoffset, in float hscale,
     float twopi = 6.28318530718;
     float curve = 1.0 - abs(fragCoord.y - (sin(mod(fragCoord.x * hscale / 100.0 / uSize.x * 1000.0 + time * timescale + hoffset, twopi)) * uSize.y * 0.25 * vscale + uSize.y / 2.0));
     float i = clamp(curve, 0.0, 1.0);
-    i += clamp((glow + curve) / glow, 0.0, 1.0) * 0.4 ;
+    i += clamp((glow + curve) / glow, 0.0, 1.0) * 0.1 ;
     return i * color;
 }
 
